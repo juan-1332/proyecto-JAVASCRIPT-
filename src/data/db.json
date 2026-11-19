@@ -18,30 +18,10 @@
       "description": "Arquitecto supremo de código limpio en Campuslands. Convierte errores críticos en lecciones inolvidables con un solo commit.",
       "hp": 250,
       "attacks": [
-        {
-          "id": "atk-1",
-          "name": "Revisión de Código y metadatos",
-          "baseDamage": 20,
-          "description": "Señala un bug sutil en la línea 14."
-        },
-        {
-          "id": "atk-2",
-          "name": "Refactor Relámpago",
-          "baseDamage": 30,
-          "description": "Reestructura el flujo entero sin aviso."
-        },
-        {
-          "id": "atk-3",
-          "name": "Quiz Sorpresa",
-          "baseDamage": 40,
-          "description": "Evaluación oral instantánea de fundamentos."
-        },
-        {
-          "id": "atk-4",
-          "name": "Despliegue en Vivo",
-          "baseDamage": 50,
-          "description": "Demostración impecable bajo presión absoluta."
-        }
+        { "id": "atk-1", "name": "Revisión de Código y metadatos", "baseDamage": 20, "description": "Señala un bug sutil en la línea 14." },
+        { "id": "atk-2", "name": "Refactor Relámpago", "baseDamage": 30, "description": "Reestructura el flujo entero sin aviso." },
+        { "id": "atk-3", "name": "Quiz Sorpresa", "baseDamage": 40, "description": "Evaluación oral instantánea de fundamentos." },
+        { "id": "atk-4", "name": "Despliegue en Vivo", "baseDamage": 50, "description": "Demostración impecable bajo presión absoluta." }
       ],
       "defense": {
         "name": "Escudo de Buenas Prácticas",
@@ -64,7 +44,7 @@
       "active": true,
       "createdAt": "2026-01-15T08:00:00.000Z"
     },
-    {
+     {
       "id": "card-02",
       "name": "Super teacher",
       "type": "Profesores",
@@ -72,30 +52,10 @@
       "description": "Maestro del ingles con su furia linguistica y su toque de chef te dejara horneado",
       "hp": 250,
       "attacks": [
-        {
-          "id": "atk-1",
-          "name": "Correction time",
-          "baseDamage": 20,
-          "description": "Te corrige la pronunciación en seco con un ingles impecable."
-        },
-        {
-          "id": "atk-2",
-          "name": "Golpe dulce",
-          "baseDamage": 30,
-          "description": "Lanza un postre recién horneado que empalaga y aturde al rival."
-        },
-        {
-          "id": "atk-3",
-          "name": "Anti-iOS Roast",
-          "baseDamage": 40,
-          "description": "Suelta argumentos letales contra la sobrevaloracion de apple."
-        },
-        {
-          "id": "atk-4",
-          "name": "MasterChef Bilingual",
-          "baseDamage": 50,
-          "description": "Te cocina a fuego lento mientras te evalúa un speaking sin piedad."
-        }
+        { "id": "atk-1", "name": "Correction time", "baseDamage": 20, "description": "Te corrige la pronunciación en seco con un ingles impecable." },
+        { "id": "atk-2", "name": "Golpe dulce", "baseDamage": 30, "description": "Lanza un postre recién horneado que empalaga y aturde al rival." },
+        { "id": "atk-3", "name": "Anti-iOS Roast", "baseDamage": 40, "description": "Suelta argumentos letales contra la sobrevaloracion de apple." },
+        { "id": "atk-4", "name": "MasterChef Bilingual", "baseDamage": 50, "description": "Te cocina a fuego lento mientras te evalúa un speaking sin piedad." }
       ],
       "defense": {
         "name": "Escudo anti-apple",
@@ -126,30 +86,10 @@
       "description": "Psicóloga amable, flexible y empatica, pero cuidado pueden venir sorpresas en el camino.",
       "hp": 250,
       "attacks": [
-        {
-          "id": "atk-1",
-          "name": "Disonancia cognitiva",
-          "baseDamage": 20,
-          "description": "Te hace dudar de lo que jurabas saber y te deja pensando si el golpe existió o fue tu mente.."
-        },
-        {
-          "id": "atk-2",
-          "name": "Condicionamiento clasico",
-          "baseDamage": 30,
-          "description": "Te asocia cualquier alerta o notificación con sudor frío antes de que te caiga el impacto."
-        },
-        {
-          "id": "atk-3",
-          "name": "Sesgo de Confirmación",
-          "baseDamage": 40,
-          "description": "Solo te muestra las pruebas de que vas perdiendo y te convence de que ya estás derrotado."
-        },
-        {
-          "id": "atk-4",
-          "name": "Jaque Mental",
-          "baseDamage": 50,
-          "description": "Te lee cada movimiento antes de hacerlo y te deja sin salida en tu propia cabeza."
-        }
+        { "id": "atk-1", "name": "Disonancia cognitiva", "baseDamage": 20, "description": "Te hace dudar de lo que jurabas saber y te deja pensando si el golpe existió o fue tu mente.." },
+        { "id": "atk-2", "name": "Condicionamiento clasico", "baseDamage": 30, "description": "Te asocia cualquier alerta o notificación con sudor frío antes de que te caiga el impacto." },
+        { "id": "atk-3", "name": "Sesgo de Confirmación", "baseDamage": 40, "description": "Solo te muestra las pruebas de que vas perdiendo y te convence de que ya estás derrotado." },
+        { "id": "atk-4", "name": "Jaque Mental", "baseDamage": 50, "description": "Te lee cada movimiento antes de hacerlo y te deja sin salida en tu propia cabeza." }
       ],
       "defense": {
         "name": "Flexibilidad de Nota",
@@ -180,30 +120,10 @@
       "description": "Una carta estrategica que combina el juicio, con la fidelidad y resulta letal.",
       "hp": 250,
       "attacks": [
-        {
-          "id": "atk-1",
-          "name": "Commit Tempranero",
-          "baseDamage": 20,
-          "description": "El mas juicioso con los commits apenas despierta."
-        },
-        {
-          "id": "atk-2",
-          "name": "Disparo de juicio",
-          "baseDamage": 30,
-          "description": "ataque letal de excelente comportamiento"
-        },
-        {
-          "id": "atk-3",
-          "name": "Rafaga de entregas a tiempo",
-          "baseDamage": 40,
-          "description": "Enorme rafaga de entregas que opacan sus oponentes"
-        },
-        {
-          "id": "atk-4",
-          "name": "Latigo de fidelidad",
-          "baseDamage": 50,
-          "description": "Lanza un latigo de fidelidad para ajuiciar los infieles (pipe)."
-        }
+        { "id": "atk-1", "name": "Commit Tempranero", "baseDamage": 20, "description": "El mas juicioso con los commits apenas despierta." },
+        { "id": "atk-2", "name": "Disparo de juicio", "baseDamage": 30, "description": "ataque letal de excelente comportamiento" },
+        { "id": "atk-3", "name": "Rafaga de entregas a tiempo", "baseDamage": 40, "description": "Enorme rafaga de entregas que opacan sus oponentes" },
+        { "id": "atk-4", "name": "Latigo de fidelidad", "baseDamage": 50, "description": "Lanza un latigo de fidelidad para ajuiciar los infieles (pipe)." }
       ],
       "defense": {
         "name": "Escudo anti-NKD",
@@ -230,7 +150,6 @@
       "id": "card-05",
       "name": "Nikol Ortiz",
       "type": "Estudiantes / Leyendas de Campus",
-<<<<<<< HEAD
       "image": "/public/images/cards/nikol-ortiz.svg",
       "description": "Analiza la situación con precisión y ejecuta ataques de diseño que desarman al rival en milisegundos.",
       "hp": 250,
@@ -239,36 +158,6 @@
         { "id": "atk-2", "name": "Análisis mortal", "baseDamage": 30, "description": "Reacomoda el campo enemigo al instante sin necesitar tanta información." },
         { "id": "atk-3", "name": "Inyección de Código", "baseDamage": 40, "description": "Inyecta código en tiempo real en la superficie del enemigo." },
         { "id": "atk-4", "name": "Presentación Implacable", "baseDamage": 50, "description": "Presentación que deja sin argumentos a la hora del ataque." }
-=======
-      "image": "/public/images/cards/nikol-ortiz.webp",
-      "description": "Maestra al detalle visual y la precisión en diferentes tecnologías. Su interfaz limpia oculta cambios de alto impacto.",
-      "hp": 250,
-      "attacks": [
-        {
-          "id": "atk-1",
-          "name": "Píxel Perfecto",
-          "baseDamage": 20,
-          "description": "Descuadra al rival por un milímetro."
-        },
-        {
-          "id": "atk-2",
-          "name": "Análisis Crítico",
-          "baseDamage": 30,
-          "description": "Reacomoda el campo enemigo al instante."
-        },
-        {
-          "id": "atk-3",
-          "name": "Análisis Profundo del golpe",
-          "baseDamage": 40,
-          "description": "Inyecta código en tiempo real."
-        },
-        {
-          "id": "atk-4",
-          "name": "Diseño Implacable",
-          "baseDamage": 50,
-          "description": "Presentación que deja sin argumentos a la hora del ataque."
-        }
->>>>>>> 6868e416d9930e5646ec4db0fa9fe6f0bdca2e28
       ],
       "defense": {
         "name": "Contenedor Seguro",
@@ -296,7 +185,6 @@
       "name": "Señor Gemini",
       "type": "Estudiante la Leyenda de Campus",
       "image": "/public/images/cards/senor-gemini.svg",
-<<<<<<< HEAD
       "description": "El legendario copiloto de Campuslands. Resuelve dudas imposibles antes de que termine el prompt con géminis.",
       "hp": 250,
       "attacks": [
@@ -304,40 +192,11 @@
         { "id": "atk-2", "name": "Memoria perfecta", "baseDamage": 30, "description": "Recuerda cada jugada previa del rival." },
         { "id": "atk-3", "name": "Tiempo mínimo preparando el ataque", "baseDamage": 40, "description": "Genera la estrategia óptima en milisegundos." },
         { "id": "atk-4", "name": "Análisis", "baseDamage": 50, "description": "Predice y castiga el siguiente movimiento." }
-=======
-      "description": "El legendario chico IA te descuidas y ya esta buscando que desayunar en Gemini.",
-      "hp": 250,
-      "attacks": [
-        {
-          "id": "atk-1",
-          "name": "Disparo de prompts ",
-          "baseDamage": 20,
-          "description": "Lanza un ataque de prompts inesperados ."
-        },
-        {
-          "id": "atk-2",
-          "name": "Renovacion de tokens diaria",
-          "baseDamage": 30,
-          "description": "renova sus tokens para empezar de nuevo sus proyectos letales."
-        },
-        {
-          "id": "atk-3",
-          "name": "Creacion de agentes malvados",
-          "baseDamage": 40,
-          "description": "Genera agentes super dañosos al enemigo."
-        },
-        {
-          "id": "atk-4",
-          "name": "Ola de archivos dañinos",
-          "baseDamage": 50,
-          "description": "Archivos destrcutores que se comen tu pc."
-        }
->>>>>>> 6868e416d9930e5646ec4db0fa9fe6f0bdca2e28
       ],
       "defense": {
-        "name": "Eliminar metadatos",
+        "name": "Filtro de Alucinaciones",
         "damageReduction": 0.5,
-        "description": "Descarta el 50% de los ataques de revisiones de metadatos."
+        "description": "Descarta el 50% de los ataques imprecisos."
       },
       "special": {
         "name": "Géminis 4 Carbono",
@@ -363,37 +222,10 @@
       "description": "La hacker legendaria de Campuslands, ningún reto ni bug puede detenerla.",
       "hp": 250,
       "attacks": [
-<<<<<<< HEAD
         { "id": "atk-1", "name": "Sincronización en ataque", "baseDamage": 20, "description": "Sincroniza el primer golpe táctico en la garganta del rival." },
         { "id": "atk-2", "name": "Daño maximo", "baseDamage": 30, "description": "Asigna daño inreparable al objetivo." },
         { "id": "atk-3", "name": "Ataque de gas", "baseDamage": 40, "description": "presenta resultados realistas frente a todos." },
         { "id": "atk-4", "name": "Cierre de ataque", "baseDamage": 50, "description": "Ataque coordinado con cero deuda técnica en el combate." }
-=======
-        {
-          "id": "atk-1",
-          "name": "Daily Standup",
-          "baseDamage": 20,
-          "description": "Sincroniza el primer golpe táctico."
-        },
-        {
-          "id": "atk-2",
-          "name": "Ticket Prioritario",
-          "baseDamage": 30,
-          "description": "Asigna daño urgente al objetivo."
-        },
-        {
-          "id": "atk-3",
-          "name": "Demo de Viernes",
-          "baseDamage": 40,
-          "description": "Exhibe resultados contundentes frente a todos."
-        },
-        {
-          "id": "atk-4",
-          "name": "Cierre de Sprint",
-          "baseDamage": 50,
-          "description": "Remate coordinado con cero deuda técnica."
-        }
->>>>>>> 6868e416d9930e5646ec4db0fa9fe6f0bdca2e28
       ],
       "defense": {
         "name": "Escudo Ágil",
@@ -424,30 +256,10 @@
       "description": "Llega al parqueadero de Cajasan rugiendo a 125cc. Maestro de la velocidad y los atajos por toda la autopista.",
       "hp": 250,
       "attacks": [
-        {
-          "id": "atk-1",
-          "name": "Acelerón en Primera",
-          "baseDamage": 20,
-          "description": "Arranque explosivo que sorprende al rival."
-        },
-        {
-          "id": "atk-2",
-          "name": "Esquive entre Tráfico",
-          "baseDamage": 30,
-          "description": "Maniobra audaz de flanco."
-        },
-        {
-          "id": "atk-3",
-          "name": "Ruido de Mofle",
-          "baseDamage": 40,
-          "description": "Onda expansiva que resuena en la portería."
-        },
-        {
-          "id": "atk-4",
-          "name": "Pique en Bajada",
-          "baseDamage": 50,
-          "description": "Embestida a toda máquina sin frenos."
-        }
+        { "id": "atk-1", "name": "Acelerón en Primera", "baseDamage": 20, "description": "Arranque explosivo que sorprende al rival." },
+        { "id": "atk-2", "name": "Esquive entre Tráfico", "baseDamage": 30, "description": "Maniobra audaz de flanco." },
+        { "id": "atk-3", "name": "Ruido de Mofle", "baseDamage": 40, "description": "Onda expansiva que resuena en la portería." },
+        { "id": "atk-4", "name": "Pique en Bajada", "baseDamage": 50, "description": "Embestida a toda máquina sin frenos." }
       ],
       "defense": {
         "name": "Casco Certificado",
@@ -478,37 +290,10 @@
       "description": "Guardián del café y maestro del código. Con cada sorbo desbloquea nuevas habilidades y derrota cualquier bug.",
       "hp": 250,
       "attacks": [
-<<<<<<< HEAD
         { "id": "atk-1", "name": "Energia de golpe", "baseDamage": 20, "description": "Despertar instantáneo con golpe ligero gracias al café." },
         { "id": "atk-2", "name": "Tinto Doble", "baseDamage": 30, "description": "Acelera pulsaciones y precisión a la hora del conbate." },
         { "id": "atk-3", "name": "Energia maxima", "baseDamage": 40, "description": "Oleada térmica de cafeína pura golpe doble." },
         { "id": "atk-4", "name": "Expreso con Azúcar", "baseDamage": 50, "description": "Impacto amargo directo en la vida del rival." }
-=======
-        {
-          "id": "atk-1",
-          "name": "Sorbo de Mañana",
-          "baseDamage": 20,
-          "description": "Despertar instantáneo con golpe ligero."
-        },
-        {
-          "id": "atk-2",
-          "name": "Tinto Doble",
-          "baseDamage": 30,
-          "description": "Acelera pulsaciones y precisión."
-        },
-        {
-          "id": "atk-3",
-          "name": "Termo Recargado",
-          "baseDamage": 40,
-          "description": "Oleada térmica de cafeína pura."
-        },
-        {
-          "id": "atk-4",
-          "name": "Expreso Sin Azúcar",
-          "baseDamage": 50,
-          "description": "Impacto amargo directo a la barra de vida."
-        }
->>>>>>> 6868e416d9930e5646ec4db0fa9fe6f0bdca2e28
       ],
       "defense": {
         "name": "Taza Térmica",
@@ -539,30 +324,10 @@
       "description": "Conecta endpoints antes de desayunar. No teme a CORS, tokens expirados ni respuestas JSON anidadas.",
       "hp": 250,
       "attacks": [
-        {
-          "id": "atk-1",
-          "name": "Fetch Asíncrono",
-          "baseDamage": 20,
-          "description": "Petición veloz con respuesta inmediata."
-        },
-        {
-          "id": "atk-2",
-          "name": "Header Bearer",
-          "baseDamage": 30,
-          "description": "Autentica un golpe con autorización total."
-        },
-        {
-          "id": "atk-3",
-          "name": "Payload Masivo",
-          "baseDamage": 40,
-          "description": "Satura al rival con objetos JSON gigantes."
-        },
-        {
-          "id": "atk-4",
-          "name": "Status 200 OK",
-          "baseDamage": 50,
-          "description": "Ejecución limpia que valida la victoria."
-        }
+        { "id": "atk-1", "name": "Fetch Asíncrono", "baseDamage": 20, "description": "Petición veloz con respuesta inmediata." },
+        { "id": "atk-2", "name": "Header Bearer", "baseDamage": 30, "description": "Autentica un golpe con autorización total." },
+        { "id": "atk-3", "name": "Payload Masivo", "baseDamage": 40, "description": "Satura al rival con objetos JSON gigantes." },
+        { "id": "atk-4", "name": "Status 200 OK", "baseDamage": 50, "description": "Ejecución limpia que valida la victoria." }
       ],
       "defense": {
         "name": "Try-Catch Blindado",
@@ -590,45 +355,25 @@
       "name": "Chico COD",
       "type": "Estudiantes / Leyendas de Campus",
       "image": "/public/images/cards/chico-cod.svg",
-      "description": "Reflejos de francotirador entre descansos de Campus. Trata cada bug en producción como una misión táctica.",
+      "description": "Francotirador del código, detecta bugs a distancia y elimina cualquier amenaza del sistema.",
       "hp": 250,
       "attacks": [
-        {
-          "id": "atk-1",
-          "name": "Disparo de Cadera",
-          "baseDamage": 20,
-          "description": "Ataque reflejo sin apuntar."
-        },
-        {
-          "id": "atk-2",
-          "name": "Granada Aturdidora",
-          "baseDamage": 30,
-          "description": "Desorienta los controles enemigos."
-        },
-        {
-          "id": "atk-3",
-          "name": "Ráfaga Táctica",
-          "baseDamage": 40,
-          "description": "Tres impactos consecutivos de precisión."
-        },
-        {
-          "id": "atk-4",
-          "name": "Headshot Limpio",
-          "baseDamage": 50,
-          "description": "Crítico certero desde el otro lado del salón."
-        }
+        { "id": "atk-1", "name": "Disparo de sorpresa", "baseDamage": 20, "description": "Ataque reflejo sin apuntar sorpendiendo al enemigo." },
+        { "id": "atk-2", "name": "Granada ", "baseDamage": 30, "description": "Desorienta los controles enemigos." },
+        { "id": "atk-3", "name": "Táctica en el ataque", "baseDamage": 40, "description": "Tres impactos consecutivos de precisión." },
+        { "id": "atk-4", "name": "Ataque Limpio", "baseDamage": 50, "description": "Crítico certero desde el otro lado del salón." }
       ],
       "defense": {
-        "name": "Placa de Blindaje",
+        "name": "Placa de protección",
         "damageReduction": 0.5,
         "description": "Absorbe el 50% de la balística recibida."
       },
       "special": {
-        "name": "Racha de Bajas",
+        "name": " Solicitudes de Bajas",
         "baseDamage": 69,
         "unlockTurn": 2,
         "cooldown": 3,
-        "description": "Solicita ataque aéreo de precisión sobre la mesa."
+        "description": "Solicita ataque aéreo de precisión sobre el enemigo."
       },
       "sounds": {
         "attack": "/public/sounds/attack.mp3",
@@ -647,30 +392,10 @@
       "description": "Maestro del misterio y las llegadas al límite del reloj. Aparece solo cuando el proyecto define la clasificación.",
       "hp": 250,
       "attacks": [
-        {
-          "id": "atk-1",
-          "name": "Excusa Creativa",
-          "baseDamage": 20,
-          "description": "Confunde al oponente con una historia épica."
-        },
-        {
-          "id": "atk-2",
-          "name": "Llegada al Límite",
-          "baseDamage": 30,
-          "description": "Entra justo antes de cerrar la puerta."
-        },
-        {
-          "id": "atk-3",
-          "name": "Entrega de Último Minuto",
-          "baseDamage": 40,
-          "description": "Push a las 11:59 PM con impacto real."
-        },
-        {
-          "id": "atk-4",
-          "name": "Remontada Milagrosa",
-          "baseDamage": 50,
-          "description": "Recupera la ventaja contra todo pronóstico."
-        }
+        { "id": "atk-1", "name": "Excusa Creativa", "baseDamage": 20, "description": "Confunde al oponente con una historia épica." },
+        { "id": "atk-2", "name": "Llegada al Límite", "baseDamage": 30, "description": "Entra justo antes de cerrar la puerta." },
+        { "id": "atk-3", "name": "Entrega de Último Minuto", "baseDamage": 40, "description": "Push a las 11:59 PM con impacto real." },
+        { "id": "atk-4", "name": "Remontada Milagrosa", "baseDamage": 50, "description": "Recupera la ventaja contra todo pronóstico." }
       ],
       "defense": {
         "name": "Incapacidad Aprobada",
@@ -701,30 +426,10 @@
       "description": "Siempre conectado a las tendencias, chismes y debates más intensos de la sede. Sube la temperatura de cada duelo.",
       "hp": 250,
       "attacks": [
-        {
-          "id": "atk-1",
-          "name": "Chisme de Pasillo",
-          "baseDamage": 20,
-          "description": "Distrae al rival con primicia de Campus."
-        },
-        {
-          "id": "atk-2",
-          "name": "Debate Encendido",
-          "baseDamage": 30,
-          "description": "Sube el volumen de la discusión."
-        },
-        {
-          "id": "atk-3",
-          "name": "Tendencia Viral",
-          "baseDamage": 40,
-          "description": "Presión social directa en tiempo real."
-        },
-        {
-          "id": "atk-4",
-          "name": "Primicia Explosiva",
-          "baseDamage": 50,
-          "description": "Revelación ardiente que desarma al adversario."
-        }
+        { "id": "atk-1", "name": "Chisme de Pasillo", "baseDamage": 20, "description": "Distrae al rival con primicia de Campus." },
+        { "id": "atk-2", "name": "Debate Encendido", "baseDamage": 30, "description": "Sube el volumen de la discusión." },
+        { "id": "atk-3", "name": "Tendencia Viral", "baseDamage": 40, "description": "Presión social directa en tiempo real." },
+        { "id": "atk-4", "name": "Primicia Explosiva", "baseDamage": 50, "description": "Revelación ardiente que desarma al adversario." }
       ],
       "defense": {
         "name": "Modo Incógnito",
@@ -755,30 +460,10 @@
       "description": "Señora del aseo y Maestra del Brillo Absoluto. Si pisas el piso recién trapeado, tu barra de vida corre peligro.",
       "hp": 250,
       "attacks": [
-        {
-          "id": "atk-1",
-          "name": "Barrido Veloz",
-          "baseDamage": 20,
-          "description": "Despeja el terreno con escoba maestra."
-        },
-        {
-          "id": "atk-2",
-          "name": "Aroma a Lavanda",
-          "baseDamage": 30,
-          "description": "Nube desinfectante que desorienta."
-        },
-        {
-          "id": "atk-3",
-          "name": "Piso Recién Trapeado",
-          "baseDamage": 40,
-          "description": "Hace resbalar cualquier ataque enemigo."
-        },
-        {
-          "id": "atk-4",
-          "name": "Regaño por Huellas",
-          "baseDamage": 50,
-          "description": "Mirada implacable que congela al culpable."
-        }
+        { "id": "atk-1", "name": "Barrido Veloz", "baseDamage": 20, "description": "Despeja el terreno con escoba maestra." },
+        { "id": "atk-2", "name": "Aroma a Lavanda", "baseDamage": 30, "description": "Nube desinfectante que desorienta." },
+        { "id": "atk-3", "name": "Piso Recién Trapeado", "baseDamage": 40, "description": "Hace resbalar cualquier ataque enemigo." },
+        { "id": "atk-4", "name": "Regaño por Huellas", "baseDamage": 50, "description": "Mirada implacable que congela al culpable." }
       ],
       "defense": {
         "name": "Cono de Piso Húmedo",
@@ -809,30 +494,10 @@
       "description": "Vigilante de la entrada y Guardián de los Carnets. Nadie cruza el torniquete de Cajasan sin su visto bueno.",
       "hp": 250,
       "attacks": [
-        {
-          "id": "atk-1",
-          "name": "Solicitud de Carnet",
-          "baseDamage": 20,
-          "description": "Detiene el avance en seco."
-        },
-        {
-          "id": "atk-2",
-          "name": "Registro de Equipo",
-          "baseDamage": 30,
-          "description": "Verifica serial por serial con rigor."
-        },
-        {
-          "id": "atk-3",
-          "name": "Llamado por Radio",
-          "baseDamage": 40,
-          "description": "Refuerzo inmediato de portería."
-        },
-        {
-          "id": "atk-4",
-          "name": "Bloqueo de Torniquete",
-          "baseDamage": 50,
-          "description": "Cierre total del acceso principal."
-        }
+        { "id": "atk-1", "name": "Solicitud de Carnet", "baseDamage": 20, "description": "Detiene el avance en seco." },
+        { "id": "atk-2", "name": "Registro de Equipo", "baseDamage": 30, "description": "Verifica serial por serial con rigor." },
+        { "id": "atk-3", "name": "Llamado por Radio", "baseDamage": 40, "description": "Refuerzo inmediato de portería." },
+        { "id": "atk-4", "name": "Bloqueo de Torniquete", "baseDamage": 50, "description": "Cierre total del acceso principal." }
       ],
       "defense": {
         "name": "Garita Blindada",
@@ -863,30 +528,10 @@
       "description": "Titán de la cafetería de Cajasan. Sus almuerzos dan fuerza para programar hasta la noche; sus cucharones imponen respeto.",
       "hp": 250,
       "attacks": [
-        {
-          "id": "atk-1",
-          "name": "Empanada Caliente",
-          "baseDamage": 20,
-          "description": "Lanzamiento directo recién salido de cocina."
-        },
-        {
-          "id": "atk-2",
-          "name": "Golpe de Cucharón",
-          "baseDamage": 30,
-          "description": "Impacto preciso de acero inoxidable."
-        },
-        {
-          "id": "atk-3",
-          "name": "Bandeja Especial",
-          "baseDamage": 40,
-          "description": "Porción contundente imposible de esquivar."
-        },
-        {
-          "id": "atk-4",
-          "name": "Vapor de Olla Express",
-          "baseDamage": 50,
-          "description": "Descarga térmica de la cocina central."
-        }
+        { "id": "atk-1", "name": "Empanada Caliente", "baseDamage": 20, "description": "Lanzamiento directo recién salido de cocina." },
+        { "id": "atk-2", "name": "Golpe de Cucharón", "baseDamage": 30, "description": "Impacto preciso de acero inoxidable." },
+        { "id": "atk-3", "name": "Bandeja Especial", "baseDamage": 40, "description": "Porción contundente imposible de esquivar." },
+        { "id": "atk-4", "name": "Vapor de Olla Express", "baseDamage": 50, "description": "Descarga térmica de la cocina central." }
       ],
       "defense": {
         "name": "Delantal Térmico",
@@ -917,30 +562,10 @@
       "description": "El mago del cable UTP y el proyector. Resucita redes caídas y calibra el aire acondicionado en tiempo récord.",
       "hp": 250,
       "attacks": [
-        {
-          "id": "atk-1",
-          "name": "Ponchado RJ45",
-          "baseDamage": 20,
-          "description": "Presiona los pines con fuerza quirúrgica."
-        },
-        {
-          "id": "atk-2",
-          "name": "Látigo Cat-6",
-          "baseDamage": 30,
-          "description": "Azote de red de alta velocidad."
-        },
-        {
-          "id": "atk-3",
-          "name": "Haz de Proyector",
-          "baseDamage": 40,
-          "description": "Proyección directa de alto lumen."
-        },
-        {
-          "id": "atk-4",
-          "name": "Reinicio de Switch",
-          "baseDamage": 50,
-          "description": "Desconecta al enemigo de la red local."
-        }
+        { "id": "atk-1", "name": "Ponchado RJ45", "baseDamage": 20, "description": "Presiona los pines con fuerza quirúrgica." },
+        { "id": "atk-2", "name": "Látigo Cat-6", "baseDamage": 30, "description": "Azote de red de alta velocidad." },
+        { "id": "atk-3", "name": "Haz de Proyector", "baseDamage": 40, "description": "Proyección directa de alto lumen." },
+        { "id": "atk-4", "name": "Reinicio de Switch", "baseDamage": 50, "description": "Desconecta al enemigo de la red local." }
       ],
       "defense": {
         "name": "Canaleta Aislante",
@@ -971,30 +596,10 @@
       "description": "Enfermera de guardia en Cajasan. Cura jaquecas de código con precisión clínica y calma absoluta.",
       "hp": 250,
       "attacks": [
-        {
-          "id": "atk-1",
-          "name": "Toma de Presión",
-          "baseDamage": 20,
-          "description": "Ajuste rápido que corta el aliento."
-        },
-        {
-          "id": "atk-2",
-          "name": "Alcohol Antiséptico",
-          "baseDamage": 30,
-          "description": "Ardor inmediato en la zona afectada."
-        },
-        {
-          "id": "atk-3",
-          "name": "Vendaje Compresivo",
-          "baseDamage": 40,
-          "description": "Inmoviliza las extremidades del rival."
-        },
-        {
-          "id": "atk-4",
-          "name": "Diagnóstico Severo",
-          "baseDamage": 50,
-          "description": "Orden de reposo obligatorio con impacto."
-        }
+        { "id": "atk-1", "name": "Toma de Presión", "baseDamage": 20, "description": "Ajuste rápido que corta el aliento." },
+        { "id": "atk-2", "name": "Alcohol Antiséptico", "baseDamage": 30, "description": "Ardor inmediato en la zona afectada." },
+        { "id": "atk-3", "name": "Vendaje Compresivo", "baseDamage": 40, "description": "Inmoviliza las extremidades del rival." },
+        { "id": "atk-4", "name": "Diagnóstico Severo", "baseDamage": 50, "description": "Orden de reposo obligatorio con impacto." }
       ],
       "defense": {
         "name": "Bata Estéril",
@@ -1025,30 +630,10 @@
       "description": "Conductor legendario de la ruta Campus-Cajasan. Conoce cada semáforo y siempre llega antes que la lluvia.",
       "hp": 250,
       "attacks": [
-        {
-          "id": "atk-1",
-          "name": "Bocina de Ruta",
-          "baseDamage": 20,
-          "description": "Alerta sonora que sobresalta al rival."
-        },
-        {
-          "id": "atk-2",
-          "name": "Frenazo en Seco",
-          "baseDamage": 30,
-          "description": "Desequilibra la formación enemiga."
-        },
-        {
-          "id": "atk-3",
-          "name": "Atajo por la Paralela",
-          "baseDamage": 40,
-          "description": "Flanqueo veloz que evita embotellamientos."
-        },
-        {
-          "id": "atk-4",
-          "name": "Arranque en Subida",
-          "baseDamage": 50,
-          "description": "Torque total del bus institucional."
-        }
+        { "id": "atk-1", "name": "Bocina de Ruta", "baseDamage": 20, "description": "Alerta sonora que sobresalta al rival." },
+        { "id": "atk-2", "name": "Frenazo en Seco", "baseDamage": 30, "description": "Desequilibra la formación enemiga." },
+        { "id": "atk-3", "name": "Atajo por la Paralela", "baseDamage": 40, "description": "Flanqueo veloz que evita embotellamientos." },
+        { "id": "atk-4", "name": "Arranque en Subida", "baseDamage": 50, "description": "Torque total del bus institucional." }
       ],
       "defense": {
         "name": "Parachoques Reforzado",
@@ -1079,30 +664,10 @@
       "description": "Técnico de sonido y eventos del auditorio. Controla micrófonos inalámbricos, consolas y luces de cada graduación.",
       "hp": 250,
       "attacks": [
-        {
-          "id": "atk-1",
-          "name": "Prueba de Sonido",
-          "baseDamage": 20,
-          "description": "Golpe de grave directo al pecho."
-        },
-        {
-          "id": "atk-2",
-          "name": "Acople de Micrófono",
-          "baseDamage": 30,
-          "description": "Chillido agudo que aturde al oponente."
-        },
-        {
-          "id": "atk-3",
-          "name": "Foco de Auditorio",
-          "baseDamage": 40,
-          "description": "Reflejo cegador sobre el escenario."
-        },
-        {
-          "id": "atk-4",
-          "name": "Subwoofer al Máximo",
-          "baseDamage": 50,
-          "description": "Vibración acústica de gran calibre."
-        }
+        { "id": "atk-1", "name": "Prueba de Sonido", "baseDamage": 20, "description": "Golpe de grave directo al pecho." },
+        { "id": "atk-2", "name": "Acople de Micrófono", "baseDamage": 30, "description": "Chillido agudo que aturde al oponente." },
+        { "id": "atk-3", "name": "Foco de Auditorio", "baseDamage": 40, "description": "Reflejo cegador sobre el escenario." },
+        { "id": "atk-4", "name": "Subwoofer al Máximo", "baseDamage": 50, "description": "Vibración acústica de gran calibre." }
       ],
       "defense": {
         "name": "Cabina Insonorizada",
