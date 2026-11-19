@@ -151,7 +151,7 @@
       "name": "Nikol Ortiz",
       "type": "Estudiantes / Leyendas de Campus",
       "image": "/public/images/cards/nikol-ortiz.svg",
-      "description": "Maestra del detalle visual y la precisión en JavaScript. Su interfaz limpia oculta combos de alto impacto.",
+      "description": "Maestra al detalle visual y la precisión en diferentes tecnologías. Su interfaz limpia oculta cambios de alto impacto.",
       "hp": 250,
       "attacks": [
         { "id": "atk-1", "name": "Píxel Perfecto", "baseDamage": 20, "description": "Descuadra al rival por un milímetro." },
