@@ -393,24 +393,24 @@
       "name": "Chico NKD",
       "type": "Estudiantes / Leyendas de Campus",
       "image": "/public/images/cards/chico-nkd.svg",
-      "description": "Llega al parqueadero de Cajasan rugiendo a 125cc. Maestro de la velocidad y los atajos por toda la autopista.",
+      "description": "Llega al parqueadero de el cc como buen visajoso derrochando nivel en su nkd.",
       "hp": 250,
       "attacks": [
         {
           "id": "atk-1",
-          "name": "Acelerón en Primera",
+          "name": "Neutrazo en subida",
           "baseDamage": 20,
           "description": "Arranque explosivo que sorprende al rival."
         },
         {
           "id": "atk-2",
-          "name": "Esquive entre Tráfico",
+          "name": "Filtrado por la avenida",
           "baseDamage": 30,
           "description": "Maniobra audaz de flanco."
         },
         {
           "id": "atk-3",
-          "name": "Ruido de Mofle",
+          "name": "Pops del sc project",
           "baseDamage": 40,
           "description": "Onda expansiva que resuena en la portería."
         },
@@ -422,16 +422,16 @@
         }
       ],
       "defense": {
-        "name": "Casco Certificado",
+        "name": "Casco Certificado ICH",
         "damageReduction": 0.5,
         "description": "Absorbe el 50% de impactos frontales."
       },
       "special": {
-        "name": "Turbo NKD 125",
+        "name": "MODO:ns 200",
         "baseDamage": 66,
         "unlockTurn": 2,
         "cooldown": 3,
-        "description": "Derrape legendario que levanta chispas en toda la arena."
+        "description": "pique legendario que deja viendo placa a todos."
       },
       "sounds": {
         "attack": "/public/sounds/attack.mp3",
@@ -498,29 +498,29 @@
     },
     {
       "id": "card-10",
-      "name": "El Consumidor de APIs",
+      "name": "El Consumidor de \"Apis\"",
       "type": "Estudiantes / Leyendas de Campus",
       "image": "/public/images/cards/consumidor-apis.svg",
-      "description": "Conecta endpoints antes de desayunar. No teme a CORS, tokens expirados ni respuestas JSON anidadas.",
+      "description": "El mas poderoso consumiendo y no Apis.",
       "hp": 250,
       "attacks": [
         {
           "id": "atk-1",
-          "name": "Fetch Asíncrono",
+          "name": "Deme mil pal consumo",
           "baseDamage": 20,
-          "description": "Petición veloz con respuesta inmediata."
+          "description": "despierta el api consumidora."
         },
         {
           "id": "atk-2",
-          "name": "Header Bearer",
+          "name": "Consumo excesivo de apis",
           "baseDamage": 30,
-          "description": "Autentica un golpe con autorización total."
+          "description": "Autentica las apis."
         },
         {
           "id": "atk-3",
-          "name": "Payload Masivo",
+          "name": "Destructor de fetch",
           "baseDamage": 40,
-          "description": "Satura al rival con objetos JSON gigantes."
+          "description": "Si detecta que buscas algo te destruye completamente."
         },
         {
           "id": "atk-4",
@@ -530,9 +530,9 @@
         }
       ],
       "defense": {
-        "name": "Try-Catch Blindado",
+        "name": "Modo: baretoso 404",
         "damageReduction": 0.5,
-        "description": "Captura excepciones reduciendo el daño a la mitad."
+        "description": "Cuidado que con este modo soy super poderoso."
       },
       "special": {
         "name": "Ráfaga RESTful",
