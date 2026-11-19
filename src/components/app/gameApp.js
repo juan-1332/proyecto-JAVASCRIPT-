@@ -91,7 +91,7 @@ export class GameApp extends HTMLElement {
                 Mazo
               </button>
               <button type="button" data-nav="leaderboard" class="hover:text-white transition-colors whitespace-nowrap shrink-0 cursor-pointer ${this.vistaActual === 'leaderboard' ? 'text-amber-400 underline underline-offset-8' : ''}">
-                Leaderboard
+                Ranking
               </button>
               <button type="button" data-nav="admin" class="hover:text-white transition-colors whitespace-nowrap shrink-0 cursor-pointer ${this.vistaActual === 'admin' ? 'text-amber-400 underline underline-offset-8' : ''}">
                 Admin
