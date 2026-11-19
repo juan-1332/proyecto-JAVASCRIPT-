@@ -183,23 +183,24 @@
     {
       "id": "card-06",
       "name": "Señor Gemini",
-      "type": "Estudiante la Leyenda de Campus",
+      "type": "Estudiantes / Leyendas de Campus",
       "image": "/public/images/cards/senor-gemini.svg",
-      "description": "El legendario copiloto de Campuslands. Resuelve dudas imposibles antes de que termine el prompt con géminis.",
+      "description": "El legendario chico IA te descuidas y ya esta buscando que desayunar en Gemini.",
       "hp": 250,
       "attacks": [
-        { "id": "atk-1", "name": "Prompt Preciso", "baseDamage": 20, "description": "Instrucción quirúrgica al punto débil en el enemigo." },
-        { "id": "atk-2", "name": "Memoria perfecta", "baseDamage": 30, "description": "Recuerda cada jugada previa del rival." },
-        { "id": "atk-3", "name": "Tiempo mínimo preparando el ataque", "baseDamage": 40, "description": "Genera la estrategia óptima en milisegundos." },
-        { "id": "atk-4", "name": "Análisis", "baseDamage": 50, "description": "Predice y castiga el siguiente movimiento." }
+        {"id": "atk-1","name": "Disparo de prompts ","baseDamage": 20,"description": "Lanza un ataque de prompts inesperados ." },
+        {"id": "atk-2","name": "Renovacion de tokens diaria","baseDamage": 30,"description": "renova sus tokens para empezar de nuevo sus proyectos letales."},
+        {"id": "atk-3","name": "Creacion de agentes malvados","baseDamage": 40,"description": "Genera agentes super dañosos al enemigo." },
+        {"id": "atk-4", "name": "Ola de archivos dañinos","baseDamage": 50,"description": "Archivos destrcutores que se comen tu pc."
+        }
       ],
       "defense": {
-        "name": "Filtro de Alucinaciones",
+        "name": "Eliminar metadatos",
         "damageReduction": 0.5,
-        "description": "Descarta el 50% de los ataques imprecisos."
+        "description": "Descarta el 50% de los ataques de revisiones de metadatos."
       },
       "special": {
-        "name": "Géminis 4 Carbono",
+        "name": "Singularidad Multimodal",
         "baseDamage": 68,
         "unlockTurn": 2,
         "cooldown": 3,
@@ -214,6 +215,7 @@
       "active": true,
       "createdAt": "2026-01-15T08:20:00.000Z"
     },
+   
     {
       "id": "card-07",
       "name": "Diana",
