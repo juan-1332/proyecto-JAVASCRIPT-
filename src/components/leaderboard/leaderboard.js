@@ -149,7 +149,7 @@ export class LeaderboardView extends HTMLElement {
       <section class="lb-container">
         <div class="flex flex-wrap items-center justify-between gap-4">
           <div>
-            <h2 class="text-2xl sm:text-3xl font-bold text-white">Leaderboard Campuslands</h2>
+            <h2 class="text-2xl sm:text-3xl font-bold text-white">Ranking  Campuslands</h2>
             <p class="text-sm text-slate-300 mt-1">
               Clasificación general ordenada por puntaje (Victoria +50 pts · Derrota +10 pts).
             </p>
