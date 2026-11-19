@@ -230,6 +230,16 @@
       "id": "card-05",
       "name": "Nikol Ortiz",
       "type": "Estudiantes / Leyendas de Campus",
+<<<<<<< HEAD
+      "image": "/public/images/cards/nikol-ortiz.svg",
+      "description": "Analiza la situación con precisión y ejecuta ataques de diseño que desarman al rival en milisegundos.",
+      "hp": 250,
+      "attacks": [
+        { "id": "atk-1", "name": "Ataque Perfecto", "baseDamage": 20, "description": "Descuadra al rival por un milisegundo." },
+        { "id": "atk-2", "name": "Análisis mortal", "baseDamage": 30, "description": "Reacomoda el campo enemigo al instante sin necesitar tanta información." },
+        { "id": "atk-3", "name": "Inyección de Código", "baseDamage": 40, "description": "Inyecta código en tiempo real en la superficie del enemigo." },
+        { "id": "atk-4", "name": "Presentación Implacable", "baseDamage": 50, "description": "Presentación que deja sin argumentos a la hora del ataque." }
+=======
       "image": "/public/images/cards/nikol-ortiz.webp",
       "description": "Maestra al detalle visual y la precisión en diferentes tecnologías. Su interfaz limpia oculta cambios de alto impacto.",
       "hp": 250,
@@ -258,6 +268,7 @@
           "baseDamage": 50,
           "description": "Presentación que deja sin argumentos a la hora del ataque."
         }
+>>>>>>> 6868e416d9930e5646ec4db0fa9fe6f0bdca2e28
       ],
       "defense": {
         "name": "Contenedor Seguro",
@@ -283,8 +294,17 @@
     {
       "id": "card-06",
       "name": "Señor Gemini",
-      "type": "Estudiantes / Leyendas de Campus",
+      "type": "Estudiante la Leyenda de Campus",
       "image": "/public/images/cards/senor-gemini.svg",
+<<<<<<< HEAD
+      "description": "El legendario copiloto de Campuslands. Resuelve dudas imposibles antes de que termine el prompt con géminis.",
+      "hp": 250,
+      "attacks": [
+        { "id": "atk-1", "name": "Prompt Preciso", "baseDamage": 20, "description": "Instrucción quirúrgica al punto débil en el enemigo." },
+        { "id": "atk-2", "name": "Memoria perfecta", "baseDamage": 30, "description": "Recuerda cada jugada previa del rival." },
+        { "id": "atk-3", "name": "Tiempo mínimo preparando el ataque", "baseDamage": 40, "description": "Genera la estrategia óptima en milisegundos." },
+        { "id": "atk-4", "name": "Análisis", "baseDamage": 50, "description": "Predice y castiga el siguiente movimiento." }
+=======
       "description": "El legendario chico IA te descuidas y ya esta buscando que desayunar en Gemini.",
       "hp": 250,
       "attacks": [
@@ -312,6 +332,7 @@
           "baseDamage": 50,
           "description": "Archivos destrcutores que se comen tu pc."
         }
+>>>>>>> 6868e416d9930e5646ec4db0fa9fe6f0bdca2e28
       ],
       "defense": {
         "name": "Eliminar metadatos",
@@ -319,7 +340,7 @@
         "description": "Descarta el 50% de los ataques de revisiones de metadatos."
       },
       "special": {
-        "name": "Singularidad Multimodal",
+        "name": "Géminis 4 Carbono",
         "baseDamage": 68,
         "unlockTurn": 2,
         "cooldown": 3,
@@ -339,9 +360,15 @@
       "name": "Diana",
       "type": "Estudiantes / Leyendas de Campus",
       "image": "/public/images/cards/diana.svg",
-      "description": "Líder nata de equipos ágiles. Organiza tableros Kanban bajo fuego y mantiene la moral del escuadrón al cien.",
+      "description": "La hacker legendaria de Campuslands, ningún reto ni bug puede detenerla.",
       "hp": 250,
       "attacks": [
+<<<<<<< HEAD
+        { "id": "atk-1", "name": "Sincronización en ataque", "baseDamage": 20, "description": "Sincroniza el primer golpe táctico en la garganta del rival." },
+        { "id": "atk-2", "name": "Daño maximo", "baseDamage": 30, "description": "Asigna daño inreparable al objetivo." },
+        { "id": "atk-3", "name": "Ataque de gas", "baseDamage": 40, "description": "presenta resultados realistas frente a todos." },
+        { "id": "atk-4", "name": "Cierre de ataque", "baseDamage": 50, "description": "Ataque coordinado con cero deuda técnica en el combate." }
+=======
         {
           "id": "atk-1",
           "name": "Daily Standup",
@@ -366,6 +393,7 @@
           "baseDamage": 50,
           "description": "Remate coordinado con cero deuda técnica."
         }
+>>>>>>> 6868e416d9930e5646ec4db0fa9fe6f0bdca2e28
       ],
       "defense": {
         "name": "Escudo Ágil",
@@ -447,9 +475,15 @@
       "name": "Don Tintero",
       "type": "Estudiantes / Leyendas de Campus",
       "image": "/public/images/cards/don-tintero.svg",
-      "description": "Su combustible no es electricidad sino café negro de la máquina. Capaz de depurar tres proyectos sin pestañear.",
+      "description": "Guardián del café y maestro del código. Con cada sorbo desbloquea nuevas habilidades y derrota cualquier bug.",
       "hp": 250,
       "attacks": [
+<<<<<<< HEAD
+        { "id": "atk-1", "name": "Energia de golpe", "baseDamage": 20, "description": "Despertar instantáneo con golpe ligero gracias al café." },
+        { "id": "atk-2", "name": "Tinto Doble", "baseDamage": 30, "description": "Acelera pulsaciones y precisión a la hora del conbate." },
+        { "id": "atk-3", "name": "Energia maxima", "baseDamage": 40, "description": "Oleada térmica de cafeína pura golpe doble." },
+        { "id": "atk-4", "name": "Expreso con Azúcar", "baseDamage": 50, "description": "Impacto amargo directo en la vida del rival." }
+=======
         {
           "id": "atk-1",
           "name": "Sorbo de Mañana",
@@ -474,11 +508,12 @@
           "baseDamage": 50,
           "description": "Impacto amargo directo a la barra de vida."
         }
+>>>>>>> 6868e416d9930e5646ec4db0fa9fe6f0bdca2e28
       ],
       "defense": {
         "name": "Taza Térmica",
         "damageReduction": 0.5,
-        "description": "Conserva energía y reduce el golpe en 50%."
+        "description": "Conserva energía y reduce el golpe en 70%."
       },
       "special": {
         "name": "Sobredosis de Cafeína",
