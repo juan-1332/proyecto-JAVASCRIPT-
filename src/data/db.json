@@ -116,17 +116,17 @@
       "id": "card-04",
       "name": "Juan Pablo",
       "type": "Estudiantes / Leyendas de Campus",
-      "image": "/public/images/cards/juan-pablo.svg",
-      "description": "Estratega incansable de las aulas de Cajasan. Siempre llega temprano con la solución y un plan de respaldo.",
+      "image": "/public/images/cards/juan-pablo.webp",
+      "description": "Una carta estrategica que combina el juicio, con la fidelidad y resulta letal.",
       "hp": 250,
       "attacks": [
-        { "id": "atk-1", "name": "Commit Tempranero", "baseDamage": 20, "description": "Ataque rápido antes del primer tinto." },
-        { "id": "atk-2", "name": "Lógica Modular", "baseDamage": 30, "description": "Divide y vence al oponente." },
-        { "id": "atk-3", "name": "Pull Request Letal", "baseDamage": 40, "description": "Fusión de código que desplaza al rival." },
-        { "id": "atk-4", "name": "Maratón Nocturno", "baseDamage": 50, "description": "Resistencia pura tras ocho horas de proyecto." }
+        { "id": "atk-1", "name": "Commit Tempranero", "baseDamage": 20, "description": "El mas juicioso con los commits apenas despierta." },
+        { "id": "atk-2", "name": "Disparo de juicio", "baseDamage": 30, "description": "ataque letal de excelente comportamiento" },
+        { "id": "atk-3", "name": "Rafaga de entregas a tiempo", "baseDamage": 40, "description": "Enorme rafaga de entregas que opacan sus oponentes" },
+        { "id": "atk-4", "name": "Latigo de fidelidad", "baseDamage": 50, "description": "Lanza un latigo de fidelidad para ajuiciar los infieles (pipe)." }
       ],
       "defense": {
-        "name": "Rama de Respaldo",
+        "name": "Escudo anti-NKD",
         "damageReduction": 0.5,
         "description": "Mitiga el 50% del daño aislando cambios en git."
       },
