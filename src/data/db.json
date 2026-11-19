@@ -155,17 +155,17 @@
       "hp": 250,
       "attacks": [
         { "id": "atk-1", "name": "Píxel Perfecto", "baseDamage": 20, "description": "Descuadra al rival por un milímetro." },
-        { "id": "atk-2", "name": "Flexbox Crítico", "baseDamage": 30, "description": "Reacomoda el campo enemigo al instante." },
-        { "id": "atk-3", "name": "DOM Dinámico", "baseDamage": 40, "description": "Inyecta componentes en tiempo real." },
-        { "id": "atk-4", "name": "Diseño Implacable", "baseDamage": 50, "description": "Presentación magistral que deja sin argumentos." }
+        { "id": "atk-2", "name": "Análisis Crítico", "baseDamage": 30, "description": "Reacomoda el campo enemigo al instante." },
+        { "id": "atk-3", "name": "Análisis Profundo del golpe", "baseDamage": 40, "description": "Inyecta código en tiempo real." },
+        { "id": "atk-4", "name": "Diseño Implacable", "baseDamage": 50, "description": "Presentación que deja sin argumentos a la hora del ataque." }
       ],
       "defense": {
         "name": "Contenedor Seguro",
         "damageReduction": 0.5,
-        "description": "Encapsula la tarjeta reduciendo el daño a la mitad."
+        "description": "Conserva energía y reduce el golpe a la mitad."
       },
       "special": {
-        "name": "Tormenta CSS & ES6",
+        "name": "Tormenta CSS",
         "baseDamage": 65,
         "unlockTurn": 2,
         "cooldown": 3,
