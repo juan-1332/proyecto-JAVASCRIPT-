@@ -256,30 +256,10 @@
       "description": "Llega al parqueadero de el cc como buen visajoso derrochando nivel en su nkd.",
       "hp": 250,
       "attacks": [
-        {
-          "id": "atk-1",
-          "name": "Neutrazo en subida",
-          "baseDamage": 20,
-          "description": "Arranque explosivo que sorprende al rival."
-        },
-        {
-          "id": "atk-2",
-          "name": "Filtrado por la avenida",
-          "baseDamage": 30,
-          "description": "Maniobra audaz de flanco."
-        },
-        {
-          "id": "atk-3",
-          "name": "Pops del sc project",
-          "baseDamage": 40,
-          "description": "Onda expansiva que resuena en la portería."
-        },
-        {
-          "id": "atk-4",
-          "name": "Pique en Bajada",
-          "baseDamage": 50,
-          "description": "Embestida a toda máquina sin frenos."
-        }
+        {"id": "atk-1", "name": "Neutrazo en subida", "baseDamage": 20, "description": "Arranque explosivo que sorprende al rival." },
+        { "id": "atk-2","name": "Filtrado por la avenida","baseDamage": 30, "description": "Maniobra audaz de flanco."},
+        {"id": "atk-3","name": "Pops del sc project","baseDamage": 40,"description": "Onda expansiva que resuena en la portería." },
+        {"id": "atk-4", "name": "Pique en Bajada","baseDamage": 50,"description": "Embestida a toda máquina sin frenos."}
       ],
       "defense": {
         "name": "Casco Certificado ICH",
@@ -344,30 +324,10 @@
       "description": "El mas poderoso consumiendo y no Apis.",
       "hp": 250,
       "attacks": [
-        {
-          "id": "atk-1",
-          "name": "Deme mil pal consumo",
-          "baseDamage": 20,
-          "description": "despierta el api consumidora."
-        },
-        {
-          "id": "atk-2",
-          "name": "Consumo excesivo de apis",
-          "baseDamage": 30,
-          "description": "Autentica las apis."
-        },
-        {
-          "id": "atk-3",
-          "name": "Destructor de fetch",
-          "baseDamage": 40,
-          "description": "Si detecta que buscas algo te destruye completamente."
-        },
-        {
-          "id": "atk-4",
-          "name": "Status 200 OK",
-          "baseDamage": 50,
-          "description": "Ejecución limpia que valida la victoria."
-        }
+        {"id": "atk-1","name": "Deme mil pal consumo", "baseDamage": 20,"description": "despierta el api consumidora." },
+        {"id": "atk-2", "name": "Consumo excesivo de apis","baseDamage": 30,"description": "Autentica las apis."},
+        { "id": "atk-3","name": "Destructor de fetch","baseDamage": 40,"description": "Si detecta que buscas algo te destruye completamente."},
+        {"id": "atk-4","name": "Status 200 OK", "baseDamage": 50,"description": "Ejecución limpia que valida la victoria."}
       ],
       "defense": {
         "name": "Modo: baretoso 404",
