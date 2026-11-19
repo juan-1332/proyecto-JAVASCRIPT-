@@ -1,0 +1,76 @@
+.lb-container {
+  max-width: 1160px;
+  margin: 0 auto;
+  padding: 1.75rem 1.5rem 3rem;
+}
+
+.lb-podium {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1.15rem;
+  margin-top: 1.5rem;
+}
+
+@media (max-width: 800px) {
+  .lb-podium {
+    grid-template-columns: 1fr;
+  }
+}
+
+.lb-podium-card {
+  padding: 1.4rem;
+  border-radius: 0.9rem;
+  background-color: #102042;
+  border: 1px solid rgba(248, 250, 252, 0.14);
+}
+
+.lb-rank-1 {
+  border-color: rgba(245, 158, 11, 0.65);
+  background: linear-gradient(160deg, rgba(245, 158, 11, 0.14) 0%, #102042 70%);
+}
+
+.lb-rank-2 {
+  border-color: rgba(203, 213, 225, 0.45);
+}
+
+.lb-rank-3 {
+  border-color: rgba(217, 119, 6, 0.45);
+}
+
+.lb-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+  gap: 1.5rem;
+  margin-top: 1.75rem;
+}
+
+@media (max-width: 960px) {
+  .lb-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.lb-table-wrap {
+  overflow-x: auto;
+}
+
+.lb-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+
+.lb-table th {
+  text-align: left;
+  padding: 0.75rem 0.9rem;
+  color: #94a3b8;
+  font-weight: 600;
+  font-size: 0.78rem;
+  border-bottom: 1px solid rgba(248, 250, 252, 0.12);
+}
+
+.lb-table td {
+  padding: 0.78rem 0.9rem;
+  border-bottom: 1px solid rgba(248, 250, 252, 0.07);
+  color: #f8fafc;
+}

@@ -1,0 +1,319 @@
+/* ==========================================================================
+   Campuslands Battle Arena — Estilos Globales CSS3 (Sin frameworks externos)
+   ========================================================================== */
+
+:root {
+  --campus-bg: #081226;
+  --campus-table: #0b162c;
+  --campus-surface: #122244;
+  --campus-surface-elevated: #182c56;
+  --campus-border: rgba(248, 250, 252, 0.12);
+  --campus-gold: #f59e0b;
+  --campus-gold-bright: #fbbf24;
+  --campus-text: #f8fafc;
+  --campus-muted: #94a3b8;
+  --campus-danger: #ef4444;
+  --campus-shield: #38bdf8;
+  --campus-emerald: #10b981;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  background-color: var(--campus-bg);
+  background-image:
+    radial-gradient(circle at 50% 15%, rgba(30, 64, 175, 0.28), transparent 55%),
+    radial-gradient(circle at 85% 85%, rgba(245, 158, 11, 0.08), transparent 45%);
+  color: var(--campus-text);
+  font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1,
+h2,
+h3,
+h4,
+p {
+  margin: 0;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+h1,
+h2,
+h3,
+h4,
+.font-display {
+  font-family: 'Outfit', system-ui, sans-serif;
+  text-wrap: balance;
+}
+
+.font-mono-num {
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
+  font-variant-numeric: tabular-nums;
+}
+
+button,
+a,
+input,
+select,
+textarea {
+  font-family: inherit;
+}
+
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline: 2px solid var(--campus-gold);
+  outline-offset: 2px;
+}
+
+/* Primitivas Campuslands */
+.campus-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  min-height: 44px;
+  padding: 0.55rem 1.15rem;
+  border-radius: 0.625rem;
+  font-weight: 600;
+  font-size: 0.9rem;
+  white-space: nowrap;
+  flex-shrink: 0;
+  cursor: pointer;
+  border: 1px solid transparent;
+  transition: transform 160ms cubic-bezier(0.16, 1, 0.3, 1), opacity 160ms ease, background-color 160ms ease, border-color 160ms ease;
+}
+
+.campus-btn:active:not(:disabled) {
+  transform: scale(0.98);
+}
+
+.campus-btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.campus-btn-primary {
+  background-color: var(--campus-gold);
+  color: #0b162c;
+}
+
+.campus-btn-primary:hover:not(:disabled) {
+  background-color: var(--campus-gold-bright);
+}
+
+.campus-btn-secondary {
+  background-color: var(--campus-surface-elevated);
+  color: var(--campus-text);
+  border-color: var(--campus-border);
+}
+
+.campus-btn-secondary:hover:not(:disabled) {
+  background-color: #213a6e;
+  border-color: rgba(245, 158, 11, 0.45);
+}
+
+.campus-btn-danger {
+  background-color: rgba(239, 68, 68, 0.16);
+  color: #fecaca;
+  border-color: rgba(239, 68, 68, 0.4);
+}
+
+.campus-btn-danger:hover:not(:disabled) {
+  background-color: rgba(239, 68, 68, 0.28);
+}
+
+.campus-surface {
+  background-color: var(--campus-surface);
+  border: 1px solid var(--campus-border);
+  border-radius: 0.875rem;
+}
+
+.campus-input {
+  width: 100%;
+  min-height: 44px;
+  padding: 0.6rem 0.85rem;
+  border-radius: 0.5rem;
+  background-color: #091326;
+  border: 1px solid rgba(248, 250, 252, 0.18);
+  color: var(--campus-text);
+  font-size: 0.95rem;
+}
+
+.campus-input::placeholder {
+  color: #64748b;
+}
+
+/* Layout & Utilidades CSS3 puras */
+.min-h-screen { min-height: 100vh; }
+.block { display: block; }
+.flex { display: flex; }
+.flex-col { flex-direction: column; }
+.flex-wrap { flex-wrap: wrap; }
+.flex-1 { flex: 1 1 0%; }
+.shrink-0 { flex-shrink: 0; }
+.items-center { align-items: center; }
+.items-baseline { align-items: baseline; }
+.justify-between { justify-content: space-between; }
+.justify-end { justify-content: flex-end; }
+.hidden { display: none; }
+
+.gap-1 { gap: 0.25rem; }
+.gap-2 { gap: 0.5rem; }
+.gap-2\.5 { gap: 0.625rem; }
+.gap-3 { gap: 0.75rem; }
+.gap-4 { gap: 1rem; }
+.gap-5 { gap: 1.25rem; }
+.gap-8 { gap: 2rem; }
+
+.w-full { width: 100%; }
+.w-24 { width: 6rem; }
+.w-px { width: 1px; }
+.h-7 { height: 1.75rem; }
+.h-16 { height: 4rem; }
+.min-w-0 { min-width: 0; }
+.max-w-xl { max-width: 36rem; }
+.max-w-7xl { max-width: 80rem; }
+.mx-auto { margin-left: auto; margin-right: auto; }
+
+.p-3 { padding: 0.75rem; }
+.p-3\.5 { padding: 0.875rem; }
+.p-4 { padding: 1rem; }
+.p-5 { padding: 1.25rem; }
+.p-6 { padding: 1.5rem; }
+.p-8 { padding: 2rem; }
+.px-4 { padding-left: 1rem; padding-right: 1rem; }
+.py-6 { padding-top: 1.5rem; padding-bottom: 1.5rem; }
+.pt-0 { padding-top: 0; }
+.pt-2\.5 { padding-top: 0.625rem; }
+.pt-4 { padding-top: 1rem; }
+
+.mt-0\.5 { margin-top: 0.125rem; }
+.mt-1 { margin-top: 0.25rem; }
+.mt-2 { margin-top: 0.5rem; }
+.mt-2\.5 { margin-top: 0.625rem; }
+.mt-3 { margin-top: 0.75rem; }
+.mt-4 { margin-top: 1rem; }
+.mt-5 { margin-top: 1.25rem; }
+.mt-6 { margin-top: 1.5rem; }
+.mb-1 { margin-bottom: 0.25rem; }
+.mb-1\.5 { margin-bottom: 0.375rem; }
+.mb-2 { margin-bottom: 0.5rem; }
+.mb-3 { margin-bottom: 0.75rem; }
+.mb-4 { margin-bottom: 1rem; }
+.mb-5 { margin-bottom: 1.25rem; }
+.mr-1\.5 { margin-right: 0.375rem; }
+
+.text-xs { font-size: 0.75rem; line-height: 1rem; }
+.text-sm { font-size: 0.875rem; line-height: 1.25rem; }
+.text-base { font-size: 1rem; line-height: 1.5rem; }
+.text-lg { font-size: 1.125rem; line-height: 1.75rem; }
+.text-xl { font-size: 1.25rem; line-height: 1.75rem; }
+.text-2xl { font-size: 1.5rem; line-height: 2rem; }
+.text-3xl { font-size: 1.875rem; line-height: 2.25rem; }
+
+.font-medium { font-weight: 500; }
+.font-semibold { font-weight: 600; }
+.font-bold { font-weight: 700; }
+.font-extrabold { font-weight: 800; }
+
+.leading-tight { line-height: 1.25; }
+.leading-snug { line-height: 1.375; }
+.leading-relaxed { line-height: 1.625; }
+.tracking-tight { letter-spacing: -0.025em; }
+.text-center { text-align: center; }
+.text-right { text-align: right; }
+.whitespace-nowrap { white-space: nowrap; }
+.truncate {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.line-clamp-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.text-white { color: #ffffff; }
+.text-slate-200 { color: #e2e8f0; }
+.text-slate-300 { color: #cbd5e1; }
+.text-slate-400 { color: #94a3b8; }
+.text-slate-500 { color: #64748b; }
+.text-amber-200 { color: #fde68a; }
+.text-amber-300 { color: #fcd34d; }
+.text-amber-400 { color: #fbbf24; }
+.text-emerald-300 { color: #6ee7b7; }
+.text-emerald-400 { color: #34d399; }
+.text-sky-300 { color: #7dd3fc; }
+.text-rose-300 { color: #fda4af; }
+.text-red-300 { color: #fca5a5; }
+
+.bg-\[\#081226\]\/95 { background-color: rgba(8, 18, 38, 0.95); }
+.bg-\[\#091326\] { background-color: #091326; }
+.bg-white\/10 { background-color: rgba(255, 255, 255, 0.1); }
+
+.border { border: 1px solid rgba(255, 255, 255, 0.12); }
+.border-b { border-bottom: 1px solid rgba(255, 255, 255, 0.1); }
+.border-t { border-top: 1px solid rgba(255, 255, 255, 0.1); }
+.border-white\/10 { border-color: rgba(255, 255, 255, 0.1); }
+.rounded-lg { border-radius: 0.5rem; }
+.overflow-x-auto { overflow-x: auto; }
+.cursor-pointer { cursor: pointer; }
+
+.underline { text-decoration: underline; }
+.underline-offset-8 { text-underline-offset: 8px; }
+.hover\:text-white:hover { color: #ffffff; }
+.hover\:underline:hover { text-decoration: underline; }
+.transition-colors { transition: color 150ms ease, background-color 150ms ease; }
+
+header nav button {
+  background: transparent;
+  border: none;
+  padding: 0.25rem 0;
+  color: inherit;
+  font-size: inherit;
+  font-weight: inherit;
+}
+
+#btn-go-leaderboard {
+  background: transparent;
+  border: none;
+  padding: 0;
+}
+
+@media (min-width: 640px) {
+  .sm\:block { display: block; }
+  .sm\:flex { display: flex; }
+  .sm\:px-6 { padding-left: 1.5rem; padding-right: 1.5rem; }
+  .sm\:gap-7 { gap: 1.75rem; }
+  .sm\:text-xl { font-size: 1.25rem; line-height: 1.75rem; }
+  .sm\:text-3xl { font-size: 1.875rem; line-height: 2.25rem; }
+  .sm\:text-4xl { font-size: 2.25rem; line-height: 2.5rem; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

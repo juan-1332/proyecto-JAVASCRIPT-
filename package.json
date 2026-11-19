@@ -1,0 +1,22 @@
+{
+  "name": "campuslands-battle-arena",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "node server.js",
+    "build": "vite build",
+    "start": "node server.js",
+    "preview": "vite preview --port=3000 --host=0.0.0.0",
+    "clean": "rm -rf dist",
+    "lint": "node -e \"const fs=require('fs'),path=require('path'),cp=require('child_process');function walk(d){for(const f of fs.readdirSync(d)){const p=path.join(d,f);if(fs.statSync(p).isDirectory())walk(p);else if(p.endsWith('.js'))cp.execFileSync('node',['--check',p],{stdio:'inherit'});}}['server.js','vite.config.js'].forEach(f=>cp.execFileSync('node',['--check',f],{stdio:'inherit'}));walk('src');console.log('Sintaxis JS verificada sin errores.');\""
+  },
+  "dependencies": {
+    "dotenv": "^17.2.3",
+    "express": "^4.21.2"
+  },
+  "devDependencies": {
+    "json-server": "^1.0.0-beta.15",
+    "vite": "^8.3.0"
+  }
+}

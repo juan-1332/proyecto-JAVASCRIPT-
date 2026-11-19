@@ -1,0 +1,6 @@
+{
+  "name": "Campuslands Battle Arena",
+  "description": "Simulador táctico de combate de cartas 1v1 ambientado en el ecosistema de Campuslands y Cajasan.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

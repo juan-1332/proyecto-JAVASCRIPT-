@@ -1,0 +1,274 @@
+.arena-shell {
+  max-width: 1220px;
+  margin: 0 auto;
+  padding: 1rem 1.25rem 2.25rem;
+}
+
+.arena-hud {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.75rem 1.1rem;
+  background-color: #102042;
+  border: 1px solid rgba(248, 250, 252, 0.14);
+  border-radius: 0.85rem;
+}
+
+.arena-board {
+  display: grid;
+  grid-template-columns: minmax(0, 1.35fr) minmax(260px, 0.65fr);
+  gap: 1.25rem;
+  margin-top: 1rem;
+  align-items: start;
+}
+
+@media (max-width: 960px) {
+  .arena-board {
+    grid-template-columns: 1fr;
+  }
+}
+
+.arena-felt {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 1.25rem;
+  border-radius: 1rem;
+  background:
+    radial-gradient(circle at 50% 50%, rgba(29, 78, 216, 0.18), transparent 65%),
+    linear-gradient(180deg, #0e1e3d 0%, #09152d 100%);
+  border: 1px solid rgba(245, 158, 11, 0.28);
+}
+
+.arena-clash-divider {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.5rem 0.9rem;
+  background-color: rgba(8, 18, 38, 0.75);
+  border: 1px solid rgba(248, 250, 252, 0.1);
+  border-radius: 0.65rem;
+  font-size: 0.85rem;
+}
+
+.battle-card-box {
+  display: grid;
+  grid-template-columns: 150px minmax(0, 1fr);
+  gap: 1rem;
+  padding: 1rem;
+  border-radius: 0.9rem;
+  background-color: #13254b;
+  border: 1px solid rgba(248, 250, 252, 0.16);
+  transition: transform 180ms cubic-bezier(0.16, 1, 0.3, 1), opacity 180ms ease, filter 180ms ease;
+}
+
+@media (max-width: 560px) {
+  .battle-card-box {
+    grid-template-columns: 1fr;
+  }
+}
+
+.battle-card-box.is-defending {
+  border-color: #38bdf8;
+  box-shadow: 0 0 0 1px rgba(56, 189, 248, 0.55);
+}
+
+.battle-card-img {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  border-radius: 0.6rem;
+  background-color: #081226;
+}
+
+.battle-card-img[src*="sir-pau.webp"] {
+  object-position: center 35%;
+}
+
+.hp-track {
+  width: 100%;
+  height: 12px;
+  border-radius: 999px;
+  background-color: #081226;
+  overflow: hidden;
+  border: 1px solid rgba(248, 250, 252, 0.12);
+}
+
+.hp-fill {
+  height: 100%;
+  transition: width 240ms cubic-bezier(0.16, 1, 0.3, 1), background-color 200ms ease;
+}
+
+.deck-pips {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.deck-pip {
+  width: 18px;
+  height: 8px;
+  border-radius: 3px;
+  background-color: rgba(248, 250, 252, 0.2);
+}
+
+.deck-pip.is-active {
+  background-color: #f59e0b;
+}
+
+.deck-pip.is-ko {
+  background-color: #ef4444;
+  opacity: 0.55;
+}
+
+.battle-controls-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.65rem;
+  margin-top: 0.85rem;
+}
+
+@media (max-width: 560px) {
+  .battle-controls-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.action-btn {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  min-height: 50px;
+  padding: 0.65rem 0.9rem;
+  border-radius: 0.65rem;
+  background-color: #102042;
+  border: 1px solid rgba(248, 250, 252, 0.15);
+  color: #f8fafc;
+  text-align: left;
+  cursor: pointer;
+  transition: transform 140ms cubic-bezier(0.16, 1, 0.3, 1), border-color 140ms ease, background-color 140ms ease;
+}
+
+.action-btn:hover:not(:disabled) {
+  transform: translateY(-1px);
+  border-color: #f59e0b;
+  background-color: #182e5c;
+}
+
+.action-btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.action-btn-defense {
+  border-color: rgba(56, 189, 248, 0.42);
+}
+
+.action-btn-special {
+  border-color: rgba(245, 158, 11, 0.55);
+  background: linear-gradient(135deg, rgba(245, 158, 11, 0.16) 0%, #102042 100%);
+}
+
+.arena-log-panel {
+  padding: 1rem;
+  background-color: #102042;
+  border: 1px solid rgba(248, 250, 252, 0.14);
+  border-radius: 0.9rem;
+  max-height: 560px;
+  display: flex;
+  flex-direction: column;
+}
+
+.arena-log-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+  overflow-y: auto;
+  margin-top: 0.75rem;
+  padding-right: 0.25rem;
+}
+
+.arena-log-item {
+  padding: 0.55rem 0.7rem;
+  border-radius: 0.55rem;
+  background-color: #091326;
+  border: 1px solid rgba(248, 250, 252, 0.08);
+  font-size: 0.82rem;
+  line-height: 1.4;
+}
+
+/* Animaciones compositor-only activadas por eventos JS */
+@keyframes animAttackUp {
+  0% { transform: translateY(0) scale(1); }
+  40% { transform: translateY(-18px) scale(1.03); }
+  100% { transform: translateY(0) scale(1); }
+}
+
+@keyframes animAttackDown {
+  0% { transform: translateY(0) scale(1); }
+  40% { transform: translateY(18px) scale(1.03); }
+  100% { transform: translateY(0) scale(1); }
+}
+
+@keyframes animHit {
+  0%, 100% { transform: translateX(0); filter: brightness(1); }
+  20% { transform: translateX(-8px); filter: brightness(1.45); }
+  45% { transform: translateX(8px); filter: brightness(1.2); }
+  70% { transform: translateX(-5px); }
+}
+
+@keyframes animDefend {
+  0% { transform: scale(1); filter: brightness(1); }
+  50% { transform: scale(1.02); filter: brightness(1.28); }
+  100% { transform: scale(1); filter: brightness(1); }
+}
+
+@keyframes animSpecial {
+  0% { transform: scale(1); filter: brightness(1); }
+  35% { transform: scale(1.05); filter: brightness(1.55); }
+  100% { transform: scale(1); filter: brightness(1); }
+}
+
+@keyframes animKo {
+  0% { transform: scale(1); opacity: 1; }
+  100% { transform: scale(0.92) translateY(10px); opacity: 0.25; }
+}
+
+@keyframes animEnter {
+  0% { transform: scale(0.94) translateY(8px); opacity: 0; }
+  100% { transform: scale(1) translateY(0); opacity: 1; }
+}
+
+.anim-attack-up { animation: animAttackUp 320ms cubic-bezier(0.16, 1, 0.3, 1); }
+.anim-attack-down { animation: animAttackDown 320ms cubic-bezier(0.16, 1, 0.3, 1); }
+.anim-hit { animation: animHit 340ms ease-out; }
+.anim-defend { animation: animDefend 360ms ease-out; }
+.anim-special { animation: animSpecial 420ms cubic-bezier(0.16, 1, 0.3, 1); }
+.anim-ko { animation: animKo 320ms ease-in forwards; }
+.anim-enter { animation: animEnter 280ms cubic-bezier(0.16, 1, 0.3, 1); }
+
+/* Modal de resultado final */
+.arena-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(4, 10, 22, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  z-index: 50;
+}
+
+.arena-modal-card {
+  width: 100%;
+  max-width: 480px;
+  padding: 2rem;
+  border-radius: 1rem;
+  background-color: #102042;
+  border: 1px solid rgba(245, 158, 11, 0.55);
+  animation: animEnter 220ms cubic-bezier(0.16, 1, 0.3, 1);
+}
