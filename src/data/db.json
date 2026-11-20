@@ -150,7 +150,7 @@
       "id": "card-05",
       "name": "Nikol Ortiz",
       "type": "Estudiantes / Leyendas de Campus",
-      "image": "/public/images/cards/nikol-ortiz.svg",
+      "image": "/public/images/cards/nikol-ortiz.webp",
       "description": "Analiza la situación con precisión y ejecuta ataques de diseño que desarman al rival en milisegundos.",
       "hp": 250,
       "attacks": [
@@ -184,7 +184,7 @@
       "id": "card-06",
       "name": "Señor Gemini",
       "type": "Estudiantes / Leyendas de Campus",
-      "image": "/public/images/cards/senor-gemini.svg",
+      "image": "/public/images/cards/señor-gemini.webp",
       "description": "El legendario chico IA te descuidas y ya esta buscando que desayunar en Gemini.",
       "hp": 250,
       "attacks": [
@@ -220,7 +220,7 @@
       "id": "card-07",
       "name": "Diana",
       "type": "Estudiantes / Leyendas de Campus",
-      "image": "/public/images/cards/diana.svg",
+      "image": "/public/images/cards/diana.webp",
       "description": "La hacker legendaria de Campuslands, ningún reto ni bug puede detenerla.",
       "hp": 250,
       "attacks": [
@@ -254,7 +254,7 @@
       "id": "card-08",
       "name": "Chico NKD",
       "type": "Estudiantes / Leyendas de Campus",
-      "image": "/public/images/cards/chico-nkd.svg",
+      "image": "/public/images/cards/chico-nkd.webp",
       "description": "Llega al parqueadero de el cc como buen visajoso derrochando nivel en su nkd.",
       "hp": 250,
       "attacks": [
@@ -288,7 +288,7 @@
       "id": "card-09",
       "name": "Don Tintero",
       "type": "Estudiantes / Leyendas de Campus",
-      "image": "/public/images/cards/don-tintero.svg",
+      "image": "/public/images/cards/don-tintero.webp",
       "description": "Guardián del café y maestro del código. Con cada sorbo desbloquea nuevas habilidades y derrota cualquier bug.",
       "hp": 250,
       "attacks": [
@@ -322,7 +322,7 @@
       "id": "card-10",
       "name": "El Consumidor de \"Apis\"",
       "type": "Estudiantes / Leyendas de Campus",
-      "image": "/public/images/cards/consumidor-apis.svg",
+      "image": "/public/images/cards/consumidor-apis.webp",
       "description": "El mas poderoso consumiendo y no Apis.",
       "hp": 250,
       "attacks": [
@@ -356,7 +356,7 @@
       "id": "card-11",
       "name": "Chico COD",
       "type": "Estudiantes / Leyendas de Campus",
-      "image": "/public/images/cards/chico-cod.svg",
+      "image": "/public/images/cards/chico-cod.webp",
       "description": "Francotirador del código, detecta bugs a distancia y elimina cualquier amenaza del sistema.",
       "hp": 250,
       "attacks": [
@@ -390,7 +390,7 @@
       "id": "card-12",
       "name": "Mr. Faltas",
       "type": "Estudiantes / Leyendas de Campus",
-      "image": "/public/images/cards/mr-faltas.svg",
+      "image": "/public/images/cards/mr-faltas.webp",
       "description": "Maestro del misterio y las llegadas al límite del reloj. Aparece solo cuando el proyecto define la clasificación.",
       "hp": 250,
       "attacks": [
@@ -424,7 +424,7 @@
       "id": "card-13",
       "name": "Chico \"La Caliente\"",
       "type": "Estudiantes / Leyendas de Campus",
-      "image": "/public/images/cards/chico-la-caliente.svg",
+      "image": "/public/images/cards/chico-la-caliente.webp",
       "description": "Siempre conectado a las tendencias, chismes y debates más intensos de la sede. Sube la temperatura de cada duelo.",
       "hp": 250,
       "attacks": [
@@ -458,7 +458,7 @@
       "id": "card-14",
       "name": "Doña Rosa",
       "type": "Personal de Apoyo (Cajasan & Campus)",
-      "image": "/public/images/cards/dona-rosa.svg",
+      "image": "/public/images/cards/doña-rosa.webp",
       "description": "Señora del aseo y Maestra del Brillo Absoluto. Si pisas el piso recién trapeado, tu barra de vida corre peligro.",
       "hp": 250,
       "attacks": [
@@ -492,7 +492,7 @@
       "id": "card-15",
       "name": "Don Luis",
       "type": "Personal de Apoyo (Cajasan & Campus)",
-      "image": "/public/images/cards/don-luis.svg",
+      "image": "/public/images/cards/don-luis.webp",
       "description": "Vigilante de la entrada y Guardián de los Carnets. Nadie cruza el torniquete de Cajasan sin su visto bueno.",
       "hp": 250,
       "attacks": [
@@ -526,7 +526,7 @@
       "id": "card-16",
       "name": "Chef Martha",
       "type": "Personal de Apoyo (Cajasan & Campus)",
-      "image": "/public/images/cards/chef-martha.svg",
+      "image": "/public/images/cards/chef-martha.webp",
       "description": "Titán de la cafetería de Cajasan. Sus almuerzos dan fuerza para programar hasta la noche; sus cucharones imponen respeto.",
       "hp": 250,
       "attacks": [
@@ -560,7 +560,7 @@
       "id": "card-17",
       "name": "Carlos Mantenimiento",
       "type": "Personal de Apoyo (Cajasan & Campus)",
-      "image": "/public/images/cards/carlos-mantenimiento.svg",
+      "image": "/public/images/cards/carlos-mantenimiento.webp",
       "description": "El mago del cable UTP y el proyector. Resucita redes caídas y calibra el aire acondicionado en tiempo récord.",
       "hp": 250,
       "attacks": [
@@ -594,7 +594,7 @@
       "id": "card-18",
       "name": "Doña Elena",
       "type": "Personal de Apoyo (Cajasan & Campus)",
-      "image": "/public/images/cards/dona-elena.svg",
+      "image": "/public/images/cards/doña-elena.webp",
       "description": "Enfermera de guardia en Cajasan. Cura jaquecas de código con precisión clínica y calma absoluta.",
       "hp": 250,
       "attacks": [
@@ -628,7 +628,7 @@
       "id": "card-19",
       "name": "Don Héctor",
       "type": "Personal de Apoyo (Cajasan & Campus)",
-      "image": "/public/images/cards/don-hector.svg",
+      "image": "/public/images/cards/don-hector.webp",
       "description": "Conductor legendario de la ruta Campus-Cajasan. Conoce cada semáforo y siempre llega antes que la lluvia.",
       "hp": 250,
       "attacks": [
@@ -662,7 +662,7 @@
       "id": "card-20",
       "name": "Memo Audiovisual",
       "type": "Personal de Apoyo (Cajasan & Campus)",
-      "image": "/public/images/cards/memo-audiovisual.svg",
+      "image": "/public/images/cards/memo-audiovisual.webp",
       "description": "Técnico de sonido y eventos del auditorio. Controla micrófonos inalámbricos, consolas y luces de cada graduación.",
       "hp": 250,
       "attacks": [
