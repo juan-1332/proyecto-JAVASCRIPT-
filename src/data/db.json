@@ -7,7 +7,17 @@
       "role": "superadmin"
     }
   ],
-  "players": [],
+  "players": [
+    {
+      "id": "player-1795202079221-zex4",
+      "nickname": "rfv",
+      "points": 0,
+      "wins": 0,
+      "losses": 0,
+      "gamesPlayed": 0,
+      "createdAt": "2026-11-20T19:14:39.221Z"
+    }
+  ],
   "battles": [],
   "cards": [
     {
