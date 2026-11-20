@@ -253,52 +253,25 @@
       "name": "Chico NKD",
       "type": "Estudiantes / Leyendas de Campus",
       "image": "/public/images/cards/chico-nkd.svg",
-      "description": "Llega al parqueadero de el cc como buen visajoso derrochando nivel en su nkd.",
+      "description": "Llega al parqueadero de Cajasan rugiendo a 125cc. Maestro de la velocidad y los atajos por toda la autopista.",
       "hp": 250,
       "attacks": [
-<<<<<<< HEAD
         { "id": "atk-1", "name": "Acelerón en Primera", "baseDamage": 20, "description": "Arranque explosivo que sorprende al rival." },
         { "id": "atk-2", "name": "Esquive entre Tráfico", "baseDamage": 30, "description": "Maniobra audaz de flanco." },
         { "id": "atk-3", "name": "Ruido de Mofle", "baseDamage": 40, "description": "Onda expansiva que resuena en la portería." },
         { "id": "atk-4", "name": "Pique en Bajada", "baseDamage": 50, "description": "Embestida a toda máquina sin frenos." }
-=======
-        {
-          "id": "atk-1",
-          "name": "Neutrazo en subida",
-          "baseDamage": 20,
-          "description": "Arranque explosivo que sorprende al rival."
-        },
-        {
-          "id": "atk-2",
-          "name": "Filtrado por la avenida",
-          "baseDamage": 30,
-          "description": "Maniobra audaz de flanco."
-        },
-        {
-          "id": "atk-3",
-          "name": "Pops del sc project",
-          "baseDamage": 40,
-          "description": "Onda expansiva que resuena en la portería."
-        },
-        {
-          "id": "atk-4",
-          "name": "Pique en Bajada",
-          "baseDamage": 50,
-          "description": "Embestida a toda máquina sin frenos."
-        }
->>>>>>> 35665252e1e138a47b850bda96d51cbd132cc591
       ],
       "defense": {
-        "name": "Casco Certificado ICH",
+        "name": "Casco Certificado",
         "damageReduction": 0.5,
         "description": "Absorbe el 50% de impactos frontales."
       },
       "special": {
-        "name": "MODO:ns 200",
+        "name": "Turbo NKD 125",
         "baseDamage": 66,
         "unlockTurn": 2,
         "cooldown": 3,
-        "description": "pique legendario que deja viendo placa a todos."
+        "description": "Derrape legendario que levanta chispas en toda la arena."
       },
       "sounds": {
         "attack": "/public/sounds/attack.mp3",
@@ -345,48 +318,21 @@
     },
     {
       "id": "card-10",
-      "name": "El Consumidor de \"Apis\"",
+      "name": "El Consumidor de APIs",
       "type": "Estudiantes / Leyendas de Campus",
       "image": "/public/images/cards/consumidor-apis.svg",
-      "description": "El mas poderoso consumiendo y no Apis.",
+      "description": "Conecta endpoints antes de desayunar. No teme a CORS, tokens expirados ni respuestas JSON anidadas.",
       "hp": 250,
       "attacks": [
-<<<<<<< HEAD
         { "id": "atk-1", "name": "Fetch Asíncrono", "baseDamage": 20, "description": "Petición veloz con respuesta inmediata." },
         { "id": "atk-2", "name": "Header Bearer", "baseDamage": 30, "description": "Autentica un golpe con autorización total." },
         { "id": "atk-3", "name": "Payload Masivo", "baseDamage": 40, "description": "Satura al rival con objetos JSON gigantes." },
         { "id": "atk-4", "name": "Status 200 OK", "baseDamage": 50, "description": "Ejecución limpia que valida la victoria." }
-=======
-        {
-          "id": "atk-1",
-          "name": "Deme mil pal consumo",
-          "baseDamage": 20,
-          "description": "despierta el api consumidora."
-        },
-        {
-          "id": "atk-2",
-          "name": "Consumo excesivo de apis",
-          "baseDamage": 30,
-          "description": "Autentica las apis."
-        },
-        {
-          "id": "atk-3",
-          "name": "Destructor de fetch",
-          "baseDamage": 40,
-          "description": "Si detecta que buscas algo te destruye completamente."
-        },
-        {
-          "id": "atk-4",
-          "name": "Status 200 OK",
-          "baseDamage": 50,
-          "description": "Ejecución limpia que valida la victoria."
-        }
->>>>>>> 35665252e1e138a47b850bda96d51cbd132cc591
       ],
       "defense": {
-        "name": "Modo: baretoso 404",
+        "name": "Try-Catch Blindado",
         "damageReduction": 0.5,
-        "description": "Cuidado que con este modo soy super poderoso."
+        "description": "Captura excepciones reduciendo el daño a la mitad."
       },
       "special": {
         "name": "Ráfaga RESTful",
