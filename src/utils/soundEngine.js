@@ -75,40 +75,46 @@ class MotorAudio {
   reproducirAtaque() {
     this.reproducirVariacion([
       [
-        { freq: 400, endFreq: 90, duration: 0.18, type: 'sawtooth', gain: 0.3 },
-        { freq: 801, endFreq: 160, duration: 0.14, type: 'triangle', gain: 0.24, delay: 0.04 },
+        { freq: 1500, endFreq: 240, duration: 0.13, type: 'sawtooth', gain: 0.3 },
+        { freq: 2200, endFreq: 620, duration: 0.1, type: 'triangle', gain: 0.24, delay: 0.025 },
       ],
       [
-        { freq: 250, endFreq: 65, duration: 0.22, type: 'square', gain: 0.32 },
-        { freq: 520, endFreq: 120, duration: 0.16, type: 'sawtooth', gain: 0.2, delay: 0.03 },
+        { freq: 980, endFreq: 170, duration: 0.16, type: 'square', gain: 0.32 },
+        { freq: 1850, endFreq: 360, duration: 0.12, type: 'sawtooth', gain: 0.2, delay: 0.02 },
       ],
       [
-        { freq: 680, endFreq: 130, duration: 0.16, type: 'sawtooth', gain: 0.28 },
-        { freq: 360, endFreq: 80, duration: 0.2, type: 'triangle', gain: 0.24, delay: 0.05 },
+        { freq: 2400, endFreq: 420, duration: 0.12, type: 'triangle', gain: 0.28 },
+        { freq: 1050, endFreq: 130, duration: 0.18, type: 'sawtooth', gain: 0.24, delay: 0.035 },
       ],
     ]);
   }
 
   reproducirImpacto() {
     this.reproducirVariacion([
-      [{ freq: 300, endFreq: 45, duration: 0.2, type: 'square', gain: 0.34 }],
       [
-        { freq: 190, endFreq: 38, duration: 0.24, type: 'sawtooth', gain: 0.32 },
-        { freq: 480, endFreq: 90, duration: 0.12, type: 'triangle', gain: 0.18, delay: 0.02 },
+        { freq: 82, endFreq: 32, duration: 0.22, type: 'square', gain: 0.34 },
+        { freq: 1850, endFreq: 420, duration: 0.07, type: 'sine', gain: 0.18 },
       ],
-      [{ freq: 420, endFreq: 55, duration: 0.16, type: 'square', gain: 0.3 }],
+      [
+        { freq: 135, endFreq: 38, duration: 0.19, type: 'sawtooth', gain: 0.32 },
+        { freq: 2600, endFreq: 760, duration: 0.08, type: 'triangle', gain: 0.18, delay: 0.015 },
+      ],
+      [
+        { freq: 62, endFreq: 30, duration: 0.26, type: 'square', gain: 0.3 },
+        { freq: 1250, endFreq: 300, duration: 0.09, type: 'sawtooth', gain: 0.2 },
+      ],
     ]);
   }
 
   reproducirDefensa() {
     this.reproducirVariacion([
       [
-        { freq: 500, endFreq: 540, duration: 0.16, type: 'sine', gain: 0.22 },
-        { freq: 800, endFreq: 720, duration: 0.14, type: 'triangle', gain: 0.2, delay: 0.07 },
+        { freq: 1650, endFreq: 920, duration: 0.16, type: 'sine', gain: 0.22 },
+        { freq: 2800, endFreq: 1450, duration: 0.14, type: 'triangle', gain: 0.2, delay: 0.045 },
       ],
       [
-        { freq: 380, endFreq: 620, duration: 0.2, type: 'triangle', gain: 0.24 },
-        { freq: 740, endFreq: 920, duration: 0.12, type: 'sine', gain: 0.18, delay: 0.04 },
+        { freq: 720, endFreq: 1900, duration: 0.2, type: 'triangle', gain: 0.24 },
+        { freq: 2100, endFreq: 3200, duration: 0.12, type: 'sine', gain: 0.18, delay: 0.035 },
       ],
     ]);
   }
@@ -116,19 +122,19 @@ class MotorAudio {
   reproducirEspecial() {
     this.reproducirVariacion([
       [
-        { freq: 400, endFreq: 880, duration: 0.24, type: 'sawtooth', gain: 0.3 },
-        { freq: 750, endFreq: 1180, duration: 0.28, type: 'triangle', gain: 0.26, delay: 0.08 },
-        { freq: 330, endFreq: 55, duration: 0.32, type: 'square', gain: 0.28, delay: 0.18 },
+        { freq: 130, endFreq: 1750, duration: 0.3, type: 'sawtooth', gain: 0.3 },
+        { freq: 420, endFreq: 2600, duration: 0.28, type: 'triangle', gain: 0.26, delay: 0.06 },
+        { freq: 95, endFreq: 34, duration: 0.34, type: 'square', gain: 0.28, delay: 0.16 },
       ],
       [
-        { freq: 180, endFreq: 920, duration: 0.32, type: 'triangle', gain: 0.32 },
-        { freq: 560, endFreq: 140, duration: 0.26, type: 'sawtooth', gain: 0.28, delay: 0.12 },
-        { freq: 260, endFreq: 42, duration: 0.3, type: 'square', gain: 0.3, delay: 0.2 },
+        { freq: 210, endFreq: 2300, duration: 0.32, type: 'triangle', gain: 0.32 },
+        { freq: 1450, endFreq: 180, duration: 0.26, type: 'sawtooth', gain: 0.28, delay: 0.1 },
+        { freq: 72, endFreq: 30, duration: 0.3, type: 'square', gain: 0.3, delay: 0.18 },
       ],
       [
-        { freq: 620, endFreq: 120, duration: 0.24, type: 'sawtooth', gain: 0.32 },
-        { freq: 940, endFreq: 480, duration: 0.3, type: 'triangle', gain: 0.26, delay: 0.07 },
-        { freq: 210, endFreq: 38, duration: 0.34, type: 'square', gain: 0.3, delay: 0.16 },
+        { freq: 2800, endFreq: 360, duration: 0.24, type: 'sawtooth', gain: 0.32 },
+        { freq: 900, endFreq: 3400, duration: 0.3, type: 'triangle', gain: 0.26, delay: 0.05 },
+        { freq: 115, endFreq: 32, duration: 0.34, type: 'square', gain: 0.3, delay: 0.15 },
       ],
     ]);
   }
@@ -136,16 +142,16 @@ class MotorAudio {
   reproducirDerrotaCarta() {
     this.reproducirVariacion([
       [
-        { freq: 415, endFreq: 48, duration: 0.48, type: 'sawtooth', gain: 0.34 },
-        { freq: 120, endFreq: 36, duration: 0.32, type: 'square', gain: 0.3, delay: 0.08 },
+        { freq: 880, endFreq: 42, duration: 0.48, type: 'sawtooth', gain: 0.34 },
+        { freq: 230, endFreq: 30, duration: 0.32, type: 'square', gain: 0.3, delay: 0.08 },
       ],
       [
-        { freq: 300, endFreq: 42, duration: 0.55, type: 'square', gain: 0.34 },
-        { freq: 620, endFreq: 90, duration: 0.38, type: 'sawtooth', gain: 0.26, delay: 0.06 },
+        { freq: 1250, endFreq: 35, duration: 0.55, type: 'square', gain: 0.34 },
+        { freq: 480, endFreq: 55, duration: 0.38, type: 'sawtooth', gain: 0.26, delay: 0.06 },
       ],
       [
-        { freq: 520, endFreq: 55, duration: 0.42, type: 'sawtooth', gain: 0.34 },
-        { freq: 180, endFreq: 38, duration: 0.4, type: 'triangle', gain: 0.3, delay: 0.1 },
+        { freq: 640, endFreq: 30, duration: 0.42, type: 'sawtooth', gain: 0.34 },
+        { freq: 1600, endFreq: 44, duration: 0.4, type: 'triangle', gain: 0.3, delay: 0.1 },
       ],
     ]);
   }
@@ -158,9 +164,9 @@ class MotorAudio {
   }
 
   reproducirDerrota() {
-    const notas = [392, 349.23, 311.13, 261.63];
+    const notas = [130.81, 110, 82.41, 65.41];
     notas.forEach((frecuencia, indice) => {
-      this.reproducirTono({ freq: frecuencia, duration: 0.24, type: 'sawtooth', gain: 0.24, delay: indice * 0.13 });
+      this.reproducirTono({ freq: frecuencia, duration: 0.24, type: 'square', gain: 0.24, delay: indice * 0.13 });
     });
   }
 }

@@ -16,6 +16,15 @@
       "losses": 0,
       "gamesPlayed": 0,
       "createdAt": "2026-11-20T19:14:39.221Z"
+    },
+    {
+      "id": "player-1795202515071-s16x",
+      "nickname": "juan",
+      "points": 0,
+      "wins": 0,
+      "losses": 0,
+      "gamesPlayed": 0,
+      "createdAt": "2026-11-20T19:21:55.071Z"
     }
   ],
   "battles": [],
