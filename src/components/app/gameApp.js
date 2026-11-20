@@ -88,7 +88,7 @@ export class GameApp extends HTMLElement {
                 Inicio
               </button>
               <button type="button" data-nav="deck" class="hover:text-white transition-colors whitespace-nowrap shrink-0 cursor-pointer ${this.vistaActual === 'deck' ? 'text-amber-400 underline underline-offset-8' : ''}">
-                Mazo
+                Arma tu combate
               </button>
               <button type="button" data-nav="leaderboard" class="hover:text-white transition-colors whitespace-nowrap shrink-0 cursor-pointer ${this.vistaActual === 'leaderboard' ? 'text-amber-400 underline underline-offset-8' : ''}">
                 Ranking

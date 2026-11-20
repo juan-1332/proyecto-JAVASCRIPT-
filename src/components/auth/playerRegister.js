@@ -87,7 +87,7 @@ export class PlayerRegister extends HTMLElement {
             <div class="text-xs text-slate-300 font-mono-num">${this.jugadorActivo.points} pts · ${this.jugadorActivo.wins}V / ${this.jugadorActivo.losses}D</div>
           </div>
           <button type="button" id="btn-resume-player" class="campus-btn campus-btn-primary">
-            Armar Mazo
+            Continuar combates
           </button>
         </div>
       `
