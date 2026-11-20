@@ -100,11 +100,112 @@ export class BattleArena extends HTMLElement {
     }, 780);
   }
 
+  obtenerTop3Fichas() {
+    if (!this.estadoBatalla) return [];
+
+    const buscarEnMazo = (carta, mazo, idx) => {
+      const idOrName = carta?.id || carta?.cardId || carta?.name || carta?.nombre;
+      return (
+        (mazo || []).find(
+          (item) =>
+            (idOrName && (item?.id === idOrName || item?.name === idOrName || item?.nombre === idOrName))
+        ) ||
+        mazo?.[idx] ||
+        null
+      );
+    };
+
+    const extraerNombre = (carta, respaldoMazo, fallback) =>
+      carta?.name ||
+      carta?.nombre ||
+      carta?.title ||
+      carta?.cardName ||
+      respaldoMazo?.name ||
+      respaldoMazo?.nombre ||
+      respaldoMazo?.title ||
+      fallback;
+
+    const extraerHp = (carta, respaldoMazo) =>
+      Number(
+        carta?.hp ??
+          carta?.currentHp ??
+          carta?.stats?.hp ??
+          respaldoMazo?.hp ??
+          respaldoMazo?.stats?.hp ??
+          0
+      );
+
+    const extraerAtk = (carta, respaldoMazo) =>
+      Number(
+        carta?.attack ??
+          carta?.atk ??
+          carta?.stats?.attack ??
+          carta?.stats?.atk ??
+          respaldoMazo?.attack ??
+          respaldoMazo?.atk ??
+          respaldoMazo?.stats?.attack ??
+          0
+      );
+
+    const extraerImagen = (carta, respaldoMazo) =>
+      carta?.image || carta?.imagen || respaldoMazo?.image || respaldoMazo?.imagen || '';
+
+    const unidadesJugador = (this.estadoBatalla.player?.units || []).map((carta, idx) => {
+      const respaldoMazo = buscarEnMazo(carta, this.mazoJugador, idx);
+      return {
+        ...carta,
+        nombreReal: extraerNombre(carta, respaldoMazo, `Carta ${idx + 1}`),
+        hpReal: extraerHp(carta, respaldoMazo),
+        atkReal: extraerAtk(carta, respaldoMazo),
+        imagenReal: extraerImagen(carta, respaldoMazo),
+        bando: 'player',
+        propietario: this.estadoBatalla.playerNickname || 'Jugador',
+        ordenOriginal: idx,
+      };
+    });
+
+    const unidadesCpu = (this.estadoBatalla.cpu?.units || []).map((carta, idx) => {
+      const respaldoMazo = buscarEnMazo(carta, this.mazoMaquina, idx);
+      return {
+        ...carta,
+        nombreReal: extraerNombre(carta, respaldoMazo, `Carta CPU ${idx + 1}`),
+        hpReal: extraerHp(carta, respaldoMazo),
+        atkReal: extraerAtk(carta, respaldoMazo),
+        imagenReal: extraerImagen(carta, respaldoMazo),
+        bando: 'cpu',
+        propietario: 'Máquina',
+        ordenOriginal: idx + 10,
+      };
+    });
+
+    const todasLasFichas = [...unidadesJugador, ...unidadesCpu];
+
+    const ordenadas = todasLasFichas.sort((a, b) => {
+      if (b.hpReal !== a.hpReal) return b.hpReal - a.hpReal;
+      if (b.atkReal !== a.atkReal) return b.atkReal - a.atkReal;
+      return a.ordenOriginal - b.ordenOriginal;
+    });
+
+    return ordenadas.slice(0, 3).map((carta, indice) => ({
+      posicion: indice + 1,
+      id: carta.id || carta.cardId || '',
+      name: carta.nombreReal,
+      image: carta.imagenReal,
+      hp: carta.hpReal,
+      attack: carta.atkReal,
+      propietario: carta.propietario,
+    }));
+  }
+
   async manejarAccion(claveActor, accion) {
     if (!this.estadoBatalla || this.estadoBatalla.status !== 'playing' || this.animando) return;
     if (this.estadoBatalla.currentActor !== claveActor) return;
 
-    const { nextState: siguienteEstado, event: evento } = ejecutarAccionTurno(this.estadoBatalla, claveActor, accion);
+    const { nextState: siguienteEstado, event: evento } = ejecutarAccionTurno(
+      this.estadoBatalla,
+      claveActor,
+      accion
+    );
     if (!evento) return;
 
     this.animando = true;
@@ -116,7 +217,9 @@ export class BattleArena extends HTMLElement {
 
     if (evento.actionType === 'attack') {
       motorAudio.reproducirAtaque();
-      elementoAtacante?.reproducirAnimacion(claveActor === 'player' ? 'anim-attack-up' : 'anim-attack-down');
+      elementoAtacante?.reproducirAnimacion(
+        claveActor === 'player' ? 'anim-attack-up' : 'anim-attack-down'
+      );
       setTimeout(() => {
         motorAudio.reproducirImpacto();
         elementoDefensor?.reproducirAnimacion('anim-hit');
@@ -147,9 +250,10 @@ export class BattleArena extends HTMLElement {
       this.configurarEventos();
 
       if (evento.swappedUnit) {
-        const elementoRelevo = evento.opponent === 'player'
-          ? this.querySelector('#player-battle-card')
-          : this.querySelector('#cpu-battle-card');
+        const elementoRelevo =
+          evento.opponent === 'player'
+            ? this.querySelector('#player-battle-card')
+            : this.querySelector('#cpu-battle-card');
         elementoRelevo?.reproducirAnimacion('anim-enter');
       }
 
@@ -183,6 +287,9 @@ export class BattleArena extends HTMLElement {
 
       const jugadorGano = this.estadoBatalla.winner === 'player';
       const puntosOtorgados = jugadorGano ? 50 : 10;
+      const top3Fichas = this.obtenerTop3Fichas();
+      const cartaGanadora = top3Fichas[0] || null;
+
       const jugadorActualizado = await apiJugadores.actualizarEstadisticas(jugadorPersistido.id, {
         points: (Number(jugadorPersistido.points) || 0) + puntosOtorgados,
         wins: (Number(jugadorPersistido.wins) || 0) + (jugadorGano ? 1 : 0),
@@ -193,8 +300,11 @@ export class BattleArena extends HTMLElement {
       await apiBatallas.registrarBatalla({
         playerId: jugadorPersistido.id,
         playerNickname: jugadorPersistido.nickname,
-        playerDeck: this.mazoJugador.map((carta) => carta.name),
-        cpuDeck: this.mazoMaquina.map((carta) => carta.name),
+        playerDeck: this.mazoJugador.map((carta) => carta.name || carta.nombre || ''),
+        cpuDeck: this.mazoMaquina.map((carta) => carta.name || carta.nombre || ''),
+        winningCardName: cartaGanadora?.name || '',
+        winningCardImage: cartaGanadora?.image || '',
+        podiumCards: top3Fichas,
         winner: this.estadoBatalla.winner,
         turnsPlayed: this.estadoBatalla.globalTurn,
         pointsAwarded: puntosOtorgados,
@@ -249,6 +359,37 @@ export class BattleArena extends HTMLElement {
       )
       .join('');
 
+    const top3Fichas = estado.status === 'finished' ? this.obtenerTop3Fichas() : [];
+    const bloquePodioPartida =
+      estado.status === 'finished' && top3Fichas.length > 0
+        ? `
+      <div class="mt-4 p-3 rounded-xl bg-[#091326] border border-amber-400/30">
+        <div class="text-[11px] uppercase tracking-wider font-semibold text-amber-400 mb-3 text-center">
+          Top 3 Fichas de la Partida
+        </div>
+        <div class="grid grid-cols-3 gap-2 text-center">
+          ${top3Fichas
+            .map(
+              (ficha) => `
+            <div class="p-2 rounded-lg bg-white/5 border border-white/10 flex flex-col items-center">
+              <span class="text-xs font-extrabold text-amber-400">#${ficha.posicion}</span>
+              ${
+                ficha.image
+                  ? `<img src="${this.escaparHtml(ficha.image)}" alt="${this.escaparHtml(ficha.name)}" class="w-14 h-20 object-cover rounded mt-1 border border-white/15" />`
+                  : ''
+              }
+              <span class="text-xs font-bold text-white mt-1.5 line-clamp-1">${this.escaparHtml(ficha.name)}</span>
+              <span class="text-[10px] text-slate-400">${this.escaparHtml(ficha.propietario)}</span>
+              <span class="text-[11px] text-slate-300 font-mono-num">HP ${ficha.hp} · ATK ${ficha.attack}</span>
+            </div>
+          `
+            )
+            .join('')}
+        </div>
+      </div>
+    `
+        : '';
+
     const modalFinalizado =
       estado.status === 'finished'
         ? `
@@ -265,6 +406,8 @@ export class BattleArena extends HTMLElement {
                 : 'La Máquina completó la eliminación de tu mazo. Recibes +10 puntos por competir.'
             }
           </p>
+
+          ${bloquePodioPartida}
 
           <div class="mt-4 p-3.5 rounded-lg bg-[#091326] border border-white/10 flex items-center justify-between">
             <span class="text-sm text-slate-300">Puntaje acumulado</span>
@@ -353,7 +496,6 @@ export class BattleArena extends HTMLElement {
       </section>
     `;
 
-    // Hidratar propiedades complejas en los subcomponentes
     const cartaMaquina = this.querySelector('#cpu-battle-card');
     if (cartaMaquina) {
       cartaMaquina.estadoCarta = {
