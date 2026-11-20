@@ -1,6 +1,5 @@
 import { apiJugadores } from '../../api/playersapi.js';
 import { apiBatallas } from '../../api/battlesapi.js';
-import { apiCartas } from '../../api/cardsapi.js';
 
 function resolverRutaPublica(rutaRelativa) {
   const limpia = String(rutaRelativa || '')
@@ -11,15 +10,12 @@ function resolverRutaPublica(rutaRelativa) {
   return limpia ? `/${limpia}` : '';
 }
 
-const IMAGEN_RESPALDO_WEBP = resolverRutaPublica('images/cards/juan-pablo.webp');
-const IMAGEN_RESPALDO_SVG = resolverRutaPublica('images/cards/nikol-ortiz.webp');
-
 export class LeaderboardView extends HTMLElement {
   constructor() {
     super();
     this.jugadores = [];
     this.batallas = [];
-    this.cartas = [];
+    this.ranking = [];
     this.cargando = true;
     this.mensajeError = '';
   }
@@ -34,15 +30,14 @@ export class LeaderboardView extends HTMLElement {
     this.render();
 
     try {
-      const [jugadores, batallas, cartas] = await Promise.all([
+      const [jugadores, batallas] = await Promise.all([
         apiJugadores.obtenerOrdenados(),
         apiBatallas.obtenerHistorial(),
-        apiCartas?.obtenerTodas ? apiCartas.obtenerTodas() : Promise.resolve([]),
       ]);
 
       this.jugadores = Array.isArray(jugadores) ? jugadores : [];
       this.batallas = Array.isArray(batallas) ? batallas : [];
-      this.cartas = Array.isArray(cartas) ? cartas : [];
+      this.ranking = this.calcularRanking();
     } catch (errorCapturado) {
       this.mensajeError = errorCapturado.message || 'Error al cargar la clasificación.';
     } finally {
@@ -52,201 +47,160 @@ export class LeaderboardView extends HTMLElement {
     }
   }
 
-  normalizarRutaImagen(ruta) {
-    if (!ruta || typeof ruta !== 'string') return '';
-    let rutaLimpia = ruta.trim();
+  crearClaveJugador(jugador) {
+    const id = String(jugador?.id ?? jugador?.playerId ?? '').trim();
+    if (id) return `id:${id}`;
 
-    if (!rutaLimpia) return '';
-
-    if (/^(https?:\/\/|data:image\/|blob:)/i.test(rutaLimpia)) {
-      return rutaLimpia.replace(/\.(png|jpe?g|svg)$/i, '.webp');
-    }
-
-    rutaLimpia = rutaLimpia.replace(/^\/+/, '').replace(/^public\//i, '');
-
-    if (!rutaLimpia.includes('/')) {
-      const tieneExtension = /\.(webp|png|jpe?g|svg)$/i.test(rutaLimpia);
-      rutaLimpia = tieneExtension
-        ? `images/cards/${rutaLimpia}`
-        : `images/cards/${rutaLimpia}.webp`;
-    }
-
-    rutaLimpia = rutaLimpia.replace(/\.(png|jpe?g|svg)$/i, '.webp');
-    return resolverRutaPublica(rutaLimpia);
+    const apodo = this.normalizarApodo(jugador?.nickname ?? jugador?.playerNickname);
+    return apodo ? `name:${apodo}` : '';
   }
 
-  crearSlugDesdeTexto(valor) {
-    if (!valor || typeof valor !== 'string') return '';
-    return valor
+  normalizarApodo(apodo) {
+    return String(apodo ?? '')
+      .trim()
       .normalize('NFD')
       .replace(/[\u0300-\u036f]/g, '')
-      .toLowerCase()
-      .replace(/[^a-z0-9]+/g, '-')
-      .replace(/^-+|-+$/g, '');
+      .toLocaleLowerCase('es');
   }
 
-  buscarCartaPorReferencia(referencia) {
-    if (!referencia || !Array.isArray(this.cartas) || this.cartas.length === 0) {
-      return null;
-    }
+  calcularRanking() {
+    const jugadoresPorClave = new Map();
 
-    if (typeof referencia === 'object') {
-      const idObj = referencia.id ?? referencia.cardId ?? referencia.slug;
-      const nombreObj = referencia.name ?? referencia.nombre ?? referencia.title;
-      if (idObj || nombreObj) {
-        return this.buscarCartaPorReferencia(idObj || nombreObj);
+    this.jugadores.forEach((jugador) => {
+      const clave = this.crearClaveJugador(jugador);
+      if (!clave) return;
+
+      jugadoresPorClave.set(clave, {
+        id: String(jugador.id ?? ''),
+        nickname: String(jugador.nickname ?? 'Jugador').trim(),
+        avatar: String(jugador.avatar ?? jugador.image ?? ''),
+        points: 0,
+        gamesPlayed: 0,
+        wins: 0,
+        losses: 0,
+      });
+    });
+
+    this.batallas.forEach((batalla) => {
+      const clave = this.crearClaveJugador({
+        id: batalla.playerId,
+        nickname: batalla.playerNickname,
+      });
+
+      if (!clave) return;
+
+      if (!jugadoresPorClave.has(clave)) {
+        jugadoresPorClave.set(clave, {
+          id: String(batalla.playerId ?? ''),
+          nickname: String(batalla.playerNickname ?? 'Jugador').trim(),
+          avatar: String(batalla.playerAvatar ?? batalla.avatar ?? ''),
+          points: 0,
+          gamesPlayed: 0,
+          wins: 0,
+          losses: 0,
+        });
       }
-      return null;
-    }
 
-    const refTexto = String(referencia).trim();
-    const refSlug = this.crearSlugDesdeTexto(refTexto);
+      const jugador = jugadoresPorClave.get(clave);
+      const puntosRegistrados = Number(batalla.pointsAwarded);
+      let puntosPartida = Number.isFinite(puntosRegistrados) ? puntosRegistrados : 0;
 
-    return (
-      this.cartas.find((carta) => {
-        const idCarta = String(carta?.id ?? '').trim();
-        const slugCarta = this.crearSlugDesdeTexto(carta?.slug || carta?.id || '');
-        const nombreSlug = this.crearSlugDesdeTexto(carta?.name || carta?.nombre || '');
-        return (
-          idCarta === refTexto ||
-          (refSlug && (idCarta === refSlug || slugCarta === refSlug || nombreSlug === refSlug))
-        );
-      }) || null
-    );
-  }
+      if (!Number.isFinite(puntosRegistrados) || puntosRegistrados < 0) {
+        puntosPartida = batalla.winner === 'player' ? 50 : 10;
+      }
 
-  obtenerImagenFicha(ficha) {
-    if (!ficha) return IMAGEN_RESPALDO_WEBP;
+      jugador.points += puntosPartida;
+      jugador.gamesPlayed += 1;
 
-    if (ficha.image) {
-      return this.normalizarRutaImagen(ficha.image) || IMAGEN_RESPALDO_WEBP;
-    }
+      if (batalla.winner === 'player') {
+        jugador.wins += 1;
+      } else if (batalla.winner === 'cpu' || batalla.winner === 'machine') {
+        jugador.losses += 1;
+      }
+    });
 
-    const cartaEncontrada = this.buscarCartaPorReferencia(ficha.name);
-    const rutaCarta = cartaEncontrada?.image || cartaEncontrada?.imagen;
-    if (rutaCarta) {
-      return this.normalizarRutaImagen(rutaCarta) || IMAGEN_RESPALDO_WEBP;
-    }
+    // Completa victorias/derrotas de perfiles antiguos si no están presentes en el historial.
+    jugadoresPorClave.forEach((jugador) => {
+      const perfil = this.jugadores.find((item) => this.crearClaveJugador(item) === this.crearClaveJugador(jugador));
+      if (!perfil) return;
 
-    const slug = this.crearSlugDesdeTexto(ficha.name);
-    return slug ? resolverRutaPublica(`images/cards/${slug}.webp`) : IMAGEN_RESPALDO_WEBP;
-  }
+      if (jugador.gamesPlayed === 0) {
+        jugador.gamesPlayed = Number(perfil.gamesPlayed) || 0;
+        jugador.wins = Number(perfil.wins) || 0;
+        jugador.losses = Number(perfil.losses) || 0;
+      }
+    });
 
-  obtenerUltimaBatallaConPodio() {
-    return (
-      this.batallas.find(
-        (batalla) => Array.isArray(batalla.podiumCards) && batalla.podiumCards.length > 0
-      ) ||
-      this.batallas[0] ||
-      null
-    );
-  }
-
-  obtenerTop3UltimaPartida() {
-    const ultimaBatalla = this.obtenerUltimaBatallaConPodio();
-    if (!ultimaBatalla) return [];
-
-    if (Array.isArray(ultimaBatalla.podiumCards) && ultimaBatalla.podiumCards.length > 0) {
-      return ultimaBatalla.podiumCards.slice(0, 3).map((ficha, idx) => ({
-        posicion: ficha.posicion || idx + 1,
-        name: ficha.name || `Ficha ${idx + 1}`,
-        image: this.obtenerImagenFicha(ficha),
-        hp: Number(ficha.hp ?? 0),
-        attack: Number(ficha.attack ?? 0),
-        propietario: ficha.propietario || ultimaBatalla.playerNickname || 'Jugador',
-      }));
-    }
-
-    // Respaldo si es una batalla antigua sin podiumCards guardado
-    const nombresMazo = [
-      ...(Array.isArray(ultimaBatalla.playerDeck) ? ultimaBatalla.playerDeck : []),
-      ...(Array.isArray(ultimaBatalla.cpuDeck) ? ultimaBatalla.cpuDeck : []),
-    ];
-
-    return nombresMazo.slice(0, 3).map((nombre, idx) => {
-      const cartaRef = this.buscarCartaPorReferencia(nombre);
-      return {
-        posicion: idx + 1,
-        name: cartaRef?.name || nombre || `Ficha ${idx + 1}`,
-        image: this.obtenerImagenFicha({ name: nombre, image: cartaRef?.image }),
-        hp: Number(cartaRef?.hp ?? 0),
-        attack: Number(cartaRef?.attack ?? 0),
-        propietario: idx < (ultimaBatalla.playerDeck?.length || 0) ? ultimaBatalla.playerNickname : 'Máquina',
-      };
+    return Array.from(jugadoresPorClave.values()).sort((a, b) => {
+      if (b.points !== a.points) return b.points - a.points;
+      if (b.wins !== a.wins) return b.wins - a.wins;
+      if (b.gamesPlayed !== a.gamesPlayed) return b.gamesPlayed - a.gamesPlayed;
+      return a.nickname.localeCompare(b.nickname, 'es', { sensitivity: 'base' });
     });
   }
 
+  normalizarAvatar(ruta) {
+    if (!ruta) return '';
+    const limpia = String(ruta).trim();
+    if (/^(https?:\/\/|data:image\/|blob:)/i.test(limpia)) return limpia;
+    return resolverRutaPublica(limpia);
+  }
+
+  obtenerInicial(nombre) {
+    const inicial = String(nombre ?? '').trim().charAt(0);
+    return inicial ? inicial.toLocaleUpperCase('es') : '?';
+  }
+
   renderizarPodio() {
-    const tresPrimeros = this.obtenerTop3UltimaPartida();
-    if (tresPrimeros.length === 0) {
+    if (this.ranking.length === 0) {
       return `
         <div class="bk-card mt-6 text-center text-slate-300">
           <div class="text-2xl mb-1">🏆</div>
-          ¡Aún no hay campeones! Juega una batalla para ver las 3 fichas ganadoras en el podio.
+          Aún no hay jugadores registrados en el ranking.
         </div>
       `;
     }
 
-    const segundoLugar = tresPrimeros[1];
-    const primerLugar = tresPrimeros[0];
-    const tercerLugar = tresPrimeros[2];
-
-    const renderEscalon = (ficha, puesto, clasePuesto, medalla, esCampeon = false) => {
-      if (!ficha) {
-        return `<div class="lb-blooket-col ${clasePuesto}" aria-hidden="true"></div>`;
-      }
-
-      const rutaImagen = this.escaparHtml(ficha.image);
-      const nombreFicha = this.escaparHtml(ficha.name);
-      const propietario = this.escaparHtml(ficha.propietario);
-      const respaldoWebp = this.escaparHtml(IMAGEN_RESPALDO_WEBP);
-      const respaldoSvg = this.escaparHtml(IMAGEN_RESPALDO_SVG);
-
-      return `
-        <article class="lb-blooket-col ${clasePuesto}">
-          ${esCampeon ? `<div class="lb-blooket-crown" aria-hidden="true">👑</div>` : ''}
-          <div class="lb-blooket-avatar" title="${puesto} lugar ${medalla}">
-            <img
-              src="${rutaImagen}"
-              alt="Ficha ${nombreFicha}"
-              class="lb-blooket-card-img"
-              data-fallback-webp="${respaldoWebp}"
-              data-fallback-svg="${respaldoSvg}"
-              onerror="
-                if (!this.dataset.triedWebpFallback && this.src !== this.dataset.fallbackWebp) {
-                  this.dataset.triedWebpFallback = 'true';
-                  this.src = this.dataset.fallbackWebp;
-                } else if (!this.dataset.triedSvgFallback && this.src !== this.dataset.fallbackSvg) {
-                  this.dataset.triedSvgFallback = 'true';
-                  this.src = this.dataset.fallbackSvg;
-                } else {
-                  this.onerror = null;
-                  this.style.display = 'none';
-                  if (this.nextElementSibling) this.nextElementSibling.style.display = 'grid';
-                }
-              "
-            />
-            <span class="lb-blooket-fallback" style="display:none;" aria-hidden="true">${medalla}</span>
-          </div>
-          <div class="lb-blooket-step">
-            <span class="lb-blooket-pos">${medalla} ${puesto}</span>
-            <h3 class="lb-blooket-name" title="${nombreFicha}">
-              ${nombreFicha}
-            </h3>
-            <div class="lb-blooket-pts font-mono-num">HP ${ficha.hp} · ATK ${ficha.attack}</div>
-            <div class="lb-blooket-stats font-mono-num">
-              ${propietario}
-            </div>
-          </div>
-        </article>
-      `;
-    };
+    const tresPrimeros = this.ranking.slice(0, 3);
+    const posiciones = [
+      { indice: 1, clase: 'lb-rank-2', medalla: '🥈' },
+      { indice: 0, clase: 'lb-rank-1', medalla: '🥇' },
+      { indice: 2, clase: 'lb-rank-3', medalla: '🥉' },
+    ];
 
     return `
-      <section class="lb-blooket-podium" aria-label="Podio de las tres mejores fichas de la partida">
-        ${renderEscalon(segundoLugar, '2.º', 'lb-blooket-2', '🥈', false)}
-        ${renderEscalon(primerLugar, '1.º', 'lb-blooket-1', '🥇', true)}
-        ${renderEscalon(tercerLugar, '3.º', 'lb-blooket-3', '🥉', false)}
+      <section class="lb-player-podium" aria-label="Tres mejores jugadores">
+        ${posiciones
+          .map(({ indice, clase, medalla }) => {
+            const jugador = tresPrimeros[indice];
+            if (!jugador) return '<div class="lb-player-podium-slot" aria-hidden="true"></div>';
+
+            const posicion = indice + 1;
+            const avatar = this.normalizarAvatar(jugador.avatar);
+            const inicial = this.escaparHtml(this.obtenerInicial(jugador.nickname));
+            const nombre = this.escaparHtml(jugador.nickname);
+
+            return `
+              <article class="lb-player-podium-slot ${clase}">
+                ${indice === 0 ? '<div class="lb-blooket-crown" aria-hidden="true">👑</div>' : ''}
+                <div class="lb-player-avatar" title="${nombre}">
+                  ${
+                    avatar
+                      ? `<img src="${this.escaparHtml(avatar)}" alt="Avatar de ${nombre}" onerror="this.hidden=true; this.nextElementSibling.hidden=false;" />
+                         <span class="lb-player-avatar-initial" hidden>${inicial}</span>`
+                      : `<span class="lb-player-avatar-initial">${inicial}</span>`
+                  }
+                </div>
+                <div class="lb-player-podium-step">
+                  <span class="lb-blooket-pos">${medalla} #${posicion}</span>
+                  <h3 class="lb-blooket-name" title="${nombre}">${nombre}</h3>
+                  <div class="lb-blooket-pts font-mono-num">${jugador.points} pts</div>
+                  <div class="lb-blooket-stats">${jugador.gamesPlayed} partidas · ${jugador.wins}V / ${jugador.losses}D</div>
+                </div>
+              </article>
+            `;
+          })
+          .join('')}
       </section>
     `;
   }
@@ -256,7 +210,7 @@ export class LeaderboardView extends HTMLElement {
       this.innerHTML = `
         <section class="lb-blooket-shell">
           <div class="bk-card text-center text-slate-200 font-bold">
-            Cargando tabla de posiciones e historial de combates...
+            Cargando ranking de jugadores...
           </div>
         </section>
       `;
@@ -275,68 +229,49 @@ export class LeaderboardView extends HTMLElement {
       return;
     }
 
-    const top3Partida = this.obtenerTop3UltimaPartida();
-    const ultimaBatalla = this.obtenerUltimaBatallaConPodio();
-
-    const filasPodioPartida =
-      top3Partida.length > 0
-        ? top3Partida
+    const filasRanking =
+      this.ranking.length > 0
+        ? this.ranking
             .map(
-              (ficha) => `
-          <tr>
-            <td class="font-mono-num font-black text-amber-400">#${ficha.posicion}</td>
-            <td class="font-extrabold text-white">${this.escaparHtml(ficha.name)}</td>
-            <td class="text-slate-300">${this.escaparHtml(ficha.propietario)}</td>
-            <td class="font-mono-num font-bold text-emerald-400">${ficha.hp}</td>
-            <td class="font-mono-num font-bold text-cyan-300">${ficha.attack}</td>
-          </tr>
-        `
+              (jugador, indice) => {
+                const avatar = this.normalizarAvatar(jugador.avatar);
+                const inicial = this.escaparHtml(this.obtenerInicial(jugador.nickname));
+                const nombre = this.escaparHtml(jugador.nickname);
+                return `
+                  <tr>
+                    <td class="lb-ranking-position">#${indice + 1}</td>
+                    <td>
+                      <div class="lb-ranking-player">
+                        <div class="lb-ranking-avatar">
+                          ${
+                            avatar
+                              ? `<img src="${this.escaparHtml(avatar)}" alt="" onerror="this.hidden=true; this.nextElementSibling.hidden=false;" />
+                                 <span hidden>${inicial}</span>`
+                              : `<span>${inicial}</span>`
+                          }
+                        </div>
+                        <span class="lb-ranking-name">${nombre}</span>
+                      </div>
+                    </td>
+                    <td class="font-mono-num font-black text-amber-400">${jugador.points} pts</td>
+                    <td class="font-mono-num text-slate-300">${jugador.gamesPlayed}</td>
+                    <td class="font-mono-num text-emerald-400">${jugador.wins}</td>
+                    <td class="font-mono-num text-rose-300">${jugador.losses}</td>
+                  </tr>
+                `;
+              }
             )
             .join('')
-        : `<tr><td colspan="5" class="text-center text-slate-400 py-6">Aún no hay fichas clasificadas en esta partida.</td></tr>`;
-
-    const elementosBatalla =
-      ultimaBatalla
-        ? (() => {
-            const jugadorGano = ultimaBatalla.winner === 'player';
-            const textoFecha = ultimaBatalla.playedAt
-              ? new Date(ultimaBatalla.playedAt).toLocaleString('es-CO', {
-                  month: 'short',
-                  day: 'numeric',
-                  hour: '2-digit',
-                  minute: '2-digit',
-                })
-              : '';
-            const listaPodio =
-              top3Partida.length > 0
-                ? ` · Top 3: ${top3Partida.map((f) => `#${f.posicion} ${this.escaparHtml(f.name)}`).join(', ')}`
-                : '';
-            return `
-          <div class="bk-battle-item">
-            <div>
-              <div class="font-extrabold text-white text-sm">
-                ${this.escaparHtml(ultimaBatalla.playerNickname)} vs. Máquina
-              </div>
-              <div class="text-xs text-slate-400 mt-0.5 font-mono-num">
-                ${ultimaBatalla.turnsPlayed} turnos · ${textoFecha}${listaPodio}
-              </div>
-            </div>
-            <span class="${jugadorGano ? 'bk-pill-win' : 'bk-pill-loss'} font-mono-num">
-              ${jugadorGano ? 'Victoria' : 'Derrota'} · +${ultimaBatalla.pointsAwarded} pts
-            </span>
-          </div>
-        `;
-          })()
-        : `<div class="text-sm text-slate-400 py-6 text-center">Todavía no se han registrado combates.</div>`;
+        : `<tr><td colspan="6" class="text-center text-slate-400 py-6">Aún no hay jugadores para clasificar.</td></tr>`;
 
     this.innerHTML = `
       <section class="lb-blooket-shell">
         <header class="lb-blooket-header">
           <div>
             <span class="lb-blooket-badge">⚡ Campuslands Arena</span>
-            <h2 class="lb-blooket-title">Podio de la Partida</h2>
+            <h2 class="lb-blooket-title">Ranking de Jugadores</h2>
             <p class="lb-blooket-subtitle">
-              Las 3 fichas ganadoras (1.º, 2.º y 3.º lugar) de la partida actual.
+              Clasificación oficial por puntos obtenidos en las partidas jugadas.
             </p>
           </div>
           <div class="flex items-center gap-3">
@@ -347,30 +282,22 @@ export class LeaderboardView extends HTMLElement {
 
         ${this.renderizarPodio()}
 
-        <div class="bk-grid">
-          <div class="bk-card">
-            <h3 class="bk-card-title">🏅 Clasificación de Fichas (Partida Actual)</h3>
-            <div class="bk-table-wrap">
-              <table class="bk-table">
-                <thead>
-                  <tr>
-                    <th>Pos</th>
-                    <th>Ficha</th>
-                    <th>Equipo</th>
-                    <th>HP</th>
-                    <th>ATK</th>
-                  </tr>
-                </thead>
-                <tbody>${filasPodioPartida}</tbody>
-              </table>
-            </div>
-          </div>
-
-          <div class="bk-card">
-            <h3 class="bk-card-title">⚔️ Resultado de la Partida</h3>
-            <div class="flex flex-col gap-2.5">
-              ${elementosBatalla}
-            </div>
+        <div class="bk-card lb-ranking-card">
+          <h3 class="bk-card-title">🏅 Tabla de posiciones</h3>
+          <div class="bk-table-wrap">
+            <table class="bk-table lb-ranking-table">
+              <thead>
+                <tr>
+                  <th>Posición</th>
+                  <th>Jugador</th>
+                  <th>Puntos</th>
+                  <th>Partidas</th>
+                  <th>Victorias</th>
+                  <th>Derrotas</th>
+                </tr>
+              </thead>
+              <tbody>${filasRanking}</tbody>
+            </table>
           </div>
         </div>
       </section>

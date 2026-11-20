@@ -20,14 +20,177 @@
     {
       "id": "player-1795202515071-s16x",
       "nickname": "juan",
-      "points": 0,
-      "wins": 0,
+      "points": 150,
+      "wins": 3,
       "losses": 0,
-      "gamesPlayed": 0,
+      "gamesPlayed": 3,
       "createdAt": "2026-11-20T19:21:55.071Z"
     }
   ],
-  "battles": [],
+  "battles": [
+    {
+      "id": "battle-1795205133310-twlt",
+      "playerId": "player-1795202515071-s16x",
+      "playerNickname": "juan",
+      "playerDeck": [
+        "Sir Pau",
+        "Mr. Fernando",
+        "Super teacher",
+        "Nikol Ortiz",
+        "Señor Gemini"
+      ],
+      "cpuDeck": [
+        "Doña Elena",
+        "Don Tintero",
+        "Diana",
+        "Don Luis",
+        "Chico \"La Caliente\""
+      ],
+      "winningCardName": "Nikol Ortiz",
+      "winningCardImage": "/public/images/cards/nikol-ortiz.webp",
+      "podiumCards": [
+        {
+          "posicion": 1,
+          "id": "",
+          "name": "Nikol Ortiz",
+          "image": "/public/images/cards/nikol-ortiz.webp",
+          "hp": 250,
+          "attack": 0,
+          "propietario": "juan"
+        },
+        {
+          "posicion": 2,
+          "id": "",
+          "name": "Señor Gemini",
+          "image": "/public/images/cards/señor-gemini.webp",
+          "hp": 250,
+          "attack": 0,
+          "propietario": "juan"
+        },
+        {
+          "posicion": 3,
+          "id": "",
+          "name": "Super teacher",
+          "image": "/public/images/cards/super-teacher.webp",
+          "hp": 46,
+          "attack": 0,
+          "propietario": "juan"
+        }
+      ],
+      "winner": "player",
+      "turnsPlayed": 49,
+      "pointsAwarded": 50,
+      "playedAt": "2026-11-20T20:05:33.310Z"
+    },
+    {
+      "id": "battle-1795205936958-xxi5",
+      "playerId": "player-1795202515071-s16x",
+      "playerNickname": "juan",
+      "playerDeck": [
+        "Sir Pau",
+        "Super teacher",
+        "Mr. Fernando",
+        "Juan Pablo",
+        "Nikol Ortiz"
+      ],
+      "cpuDeck": [
+        "Chico COD",
+        "Mr. Faltas",
+        "Don Tintero",
+        "Don Luis",
+        "Chico \"La Caliente\""
+      ],
+      "winningCardName": "Nikol Ortiz",
+      "winningCardImage": "/public/images/cards/nikol-ortiz.webp",
+      "podiumCards": [
+        {
+          "posicion": 1,
+          "id": "",
+          "name": "Nikol Ortiz",
+          "image": "/public/images/cards/nikol-ortiz.webp",
+          "hp": 147,
+          "attack": 0,
+          "propietario": "juan"
+        },
+        {
+          "posicion": 2,
+          "id": "",
+          "name": "Sir Pau",
+          "image": "/public/images/cards/sir-pau.webp",
+          "hp": 0,
+          "attack": 0,
+          "propietario": "juan"
+        },
+        {
+          "posicion": 3,
+          "id": "",
+          "name": "Super teacher",
+          "image": "/public/images/cards/super-teacher.webp",
+          "hp": 0,
+          "attack": 0,
+          "propietario": "juan"
+        }
+      ],
+      "winner": "player",
+      "turnsPlayed": 63,
+      "pointsAwarded": 50,
+      "playedAt": "2026-11-20T20:18:56.958Z"
+    },
+    {
+      "id": "battle-1795206242450-zjwy",
+      "playerId": "player-1795202515071-s16x",
+      "playerNickname": "juan",
+      "playerDeck": [
+        "Sir Pau",
+        "Super teacher",
+        "Mr. Fernando",
+        "Juan Pablo",
+        "Nikol Ortiz"
+      ],
+      "cpuDeck": [
+        "Chico NKD",
+        "Don Luis",
+        "Chico COD",
+        "Carlos Mantenimiento",
+        "Doña Rosa"
+      ],
+      "winningCardName": "Nikol Ortiz",
+      "winningCardImage": "/public/images/cards/nikol-ortiz.webp",
+      "podiumCards": [
+        {
+          "posicion": 1,
+          "id": "",
+          "name": "Nikol Ortiz",
+          "image": "/public/images/cards/nikol-ortiz.webp",
+          "hp": 197,
+          "attack": 0,
+          "propietario": "juan"
+        },
+        {
+          "posicion": 2,
+          "id": "",
+          "name": "Sir Pau",
+          "image": "/public/images/cards/sir-pau.webp",
+          "hp": 0,
+          "attack": 0,
+          "propietario": "juan"
+        },
+        {
+          "posicion": 3,
+          "id": "",
+          "name": "Super teacher",
+          "image": "/public/images/cards/super-teacher.webp",
+          "hp": 0,
+          "attack": 0,
+          "propietario": "juan"
+        }
+      ],
+      "winner": "player",
+      "turnsPlayed": 54,
+      "pointsAwarded": 50,
+      "playedAt": "2026-11-20T20:24:02.450Z"
+    }
+  ],
   "cards": [
     {
       "id": "card-01",

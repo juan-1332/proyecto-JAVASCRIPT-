@@ -363,25 +363,27 @@ export class BattleArena extends HTMLElement {
     const bloquePodioPartida =
       estado.status === 'finished' && top3Fichas.length > 0
         ? `
-      <div class="mt-4 p-3 rounded-xl bg-[#091326] border border-amber-400/30">
+      <div class="arena-podium-panel">
         <div class="text-[11px] uppercase tracking-wider font-semibold text-amber-400 mb-3 text-center">
           Top 3 Fichas de la Partida
         </div>
-        <div class="grid grid-cols-3 gap-2 text-center">
+        <div class="arena-podium-grid">
           ${top3Fichas
             .map(
               (ficha) => `
-            <div class="p-2 rounded-lg bg-white/5 border border-white/10 flex flex-col items-center">
-              <span class="text-xs font-extrabold text-amber-400">#${ficha.posicion}</span>
-              ${
-                ficha.image
-                  ? `<img src="${this.escaparHtml(ficha.image)}" alt="${this.escaparHtml(ficha.name)}" class="w-14 h-20 object-cover rounded mt-1 border border-white/15" />`
-                  : ''
-              }
+            <article class="arena-podium-card">
+              <span class="arena-podium-position">#${ficha.posicion}</span>
+              <div class="arena-podium-media" role="img" aria-label="${this.escaparHtml(ficha.name)}">
+                ${
+                  ficha.image
+                    ? `<img src="${this.escaparHtml(ficha.image)}" alt="${this.escaparHtml(ficha.name)}" class="arena-podium-image" />`
+                    : `<span class="arena-podium-image-placeholder">Sin imagen</span>`
+                }
+              </div>
               <span class="text-xs font-bold text-white mt-1.5 line-clamp-1">${this.escaparHtml(ficha.name)}</span>
               <span class="text-[10px] text-slate-400">${this.escaparHtml(ficha.propietario)}</span>
               <span class="text-[11px] text-slate-300 font-mono-num">HP ${ficha.hp} · ATK ${ficha.attack}</span>
-            </div>
+            </article>
           `
             )
             .join('')}
@@ -396,7 +398,7 @@ export class BattleArena extends HTMLElement {
       <div class="arena-modal-backdrop" role="dialog" aria-modal="true" aria-label="Resultado del Combate">
         <div class="arena-modal-card">
           <div class="text-xs font-semibold text-amber-400">Combate Finalizado · ${estado.globalTurn} turnos</div>
-          <h2 class="text-3xl font-extrabold text-white mt-1">
+          <h2 class="arena-modal-title text-3xl font-extrabold text-white mt-1">
             ${estado.winner === 'player' ? '¡Victoria en Campuslands!' : 'Derrota ante la Máquina'}
           </h2>
           <p class="text-sm text-slate-300 mt-2">
@@ -422,7 +424,7 @@ export class BattleArena extends HTMLElement {
               : `<p class="text-xs text-emerald-300 mt-3">Estadísticas e historial actualizados correctamente.</p>`
           }
 
-          <div class="mt-5 flex flex-wrap gap-2.5">
+          <div class="arena-modal-actions mt-5 flex flex-wrap gap-2.5">
             <button type="button" id="btn-play-again" class="campus-btn campus-btn-primary flex-1">
               Jugar de Nuevo
             </button>
@@ -532,6 +534,20 @@ export class BattleArena extends HTMLElement {
   }
 
   configurarEventos() {
+    this.querySelectorAll('.arena-podium-image').forEach((imagen) => {
+      imagen.addEventListener('error', () => {
+        const contenedor = imagen.closest('.arena-podium-media');
+        imagen.hidden = true;
+        contenedor?.classList.add('is-image-error');
+        if (!contenedor?.querySelector('.arena-podium-image-placeholder')) {
+          contenedor?.insertAdjacentHTML(
+            'beforeend',
+            '<span class="arena-podium-image-placeholder">Sin imagen</span>'
+          );
+        }
+      });
+    });
+
     this.querySelector('#battle-controls-panel')?.addEventListener('player-action', (evento) => {
       this.manejarAccion('player', evento.detail);
     });

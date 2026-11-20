@@ -15,7 +15,7 @@ export function validarApodo(apodo) {
   }
   if (apodoLimpio.length < 3 || apodoLimpio.length > 20) {
     return { valid: false, message: 'El nickname debe tener entre 3 y 20 caracteres.' };
-  }
+  } 
   if (!/^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ _.-]+$/.test(apodoLimpio)) {
     return { valid: false, message: 'Usa solo letras, números, espacios, guiones o puntos.' };
   }
