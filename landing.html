@@ -1,0 +1,917 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Campuslands Battle Arena — Showcase Técnico</title>
+  <meta name="description" content="Simulador táctico 1v1 de cartas · Vanilla JS · Web Components · Motor de combate puro" />
+  <link rel="icon" type="image/svg+xml" href="./public/favicon.svg" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500;700&family=Outfit:wght@500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <!-- GSAP -->
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+  <style>
+    :root {
+      --campus-bg: #081226;
+      --campus-table: #0b162c;
+      --campus-surface: #122244;
+      --campus-surface-elevated: #182c56;
+      --campus-border: rgba(248, 250, 252, 0.12);
+      --campus-gold: #f59e0b;
+      --campus-gold-bright: #fbbf24;
+      --campus-text: #f8fafc;
+      --campus-muted: #94a3b8;
+      --campus-danger: #ef4444;
+      --campus-shield: #38bdf8;
+      --campus-emerald: #10b981;
+      --code-bg: #0d1526;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      min-height: 100vh;
+      background-color: var(--campus-bg);
+      background-image:
+        radial-gradient(circle at 50% 12%, rgba(30, 64, 175, 0.28), transparent 55%),
+        radial-gradient(circle at 90% 80%, rgba(245, 158, 11, 0.07), transparent 45%);
+      color: var(--campus-text);
+      font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+      line-height: 1.5;
+      overflow-x: hidden;
+    }
+
+    h1, h2, h3, .font-display { font-family: 'Outfit', system-ui, sans-serif; text-wrap: balance; }
+    .font-mono { font-family: 'JetBrains Mono', ui-monospace, monospace; font-variant-numeric: tabular-nums; }
+
+    .scroll-progress {
+      position: fixed; top: 0; left: 0; height: 3px; width: 0%;
+      background: linear-gradient(90deg, var(--campus-gold), var(--campus-gold-bright));
+      z-index: 300;
+    }
+
+    .nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0.85rem 1.5rem;
+      background: rgba(8, 18, 38, 0.88);
+      backdrop-filter: blur(18px);
+      border-bottom: 1px solid var(--campus-border);
+    }
+    .nav-logo { font-family: 'Outfit', sans-serif; font-weight: 800; font-size: 1.1rem; }
+    .nav-logo span { color: var(--campus-gold); }
+    .nav-links { display: flex; gap: 1.5rem; }
+    .nav-links a { color: var(--campus-muted); font-size: 0.875rem; font-weight: 500; transition: color 0.2s; }
+    .nav-links a:hover { color: var(--campus-gold-bright); }
+    .nav-cta {
+      background: var(--campus-gold); color: #0b162c;
+      padding: 0.45rem 1rem; border-radius: 0.6rem;
+      font-weight: 700; font-size: 0.875rem; border: none; cursor: pointer;
+      transition: transform 0.15s, background 0.15s; text-decoration: none;
+    }
+    .nav-cta:hover { background: var(--campus-gold-bright); transform: scale(1.03); }
+
+    .hero {
+      min-height: 100vh; display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      padding: 6.5rem 1.5rem 4rem; text-align: center; position: relative;
+    }
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: 0.4rem;
+      background: rgba(245, 158, 11, 0.12); border: 1px solid rgba(245, 158, 11, 0.35);
+      color: var(--campus-gold-bright); padding: 0.35rem 0.9rem;
+      border-radius: 999px; font-size: 0.78rem; font-weight: 600; margin-bottom: 1.4rem;
+    }
+    .hero h1 {
+      font-size: clamp(2.5rem, 6.5vw, 4.2rem); font-weight: 800;
+      line-height: 1.08; letter-spacing: -0.03em; max-width: 16ch;
+    }
+    .hero h1 em { font-style: normal; color: var(--campus-gold); }
+    .hero-sub { margin-top: 1rem; color: var(--campus-muted); font-size: 1.1rem; max-width: 38ch; }
+    .hero-actions {
+      display: flex; gap: 0.9rem; margin-top: 2rem; flex-wrap: wrap; justify-content: center;
+    }
+    .btn-primary {
+      background: var(--campus-gold); color: #0b162c;
+      padding: 0.8rem 1.7rem; border-radius: 0.7rem;
+      font-weight: 700; font-size: 0.95rem; border: none; cursor: pointer;
+      transition: transform 0.15s, box-shadow 0.2s, background 0.15s;
+      text-decoration: none; display: inline-flex; align-items: center;
+    }
+    .btn-primary:hover {
+      background: var(--campus-gold-bright); transform: translateY(-2px);
+      box-shadow: 0 10px 28px rgba(245, 158, 11, 0.35);
+    }
+    .btn-ghost {
+      background: var(--campus-surface-elevated); color: var(--campus-text);
+      padding: 0.8rem 1.5rem; border-radius: 0.7rem;
+      font-weight: 600; border: 1px solid var(--campus-border); cursor: pointer;
+      transition: border-color 0.2s, background 0.2s; text-decoration: none;
+    }
+    .btn-ghost:hover { border-color: rgba(245, 158, 11, 0.45); background: #213a6e; }
+
+    .hero-card-wrap { margin-top: 3.2rem; perspective: 1400px; }
+    .hero-card {
+      width: 210px; height: 296px; border-radius: 1rem;
+      background: var(--campus-surface); border: 1px solid var(--campus-border);
+      overflow: hidden; position: relative; transform-style: preserve-3d;
+      box-shadow: 0 28px 55px -14px rgba(0,0,0,0.55), 0 0 48px rgba(245, 158, 11, 0.14);
+      will-change: transform;
+    }
+    .hero-card img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .hero-card-glow {
+      position: absolute; inset: 0;
+      background: linear-gradient(145deg, transparent 42%, rgba(245, 158, 11, 0.18) 100%);
+      pointer-events: none;
+    }
+
+    section { padding: 4.5rem 1.5rem; max-width: 1120px; margin: 0 auto; }
+    .section-label {
+      display: inline-block; font-size: 0.72rem; font-weight: 700;
+      letter-spacing: 0.14em; text-transform: uppercase;
+      color: var(--campus-gold); margin-bottom: 0.5rem;
+    }
+    .section-title {
+      font-size: clamp(1.7rem, 3.8vw, 2.45rem); font-weight: 800;
+      letter-spacing: -0.02em; margin-bottom: 0.4rem;
+    }
+    .section-sub { color: var(--campus-muted); font-size: 1rem; max-width: 44ch; }
+
+    .stats {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+      gap: 1rem; margin-top: 2.2rem;
+    }
+    .stat-card {
+      background: var(--campus-surface); border: 1px solid var(--campus-border);
+      border-radius: 0.9rem; padding: 1.25rem 1rem; text-align: center;
+      transition: border-color 0.22s;
+    }
+    .stat-card:hover { border-color: rgba(245, 158, 11, 0.4); }
+    .stat-value { font-family: 'Outfit', sans-serif; font-size: 2rem; font-weight: 800; color: var(--campus-gold); line-height: 1; }
+    .stat-label { font-size: 0.8rem; color: var(--campus-muted); margin-top: 0.3rem; }
+
+    .flow {
+      display: flex; flex-wrap: wrap; justify-content: center; gap: 1.25rem;
+      margin-top: 2.5rem;
+    }
+    .flow-step {
+      flex: 1 1 170px; max-width: 210px;
+      background: var(--campus-surface); border: 1px solid var(--campus-border);
+      border-radius: 0.9rem; padding: 1.35rem 1.1rem; text-align: center;
+    }
+    .flow-num {
+      width: 34px; height: 34px; border-radius: 50%;
+      background: var(--campus-gold); color: #0b162c;
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 800; font-size: 0.9rem; margin: 0 auto 0.85rem;
+    }
+    .flow-step h3 { font-size: 1rem; font-weight: 700; margin-bottom: 0.3rem; }
+    .flow-step p { font-size: 0.8rem; color: var(--campus-muted); }
+
+    .filters { display: flex; flex-wrap: wrap; gap: 0.45rem; margin: 1.75rem 0 1.35rem; }
+    .filter-btn {
+      padding: 0.38rem 0.9rem; border-radius: 999px; border: 1px solid var(--campus-border);
+      background: transparent; color: var(--campus-muted); font-size: 0.82rem;
+      font-weight: 500; cursor: pointer; transition: all 0.2s;
+    }
+    .filter-btn.active, .filter-btn:hover {
+      background: rgba(245, 158, 11, 0.14); border-color: var(--campus-gold);
+      color: var(--campus-gold-bright);
+    }
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(152px, 1fr));
+      gap: 1.1rem;
+    }
+    .card-item { perspective: 1000px; cursor: pointer; }
+    .card-inner {
+      position: relative; width: 100%; aspect-ratio: 2/3;
+      transform-style: preserve-3d; transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+      border-radius: 0.8rem;
+    }
+    .card-item.flipped .card-inner { transform: rotateY(180deg); }
+    .card-face {
+      position: absolute; inset: 0; backface-visibility: hidden;
+      border-radius: 0.8rem; overflow: hidden;
+      border: 1px solid var(--campus-border); background: var(--campus-surface);
+    }
+    .card-front img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .card-front-overlay {
+      position: absolute; bottom: 0; left: 0; right: 0;
+      padding: 0.55rem 0.65rem;
+      background: linear-gradient(transparent, rgba(8,18,38,0.94));
+    }
+    .card-front-overlay h4 { font-size: 0.82rem; font-weight: 700; line-height: 1.2; }
+    .card-front-overlay span { font-size: 0.68rem; color: var(--campus-gold); font-weight: 600; }
+    .card-back {
+      transform: rotateY(180deg);
+      display: flex; flex-direction: column; justify-content: space-between;
+      padding: 0.9rem 0.8rem; background: var(--campus-surface-elevated);
+    }
+    .card-back h4 { font-size: 0.9rem; font-weight: 700; margin-bottom: 0.2rem; }
+    .card-back .type { font-size: 0.68rem; color: var(--campus-gold); margin-bottom: 0.65rem; }
+    .stat-row { display: flex; justify-content: space-between; font-size: 0.78rem; margin-bottom: 0.3rem; }
+    .stat-bar { height: 4px; background: rgba(255,255,255,0.1); border-radius: 2px; overflow: hidden; margin-top: 0.12rem; }
+    .stat-bar-fill { height: 100%; border-radius: 2px; }
+    .hp-fill { background: linear-gradient(90deg, var(--campus-emerald), #34d399); }
+    .sp-fill { background: linear-gradient(90deg, var(--campus-shield), #7dd3fc); }
+
+    .arch-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 1rem; margin-top: 2rem;
+    }
+    .arch-card {
+      background: var(--campus-surface); border: 1px solid var(--campus-border);
+      border-radius: 0.9rem; padding: 1.25rem; transition: border-color 0.25s;
+    }
+    .arch-card:hover { border-color: rgba(245, 158, 11, 0.4); }
+    .arch-card h3 { font-size: 0.95rem; font-weight: 700; margin-bottom: 0.35rem; display: flex; align-items: center; gap: 0.5rem; }
+    .arch-card p { font-size: 0.82rem; color: var(--campus-muted); }
+    .badge-row { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: 0.85rem; }
+    .badge {
+      font-size: 0.68rem; font-weight: 600; padding: 0.22rem 0.55rem;
+      border-radius: 999px; background: rgba(245, 158, 11, 0.12);
+      color: var(--campus-gold-bright); border: 1px solid rgba(245, 158, 11, 0.3);
+    }
+    .badge.blue { background: rgba(56, 189, 248, 0.12); color: #7dd3fc; border-color: rgba(56, 189, 248, 0.3); }
+    .badge.green { background: rgba(16, 185, 129, 0.12); color: #6ee7b7; border-color: rgba(16, 185, 129, 0.3); }
+
+    .tech-block { margin-top: 2.5rem; }
+    .accordion {
+      border: 1px solid var(--campus-border); border-radius: 0.9rem;
+      overflow: hidden; margin-bottom: 0.75rem; background: var(--campus-surface);
+    }
+    .accordion-header {
+      width: 100%; display: flex; align-items: center; justify-content: space-between;
+      padding: 1rem 1.15rem; background: transparent; border: none; color: var(--campus-text);
+      font-family: inherit; font-size: 0.95rem; font-weight: 700; cursor: pointer; text-align: left;
+      transition: background 0.2s;
+    }
+    .accordion-header:hover { background: rgba(255,255,255,0.03); }
+    .accordion-header .chevron { transition: transform 0.25s; font-size: 0.85rem; color: var(--campus-gold); }
+    .accordion.open .accordion-header .chevron { transform: rotate(180deg); }
+    .accordion-body { max-height: 0; overflow: hidden; transition: max-height 0.35s ease; }
+    .accordion.open .accordion-body { max-height: 620px; }
+    .accordion-content { padding: 0 1.15rem 1.15rem; }
+
+    .code-block {
+      background: var(--code-bg); border: 1px solid rgba(248,250,252,0.08);
+      border-radius: 0.65rem; padding: 1rem; overflow-x: auto;
+      font-family: 'JetBrains Mono', monospace; font-size: 0.78rem; line-height: 1.55;
+      color: #e2e8f0;
+    }
+    .code-block .kw { color: #c084fc; }
+    .code-block .fn { color: #38bdf8; }
+    .code-block .str { color: #fbbf24; }
+    .code-block .cm { color: #64748b; }
+    .code-block .num { color: #34d399; }
+    .micro { font-size: 0.82rem; color: var(--campus-muted); margin-bottom: 0.75rem; }
+
+    .challenge {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 1.5rem;
+    }
+    @media (max-width: 700px) { .challenge { grid-template-columns: 1fr; } }
+    .challenge-side {
+      background: var(--campus-surface); border: 1px solid var(--campus-border);
+      border-radius: 0.9rem; padding: 1.25rem;
+    }
+    .challenge-side.problem { border-color: rgba(239, 68, 68, 0.35); }
+    .challenge-side.solution { border-color: rgba(16, 185, 129, 0.35); }
+    .challenge-side h4 {
+      font-size: 0.8rem; font-weight: 700; letter-spacing: 0.06em;
+      text-transform: uppercase; margin-bottom: 0.6rem;
+    }
+    .challenge-side.problem h4 { color: #fca5a5; }
+    .challenge-side.solution h4 { color: #6ee7b7; }
+
+    .core-engine {
+      background: linear-gradient(135deg, rgba(245, 158, 11, 0.08), rgba(56, 189, 248, 0.06));
+      border: 1px solid rgba(245, 158, 11, 0.3);
+      border-radius: 1rem; padding: 1.5rem; margin-top: 1.5rem;
+    }
+    .core-engine h3 { font-size: 1.15rem; font-weight: 800; margin-bottom: 0.35rem; }
+    .core-engine .file { font-size: 0.78rem; color: var(--campus-gold); font-family: 'JetBrains Mono', monospace; margin-bottom: 0.75rem; }
+
+    .podium {
+      display: flex; align-items: flex-end; justify-content: center;
+      gap: 0.9rem; margin-top: 2.5rem; min-height: 300px;
+    }
+    .podium-place { display: flex; flex-direction: column; align-items: center; }
+    .podium-card {
+      width: 120px; height: 168px; border-radius: 0.7rem;
+      overflow: hidden; border: 2px solid var(--campus-border);
+      margin-bottom: 0.65rem; transition: transform 0.28s;
+    }
+    .podium-place:hover .podium-card { transform: scale(1.06); }
+    .podium-card img { width: 100%; height: 100%; object-fit: cover; }
+    .podium-rank {
+      width: 100%; text-align: center; padding: 0.55rem 0.4rem;
+      border-radius: 0.7rem 0.7rem 0 0; font-weight: 800; font-size: 0.95rem;
+    }
+    .rank-1 { background: linear-gradient(180deg, #f59e0b, #b45309); height: 84px; }
+    .rank-2 { background: linear-gradient(180deg, #94a3b8, #64748b); height: 60px; }
+    .rank-3 { background: linear-gradient(180deg, #b45309, #78350f); height: 42px; }
+    .podium-name { font-size: 0.82rem; font-weight: 600; margin-top: 0.35rem; }
+    .podium-pts { font-size: 0.72rem; color: var(--campus-gold); }
+
+    .cta-final {
+      text-align: center; padding: 4.5rem 1.5rem;
+      background: linear-gradient(180deg, transparent, rgba(245, 158, 11, 0.05));
+    }
+    .cta-final h2 { font-size: clamp(1.7rem, 3.8vw, 2.6rem); font-weight: 800; margin-bottom: 0.6rem; }
+    .cta-final p { color: var(--campus-muted); margin-bottom: 1.75rem; }
+
+    footer {
+      text-align: center; padding: 1.75rem 1.5rem;
+      border-top: 1px solid var(--campus-border);
+      color: var(--campus-muted); font-size: 0.82rem;
+    }
+    footer a { color: var(--campus-gold); }
+
+    /* Estado inicial para GSAP (evita FOUC) */
+    .gsap-hide { opacity: 0; visibility: hidden; }
+
+    @media (max-width: 640px) {
+      .nav-links { display: none; }
+      .hero-card { width: 170px; height: 240px; }
+      .cards-grid { grid-template-columns: repeat(auto-fill, minmax(132px, 1fr)); }
+      .podium-card { width: 95px; height: 132px; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .gsap-hide { opacity: 1 !important; visibility: visible !important; transform: none !important; }
+    }
+  </style>
+</head>
+<body>
+  <div class="scroll-progress" id="scrollProgress"></div>
+
+  <nav class="nav">
+    <div class="nav-logo">⚔️ <span>Campuslands</span> Arena</div>
+    <div class="nav-links">
+      <a href="#arquitectura">Arquitectura</a>
+      <a href="#motor">Motor</a>
+      <a href="#cartas">Cartas</a>
+      <a href="#patrones">ES6+</a>
+      <a href="#reto">Reto</a>
+    </div>
+    <a href="./index.html" class="nav-cta">Jugar</a>
+  </nav>
+
+  <!-- HERO -->
+  <header class="hero">
+    <div class="hero-badge gsap-hide" data-hero>✦ Vanilla JS · Web Components · Motor puro</div>
+    <h1 class="gsap-hide" data-hero>Campuslands<br><em>Battle Arena</em></h1>
+    <p class="hero-sub gsap-hide" data-hero>Simulador táctico 1v1 · 20 cartas · Ranking persistente · 0 frameworks de UI</p>
+    <div class="hero-actions gsap-hide" data-hero>
+      <a href="./index.html" class="btn-primary">Entrar a la Arena</a>
+      <a href="#arquitectura" class="btn-ghost">Ver arquitectura</a>
+    </div>
+    <div class="hero-card-wrap gsap-hide" data-hero>
+      <div class="hero-card" id="heroCard">
+        <img src="./public/images/cards/mr-fernando.webp" alt="Mr. Fernando" id="heroCardImg" />
+        <div class="hero-card-glow"></div>
+      </div>
+    </div>
+  </header>
+
+  <!-- STATS -->
+  <section id="stats">
+    <div class="section-label gsap-hide" data-reveal>Métricas del sistema</div>
+    <h2 class="section-title gsap-hide" data-reveal>Hecho para competir</h2>
+    <div class="stats">
+      <div class="stat-card gsap-hide" data-stagger>
+        <div class="stat-value font-mono" data-count="20">0</div>
+        <div class="stat-label">Cartas</div>
+      </div>
+      <div class="stat-card gsap-hide" data-stagger>
+        <div class="stat-value font-mono" data-count="0">0</div>
+        <div class="stat-label">Frameworks UI</div>
+      </div>
+      <div class="stat-card gsap-hide" data-stagger>
+        <div class="stat-value font-mono" data-count="5">0</div>
+        <div class="stat-label">Web Components</div>
+      </div>
+      <div class="stat-card gsap-hide" data-stagger>
+        <div class="stat-value font-mono">CRUD</div>
+        <div class="stat-label">API dual-mode</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FLOW -->
+  <section id="flujo">
+    <div class="section-label gsap-hide" data-reveal>Ciclo de juego</div>
+    <h2 class="section-title gsap-hide" data-reveal>Datos en movimiento</h2>
+    <p class="section-sub gsap-hide" data-reveal>De la selección al podio, sin capas innecesarias.</p>
+    <div class="flow">
+      <div class="flow-step gsap-hide" data-stagger>
+        <div class="flow-num">1</div>
+        <h3>Registro + Mazo</h3>
+        <p><code class="font-mono" style="font-size:0.72rem">player-ready</code> → deck de 5 cartas</p>
+      </div>
+      <div class="flow-step gsap-hide" data-stagger>
+        <div class="flow-num">2</div>
+        <h3>Motor de combate</h3>
+        <p><code class="font-mono" style="font-size:0.72rem">ejecutarAccionTurno()</code></p>
+      </div>
+      <div class="flow-step gsap-hide" data-stagger>
+        <div class="flow-num">3</div>
+        <h3>Persistencia</h3>
+        <p>API + localStorage fallback</p>
+      </div>
+      <div class="flow-step gsap-hide" data-stagger>
+        <div class="flow-num">4</div>
+        <h3>Podio Top 3</h3>
+        <p><code class="font-mono" style="font-size:0.72rem">obtenerTop3Fichas()</code></p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ARCHITECTURE -->
+  <section id="arquitectura">
+    <div class="section-label gsap-hide" data-reveal>Radiografía técnica</div>
+    <h2 class="section-title gsap-hide" data-reveal>Arquitectura modular</h2>
+    <p class="section-sub gsap-hide" data-reveal>Separación clara de responsabilidades. Sin frameworks de UI.</p>
+    <div class="arch-grid">
+      <div class="arch-card gsap-hide" data-stagger>
+        <h3>🧩 Web Components</h3>
+        <p><code>GameApp</code>, <code>BattleArena</code>, <code>DeckSelector</code>, <code>Leaderboard</code>, <code>CardsManager</code></p>
+        <div class="badge-row">
+          <span class="badge">HTMLElement</span>
+          <span class="badge">customElements</span>
+          <span class="badge blue">CustomEvent</span>
+        </div>
+      </div>
+      <div class="arch-card gsap-hide" data-stagger>
+        <h3>⚙️ Motor puro</h3>
+        <p><code>battleEngine.js</code> — sin DOM. Estado inmutable vía <code>structuredClone</code>.</p>
+        <div class="badge-row">
+          <span class="badge green">Pure functions</span>
+          <span class="badge">structuredClone</span>
+        </div>
+      </div>
+      <div class="arch-card gsap-hide" data-stagger>
+        <h3>🌐 Capa API dual</h3>
+        <p><code>solicitarApi()</code> → REST vivo o fallback <code>db.json</code> + localStorage.</p>
+        <div class="badge-row">
+          <span class="badge">fetch</span>
+          <span class="badge blue">async/await</span>
+          <span class="badge">GET·POST·PUT·PATCH·DELETE</span>
+        </div>
+      </div>
+      <div class="arch-card gsap-hide" data-stagger>
+        <h3>📡 Comunicación</h3>
+        <p>Eventos burbuja: <code>player-ready</code>, <code>start-battle</code>, <code>player-updated</code>.</p>
+        <div class="badge-row">
+          <span class="badge">sessionStorage</span>
+          <span class="badge blue">CustomEvent</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CORE ENGINE -->
+  <section id="motor">
+    <div class="section-label gsap-hide" data-reveal>El corazón del sistema</div>
+    <h2 class="section-title gsap-hide" data-reveal>Core Engine</h2>
+    <div class="core-engine gsap-hide" data-reveal>
+      <h3><span class="font-mono">ejecutarAccionTurno()</span></h3>
+      <div class="file">src/utils/battleEngine.js</div>
+      <p class="micro">Función pura que recibe estado + acción, calcula daño (factor aleatorio + escudo), gestiona KO, relevo de carta y avance de turno. Devuelve <code>{ nextState, event }</code>.</p>
+      <div class="code-block">
+<span class="kw">export function</span> <span class="fn">ejecutarAccionTurno</span>(estado, claveActor, accion) {<br>
+&nbsp;&nbsp;<span class="kw">if</span> (estado.status !== <span class="str">'playing'</span> || estado.currentActor !== claveActor)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">return</span> { nextState: estado, event: <span class="kw">null</span> };<br>
+<br>
+&nbsp;&nbsp;<span class="kw">const</span> siguienteEstado = <span class="fn">structuredClone</span>(estado);<br>
+&nbsp;&nbsp;<span class="cm">// ataque | defensa | especial → daño, logs, KO, swap</span><br>
+&nbsp;&nbsp;siguienteEstado.globalTurn += <span class="num">1</span>;<br>
+&nbsp;&nbsp;siguienteEstado.currentActor = claveOponente;<br>
+&nbsp;&nbsp;<span class="kw">return</span> { nextState: siguienteEstado, event: evento };<br>
+}
+      </div>
+    </div>
+  </section>
+
+  <!-- PATTERNS -->
+  <section id="patrones">
+    <div class="section-label gsap-hide" data-reveal>Sintaxis moderna</div>
+    <h2 class="section-title gsap-hide" data-reveal>Patrones ES6+ en producción</h2>
+    <div class="tech-block">
+      <div class="accordion gsap-hide" data-stagger id="acc1">
+        <button class="accordion-header" onclick="toggleAcc('acc1')">
+          <span>async / await + fetch dual-mode</span>
+          <span class="chevron">▼</span>
+        </button>
+        <div class="accordion-body">
+          <div class="accordion-content">
+            <p class="micro"><code>solicitarApi</code> intenta REST; si falla (Live Server / Vercel estático) cae a <code>db.json</code> + localStorage.</p>
+            <div class="code-block">
+<span class="kw">export async function</span> <span class="fn">solicitarApi</span>(ruta, opciones = {}) {<br>
+&nbsp;&nbsp;<span class="kw">try</span> {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">const</span> respuesta = <span class="kw">await</span> <span class="fn">fetch</span>(url, configuracion);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">if</span> (respuesta.ok) <span class="kw">return await</span> respuesta.<span class="fn">json</span>();<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">return await</span> <span class="fn">atenderRespaldoEstatico</span>(ruta, opciones);<br>
+&nbsp;&nbsp;} <span class="kw">catch</span> (e) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">if</span> (/Failed to fetch/i.<span class="fn">test</span>(e.message))<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">return await</span> <span class="fn">atenderRespaldoEstatico</span>(ruta, opciones);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">throw</span> e;<br>
+&nbsp;&nbsp;}<br>
+}
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="accordion gsap-hide" data-stagger id="acc2">
+        <button class="accordion-header" onclick="toggleAcc('acc2')">
+          <span>map · filter · sort · reduce en combate y ranking</span>
+          <span class="chevron">▼</span>
+        </button>
+        <div class="accordion-body">
+          <div class="accordion-content">
+            <p class="micro">Construcción del Top 3 al finalizar partida: normalización multi-campo + sort por HP/ATK.</p>
+            <div class="code-block">
+<span class="kw">const</span> ordenadas = todasLasFichas.<span class="fn">sort</span>((a, b) => {<br>
+&nbsp;&nbsp;<span class="kw">if</span> (b.hpReal !== a.hpReal) <span class="kw">return</span> b.hpReal - a.hpReal;<br>
+&nbsp;&nbsp;<span class="kw">if</span> (b.atkReal !== a.atkReal) <span class="kw">return</span> b.atkReal - a.atkReal;<br>
+&nbsp;&nbsp;<span class="kw">return</span> a.ordenOriginal - b.ordenOriginal;<br>
+});<br>
+<span class="kw">return</span> ordenadas.<span class="fn">slice</span>(<span class="num">0</span>, <span class="num">3</span>).<span class="fn">map</span>((carta, i) => ({ ... }));
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="accordion gsap-hide" data-stagger id="acc3">
+        <button class="accordion-header" onclick="toggleAcc('acc3')">
+          <span>Arrow functions + Custom Events entre componentes</span>
+          <span class="chevron">▼</span>
+        </button>
+        <div class="accordion-body">
+          <div class="accordion-content">
+            <p class="micro"><code>GameApp</code> escucha eventos burbuja para orquestar vistas sin acoplamiento directo.</p>
+            <div class="code-block">
+this.<span class="fn">addEventListener</span>(<span class="str">'start-battle'</span>, (evento) => {<br>
+&nbsp;&nbsp;this.batallaPendiente = {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;playerDeck: evento.detail.playerDeck,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;cpuDeck: evento.detail.cpuDeck,<br>
+&nbsp;&nbsp;};<br>
+&nbsp;&nbsp;this.vistaActual = <span class="str">'battle'</span>;<br>
+&nbsp;&nbsp;this.<span class="fn">render</span>();<br>
+});
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="accordion gsap-hide" data-stagger id="acc4">
+        <button class="accordion-header" onclick="toggleAcc('acc4')">
+          <span>IA de la máquina · elegirAccionMaquina()</span>
+          <span class="chevron">▼</span>
+        </button>
+        <div class="accordion-body">
+          <div class="accordion-content">
+            <p class="micro">Heurística simple: especial si HP rival bajo o 60% chance; defensa si HP propio ≤ 115.</p>
+            <div class="code-block">
+<span class="kw">if</span> (revisionEspecial.available && (unidadJugador.currentHp <= <span class="num">75</span> || Math.random() < <span class="num">0.6</span>))<br>
+&nbsp;&nbsp;<span class="kw">return</span> { type: <span class="str">'special'</span> };<br>
+<span class="kw">if</span> (!unidadMaquina.defending && unidadMaquina.currentHp <= <span class="num">115</span> && Math.random() < <span class="num">0.32</span>)<br>
+&nbsp;&nbsp;<span class="kw">return</span> { type: <span class="str">'defense'</span> };<br>
+<span class="cm">// preferencia táctica entre 4 ataques</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CHALLENGE -->
+  <section id="reto">
+    <div class="section-label gsap-hide" data-reveal>El reto técnico</div>
+    <h2 class="section-title gsap-hide" data-reveal>Problema → Solución</h2>
+    <p class="section-sub gsap-hide" data-reveal>La pieza más compleja de resolver en el proyecto.</p>
+    <div class="challenge">
+      <div class="challenge-side problem gsap-hide" data-stagger>
+        <h4>Reto</h4>
+        <p style="font-size:0.9rem;font-weight:600;margin-bottom:0.5rem">Respaldo offline completo</p>
+        <p class="micro">¿Cómo ofrecer CRUD real (GET/POST/PUT/PATCH/DELETE + filtros + sort) cuando no hay backend (Live Server / Vercel estático)?</p>
+      </div>
+      <div class="challenge-side solution gsap-hide" data-stagger>
+        <h4>Solución</h4>
+        <p style="font-size:0.9rem;font-weight:600;margin-bottom:0.5rem"><code>atenderRespaldoEstatico()</code></p>
+        <p class="micro">Simula un mini JSON-Server en el cliente: lee/escribe <code>localStorage</code>, aplica <code>filter</code> + <code>sort</code> y genera IDs. Transparente para el resto de la app.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- CARDS -->
+  <section id="cartas">
+    <div class="section-label gsap-hide" data-reveal>Assets reales</div>
+    <h2 class="section-title gsap-hide" data-reveal>Inspecciona el mazo</h2>
+    <p class="section-sub gsap-hide" data-reveal>Hover o toca para voltear · rutas exactas de <code>public/images/cards</code>.</p>
+    <div class="filters gsap-hide" data-reveal>
+      <button class="filter-btn active" data-f="all">Todas</button>
+      <button class="filter-btn" data-f="Profesores">Profesores</button>
+      <button class="filter-btn" data-f="Estudiantes">Estudiantes</button>
+      <button class="filter-btn" data-f="Personal">Personal</button>
+    </div>
+    <div class="cards-grid" id="cardsGrid"></div>
+  </section>
+
+  <!-- PODIUM -->
+  <section>
+    <div class="section-label gsap-hide" data-reveal>Hall of Fame</div>
+    <h2 class="section-title gsap-hide" data-reveal>Top 3 demo</h2>
+    <div class="podium">
+      <div class="podium-place gsap-hide" data-stagger style="order:2">
+        <div class="podium-card"><img src="./public/images/cards/super-teacher.webp" alt="2" /></div>
+        <div class="podium-rank rank-2">2</div>
+        <div class="podium-name">Super teacher</div>
+        <div class="podium-pts">Special 85</div>
+      </div>
+      <div class="podium-place gsap-hide" data-stagger style="order:1">
+        <div class="podium-card" style="width:140px;height:196px;border-color:var(--campus-gold)">
+          <img src="./public/images/cards/mr-fernando.webp" alt="1" />
+        </div>
+        <div class="podium-rank rank-1">1</div>
+        <div class="podium-name">Mr. Fernando</div>
+        <div class="podium-pts">Special 100</div>
+      </div>
+      <div class="podium-place gsap-hide" data-stagger style="order:3">
+        <div class="podium-card"><img src="./public/images/cards/nikol-ortiz.webp" alt="3" /></div>
+        <div class="podium-rank rank-3">3</div>
+        <div class="podium-name">Nikol Ortiz</div>
+        <div class="podium-pts">Special 65</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <div class="cta-final">
+    <h2 class="gsap-hide" data-reveal>¿Listo para el combate?</h2>
+    <p class="gsap-hide" data-reveal>Entra a la arena real y prueba el motor en vivo.</p>
+    <a href="./index.html" class="btn-primary gsap-hide" data-reveal>Jugar ahora →</a>
+  </div>
+
+  <footer>
+    Campuslands Battle Arena · <strong>juanpis</strong> &amp; <strong>nikol</strong><br>
+    <a href="https://github.com/juan-1332/proyecto-JAVASCRIPT-" target="_blank" rel="noopener">Repositorio GitHub</a>
+  </footer>
+
+  <script>
+    // ===== CARDS DATA =====
+    const CARDS = [
+      { name:"Mr. Fernando", type:"Profesores", image:"./public/images/cards/mr-fernando.webp", hp:250, special:100 },
+      { name:"Super teacher", type:"Profesores", image:"./public/images/cards/super-teacher.webp", hp:250, special:85 },
+      { name:"Sir Pau", type:"Profesores", image:"./public/images/cards/sir-pau.webp", hp:250, special:68 },
+      { name:"Juan Pablo", type:"Estudiantes / Leyendas de Campus", image:"./public/images/cards/juan-pablo.webp", hp:250, special:64 },
+      { name:"Nikol Ortiz", type:"Estudiantes / Leyendas de Campus", image:"./public/images/cards/nikol-ortiz.webp", hp:250, special:65 },
+      { name:"Señor Gemini", type:"Estudiantes / Leyendas de Campus", image:"./public/images/cards/señor-gemini.webp", hp:250, special:68 },
+      { name:"Diana", type:"Estudiantes / Leyendas de Campus", image:"./public/images/cards/diana.webp", hp:250, special:62 },
+      { name:"Chico NKD", type:"Estudiantes / Leyendas de Campus", image:"./public/images/cards/chico-nkd.webp", hp:250, special:66 },
+      { name:"Don Tintero", type:"Estudiantes / Leyendas de Campus", image:"./public/images/cards/don-tintero.webp", hp:250, special:65 },
+      { name:"El Consumidor de APIs", type:"Estudiantes / Leyendas de Campus", image:"./public/images/cards/consumidor-apis.webp", hp:250, special:67 },
+      { name:"Chico COD", type:"Estudiantes / Leyendas de Campus", image:"./public/images/cards/chico-cod.webp", hp:250, special:69 },
+      { name:"Mr. Faltas", type:"Estudiantes / Leyendas de Campus", image:"./public/images/cards/mr-faltas.webp", hp:250, special:60 },
+      { name:"Chico \"La Caliente\"", type:"Estudiantes / Leyendas de Campus", image:"./public/images/cards/chico-la-caliente.webp", hp:250, special:63 },
+      { name:"Doña Rosa", type:"Personal de Apoyo (Cajasan & Campus)", image:"./public/images/cards/doña-rosa.webp", hp:250, special:66 },
+      { name:"Don Luis", type:"Personal de Apoyo (Cajasan & Campus)", image:"./public/images/cards/don-luis.webp", hp:250, special:64 },
+      { name:"Chef Martha", type:"Personal de Apoyo (Cajasan & Campus)", image:"./public/images/cards/chef-martha.webp", hp:250, special:62 },
+      { name:"Carlos Mantenimiento", type:"Personal de Apoyo (Cajasan & Campus)", image:"./public/images/cards/carlos-mantenimiento.webp", hp:250, special:68 },
+      { name:"Doña Elena", type:"Personal de Apoyo (Cajasan & Campus)", image:"./public/images/cards/doña-elena.webp", hp:250, special:60 },
+      { name:"Don Héctor", type:"Personal de Apoyo (Cajasan & Campus)", image:"./public/images/cards/don-hector.webp", hp:250, special:64 },
+      { name:"Memo Audiovisual", type:"Personal de Apoyo (Cajasan & Campus)", image:"./public/images/cards/memo-audiovisual.webp", hp:250, special:65 }
+    ];
+
+    // ===== RENDER CARDS =====
+    const grid = document.getElementById('cardsGrid');
+    function renderCards(filter = 'all') {
+      grid.innerHTML = '';
+      const list = CARDS.filter(c => {
+        if (filter === 'all') return true;
+        if (filter === 'Profesores') return c.type === 'Profesores';
+        if (filter === 'Estudiantes') return c.type.includes('Estudiantes');
+        if (filter === 'Personal') return c.type.includes('Personal');
+        return true;
+      });
+
+      list.forEach((card) => {
+        const el = document.createElement('div');
+        el.className = 'card-item';
+        el.innerHTML = `
+          <div class="card-inner">
+            <div class="card-face card-front">
+              <img src="${card.image}" alt="${card.name}" loading="lazy" />
+              <div class="card-front-overlay">
+                <h4>${card.name}</h4>
+                <span>${card.type.split(' ')[0]}</span>
+              </div>
+            </div>
+            <div class="card-face card-back">
+              <div>
+                <h4>${card.name}</h4>
+                <div class="type">${card.type}</div>
+                <div class="stat-row"><span>HP</span><span class="font-mono">${card.hp}</span></div>
+                <div class="stat-bar"><div class="stat-bar-fill hp-fill" style="width:100%"></div></div>
+                <div class="stat-row" style="margin-top:0.5rem"><span>Special</span><span class="font-mono">${card.special}</span></div>
+                <div class="stat-bar"><div class="stat-bar-fill sp-fill" style="width:${Math.min(100, card.special)}%"></div></div>
+              </div>
+              <div style="font-size:0.68rem;color:var(--campus-muted);text-align:center">Voltear</div>
+            </div>
+          </div>`;
+        el.addEventListener('click', () => el.classList.toggle('flipped'));
+        grid.appendChild(el);
+      });
+
+      // Animate cards with GSAP
+      gsap.fromTo(grid.querySelectorAll('.card-item'),
+        { opacity: 0, y: 30, scale: 0.92 },
+        {
+          opacity: 1, y: 0, scale: 1,
+          duration: 0.45,
+          stagger: 0.04,
+          ease: 'power2.out',
+          overwrite: true
+        }
+      );
+    }
+
+    // ===== GSAP SETUP =====
+    gsap.registerPlugin(ScrollTrigger);
+
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    if (reducedMotion) {
+      document.querySelectorAll('.gsap-hide').forEach(el => {
+        el.style.opacity = 1;
+        el.style.visibility = 'visible';
+      });
+      renderCards();
+    } else {
+      // --- Hero timeline ---
+      const heroTl = gsap.timeline({ defaults: { ease: 'power3.out' } });
+      heroTl
+        .set('[data-hero]', { visibility: 'visible' })
+        .from('[data-hero]', {
+          opacity: 0,
+          y: 36,
+          duration: 0.7,
+          stagger: 0.12
+        })
+        .from('#heroCard', {
+          scale: 0.85,
+          rotateY: -18,
+          rotateX: 12,
+          duration: 0.9,
+          ease: 'back.out(1.4)'
+        }, '-=0.45');
+
+      // Floating loop on hero card
+      gsap.to('#heroCard', {
+        y: -14,
+        rotateX: -3,
+        rotateY: 5,
+        duration: 2.6,
+        ease: 'sine.inOut',
+        yoyo: true,
+        repeat: -1
+      });
+
+      // --- Scroll progress ---
+      gsap.to('#scrollProgress', {
+        width: '100%',
+        ease: 'none',
+        scrollTrigger: {
+          trigger: document.body,
+          start: 'top top',
+          end: 'bottom bottom',
+          scrub: 0.3
+        }
+      });
+
+      // --- Generic section reveals ---
+      gsap.utils.toArray('[data-reveal]').forEach(el => {
+        gsap.fromTo(el,
+          { opacity: 0, y: 28, visibility: 'hidden' },
+          {
+            opacity: 1, y: 0, visibility: 'visible',
+            duration: 0.65,
+            ease: 'power2.out',
+            scrollTrigger: {
+              trigger: el,
+              start: 'top 88%',
+              toggleActions: 'play none none none'
+            }
+          }
+        );
+      });
+
+      // --- Stagger groups (stats, flow, arch, accordion, challenge, podium) ---
+      document.querySelectorAll('section, .cta-final').forEach(section => {
+        const items = section.querySelectorAll('[data-stagger]');
+        if (!items.length) return;
+        gsap.fromTo(items,
+          { opacity: 0, y: 36, visibility: 'hidden' },
+          {
+            opacity: 1, y: 0, visibility: 'visible',
+            duration: 0.55,
+            stagger: 0.1,
+            ease: 'power2.out',
+            scrollTrigger: {
+              trigger: section,
+              start: 'top 80%',
+              toggleActions: 'play none none none'
+            }
+          }
+        );
+      });
+
+      // --- Count-up for stats ---
+      document.querySelectorAll('[data-count]').forEach(el => {
+        const target = Number(el.dataset.count);
+        ScrollTrigger.create({
+          trigger: el,
+          start: 'top 90%',
+          once: true,
+          onEnter: () => {
+            gsap.fromTo(el, { textContent: 0 }, {
+              textContent: target,
+              duration: 1.2,
+              ease: 'power1.out',
+              snap: { textContent: 1 },
+              onUpdate: function () {
+                el.textContent = Math.round(this.targets()[0].textContent);
+              }
+            });
+          }
+        });
+      });
+
+      // Cards initial render + filter
+      renderCards();
+    }
+
+    // Filters
+    document.querySelectorAll('.filter-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        renderCards(btn.dataset.f);
+      });
+    });
+
+    // Accordion
+    function toggleAcc(id) {
+      document.getElementById(id).classList.toggle('open');
+    }
+    window.toggleAcc = toggleAcc;
+
+    // Hero card tilt (magnetic)
+    const heroCard = document.getElementById('heroCard');
+    const heroImgs = [
+      './public/images/cards/mr-fernando.webp',
+      './public/images/cards/super-teacher.webp',
+      './public/images/cards/nikol-ortiz.webp',
+      './public/images/cards/sir-pau.webp',
+      './public/images/cards/don-tintero.webp'
+    ];
+    let idx = 0;
+
+    // Rotate images with GSAP crossfade
+    setInterval(() => {
+      idx = (idx + 1) % heroImgs.length;
+      const img = document.getElementById('heroCardImg');
+      gsap.to(img, {
+        opacity: 0, duration: 0.25,
+        onComplete: () => {
+          img.src = heroImgs[idx];
+          gsap.to(img, { opacity: 1, duration: 0.3 });
+        }
+      });
+    }, 4200);
+
+    if (!reducedMotion) {
+      heroCard.addEventListener('mousemove', e => {
+        const r = heroCard.getBoundingClientRect();
+        const x = (e.clientX - r.left) / r.width - 0.5;
+        const y = (e.clientY - r.top) / r.height - 0.5;
+        gsap.to(heroCard, {
+          rotateX: -y * 16,
+          rotateY: x * 16,
+          scale: 1.04,
+          duration: 0.35,
+          ease: 'power2.out',
+          overwrite: 'auto'
+        });
+      });
+      heroCard.addEventListener('mouseleave', () => {
+        gsap.to(heroCard, {
+          rotateX: 0, rotateY: 0, scale: 1,
+          duration: 0.5, ease: 'power2.out', overwrite: 'auto'
+        });
+      });
+    }
+  </script>
+</body>
+</html>
