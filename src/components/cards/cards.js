@@ -1,7 +1,7 @@
 import './createCards.js';
 import './editCards.js';
 import './deleteCards.js';
-import { apiCartas } from '../../api/cardsApi.js';
+import { apiCartas } from '../../api/cardsapi.js';
 import { crearUrlSvgAlternativa, obtenerTemaCategoria } from '../../utils/cardAvatar.js';
 import { motorAudio } from '../../utils/soundEngine.js';
 

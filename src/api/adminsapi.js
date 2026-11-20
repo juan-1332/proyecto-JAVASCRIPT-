@@ -1,4 +1,4 @@
-import { solicitarApi } from './apiConfig.js';
+import { solicitarApi } from './apiconfig.js';
 
 /**
  * Servicio REST para autenticación de administradores contra db.json.

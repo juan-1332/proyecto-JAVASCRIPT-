@@ -6,8 +6,8 @@ import {
   ejecutarAccionTurno,
   obtenerDisponibilidadEspecial,
 } from '../../utils/battleEngine.js';
-import { apiJugadores } from '../../api/playersApi.js';
-import { apiBatallas } from '../../api/battlesApi.js';
+import { apiJugadores } from '../../api/playersapi.js';
+import { apiBatallas } from '../../api/battlesapi.js';
 import { motorAudio } from '../../utils/soundEngine.js';
 
 export class BattleArena extends HTMLElement {
@@ -172,20 +172,27 @@ export class BattleArena extends HTMLElement {
     this.render();
     this.configurarEventos();
 
-    const jugadorGano = this.estadoBatalla.winner === 'player';
-    const puntosOtorgados = jugadorGano ? 50 : 10;
-
     try {
-      const jugadorActualizado = await apiJugadores.actualizarEstadisticas(this.jugador.id, {
-        points: (this.jugador.points || 0) + puntosOtorgados,
-        wins: (this.jugador.wins || 0) + (jugadorGano ? 1 : 0),
-        losses: (this.jugador.losses || 0) + (jugadorGano ? 0 : 1),
-        gamesPlayed: (this.jugador.gamesPlayed || 0) + 1,
+      const coincidencias = await apiJugadores.buscarPorApodo(this.jugador.nickname);
+      const jugadorPersistido = Array.isArray(coincidencias) ? coincidencias[0] : null;
+      if (!jugadorPersistido) {
+        throw new Error(
+          `No se encontró el perfil "${this.jugador.nickname}" en la base de datos actual. Vuelve a registrarlo antes de jugar otra partida.`
+        );
+      }
+
+      const jugadorGano = this.estadoBatalla.winner === 'player';
+      const puntosOtorgados = jugadorGano ? 50 : 10;
+      const jugadorActualizado = await apiJugadores.actualizarEstadisticas(jugadorPersistido.id, {
+        points: (Number(jugadorPersistido.points) || 0) + puntosOtorgados,
+        wins: (Number(jugadorPersistido.wins) || 0) + (jugadorGano ? 1 : 0),
+        losses: (Number(jugadorPersistido.losses) || 0) + (jugadorGano ? 0 : 1),
+        gamesPlayed: (Number(jugadorPersistido.gamesPlayed) || 0) + 1,
       });
 
       await apiBatallas.registrarBatalla({
-        playerId: this.jugador.id,
-        playerNickname: this.jugador.nickname,
+        playerId: jugadorPersistido.id,
+        playerNickname: jugadorPersistido.nickname,
         playerDeck: this.mazoJugador.map((carta) => carta.name),
         cpuDeck: this.mazoMaquina.map((carta) => carta.name),
         winner: this.estadoBatalla.winner,
@@ -277,7 +284,7 @@ export class BattleArena extends HTMLElement {
               Jugar de Nuevo
             </button>
             <button type="button" id="btn-view-lb" class="campus-btn campus-btn-secondary flex-1">
-              Ver Leaderboard
+              Ver ranking
             </button>
           </div>
         </div>

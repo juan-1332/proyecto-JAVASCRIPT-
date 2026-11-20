@@ -7,8 +7,8 @@ Simulador web de combate de cartas 1v1 (Jugador vs. Máquina) inspirado en el ec
 - **100% JavaScript Vanilla**: Sin TypeScript ni frameworks de frontend (React/Vue/Angular/Axios).
 - **Web Components**: Todas las vistas y subcomponentes extienden de `HTMLElement` (`constructor`, `connectedCallback`, `render`, `configurarEventos`, `customElements.define`).
 - **Capa API aislada (`src/api/`)**:
-  - `apiConfig.js`: Lectura segura de variables de entorno (`VITE_API_MODE`, `VITE_API_DEV_URL`, `VITE_API_PROD_URL`) mediante `switch`, con respaldo automático contra `src/data/db.json` + `localStorage` cuando se ejecuta en servidores estáticos como Live Server o Vercel sin backend externo.
-  - `cardsApi.js`, `playersApi.js`, `adminsApi.js`, `battlesApi.js`: Consumo exclusivo con `fetch()` cubriendo `GET`, `POST`, `PUT`, `PATCH` y `DELETE`.
+  - `apiconfig.js`: Lectura segura de variables de entorno (`VITE_API_MODE`, `VITE_API_DEV_URL`, `VITE_API_PROD_URL`) mediante `switch`, con respaldo automático contra `src/data/db.json` + `localStorage` cuando se ejecuta en servidores estáticos como Live Server o Vercel sin backend externo.
+  - `cardsapi.js`, `playersapi.js`, `adminsapi.js`, `battlesapi.js`: Consumo exclusivo con `fetch()` cubriendo `GET`, `POST`, `PUT`, `PATCH` y `DELETE`.
 - **20 Cartas Temáticas (`src/data/db.json`)**:
   - Profesores (2), Estudiantes / Leyendas de Campus (10) y Personal de Apoyo Cajasan & Campus (8).
 
@@ -24,11 +24,12 @@ Abre `http://localhost:3000`. Todos los métodos `GET`, `POST`, `PUT`, `PATCH` y
 ### Opción 2: VS Code Live Server (Estático)
 1. Abre la carpeta raíz del proyecto en VS Code.
 2. Haz clic derecho sobre `index.html` y selecciona **Open with Live Server**.
-3. `index.html` carga las hojas CSS3 y `./src/app.js` como módulo ES nativo; si no hay un backend activo en `/api`, `apiConfig.js` carga `./src/data/db.json` con `fetch()` y persiste los cambios en `localStorage`.
+3. `index.html` carga las hojas CSS3 y `./src/app.js` como módulo ES nativo; si no hay un backend activo en `/api`, `apiconfig.js` carga `./src/data/db.json` con `fetch()` y persiste los cambios en `localStorage`.
+4. En este modo, jugadores, puntajes e historial se guardan solo en el almacenamiento local de ese navegador; no se comparten con otros dispositivos o jugadores.
 
 ### Opción 3: Despliegue en Vercel
 1. Conecta el repositorio en Vercel (o ejecuta `npx vercel`).
 2. `vercel.json` configura automáticamente el comando `npm run build` y el directorio de salida `dist`.
-3. Opcionalmente, si conectas un backend externo (por ejemplo JSON Server desplegado), configura en Vercel:
+3. Sin una API externa, el respaldo usa `localStorage` y el ranking solo existe en el navegador de cada visitante. Para un ranking compartido, conecta una API respaldada por almacenamiento persistente y configura en Vercel:
    - `VITE_API_MODE=production`
    - `VITE_API_PROD_URL=https://tu-api-externa.com`

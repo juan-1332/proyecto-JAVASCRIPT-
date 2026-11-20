@@ -1,6 +1,6 @@
-import { apiJugadores } from '../../api/playersApi.js';
-import { apiBatallas } from '../../api/battlesApi.js';
-import { apiCartas } from '../../api/cardsApi.js';
+import { apiJugadores } from '../../api/playersapi.js';
+import { apiBatallas } from '../../api/battlesapi.js';
+import { apiCartas } from '../../api/cardsapi.js';
 
 function resolverRutaPublica(rutaRelativa) {
   const limpia = String(rutaRelativa || '')

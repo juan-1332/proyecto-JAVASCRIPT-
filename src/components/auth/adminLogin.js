@@ -1,4 +1,4 @@
-import { apiAdministradores } from '../../api/adminsApi.js';
+import { apiAdministradores } from '../../api/adminsapi.js';
 import { motorAudio } from '../../utils/soundEngine.js';
 
 export class AdminLogin extends HTMLElement {
