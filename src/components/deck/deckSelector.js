@@ -1,4 +1,4 @@
-import { apiCartas } from '../../api/cardsApi.js';
+import { apiCartas } from '../../api/cardsapi.js';
 import { CATEGORIAS_CARTA, validarSeleccionMazo } from '../../utils/validators.js';
 import { crearMazoMaquina } from '../../utils/battleEngine.js';
 import { elegirElementosAleatorios } from '../../utils/random.js';

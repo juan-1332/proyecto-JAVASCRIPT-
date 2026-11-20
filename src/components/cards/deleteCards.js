@@ -1,4 +1,4 @@
-import { apiCartas } from '../../api/cardsApi.js';
+import { apiCartas } from '../../api/cardsapi.js';
 import { motorAudio } from '../../utils/soundEngine.js';
 
 export class DeleteCardModal extends HTMLElement {

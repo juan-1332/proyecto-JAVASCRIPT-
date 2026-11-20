@@ -1,4 +1,4 @@
-import { solicitarApi } from './apiConfig.js';
+import { solicitarApi } from './apiconfig.js';
 
 /**
  * Servicio REST para jugadores, validación de nickname y actualización parcial de estadísticas.

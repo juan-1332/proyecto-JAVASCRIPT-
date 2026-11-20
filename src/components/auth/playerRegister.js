@@ -1,4 +1,4 @@
-import { apiJugadores } from '../../api/playersApi.js';
+import { apiJugadores } from '../../api/playersapi.js';
 import { validarApodo } from '../../utils/validators.js';
 import { motorAudio } from '../../utils/soundEngine.js';
 
@@ -132,17 +132,17 @@ export class PlayerRegister extends HTMLElement {
               Campuslands Battle Arena
             </h1>
             <p class="mt-3 text-slate-300 text-base leading-relaxed max-w-xl">
-              Forma tu mazo de cinco leyendas entre profesores, campers y personal de apoyo de Cajasan. Administra tus turnos, activa escudos y domina el tablero clásico de la sede.
+            Forma tu mazo con las cartas de campuslands, divierte y juega.   
             </p>
           </div>
 
           <div class="auth-rules-grid">
             <div class="auth-rule-item">
-              <div class="text-xs font-semibold text-amber-400">Mazo Táctico</div>
-              <div class="text-sm text-slate-200 mt-1">Elige 5 cartas en orden de salida frente a 5 cartas de la Máquina.</div>
+              <div class="text-xs font-semibold text-amber-400">¿Como armar tu mazo?</div>
+              <div class="text-sm text-slate-200 mt-1">Elige 5 cartas en orden de salida, ellas combatiran contra la maquina.</div>
             </div>
             <div class="auth-rule-item">
-              <div class="text-xs font-semibold text-amber-400">250 HP · Sin Curación</div>
+              <div class="text-xs font-semibold text-amber-400">250 HP</div>
               <div class="text-sm text-slate-200 mt-1">La carta ganadora conserva su vida restante al enfrentar al siguiente relevo.</div>
             </div>
             <div class="auth-rule-item">
@@ -150,13 +150,9 @@ export class PlayerRegister extends HTMLElement {
               <div class="text-sm text-slate-200 mt-1">Consume el turno y reduce a la mitad el próximo ataque recibido.</div>
             </div>
             <div class="auth-rule-item">
-              <div class="text-xs font-semibold text-amber-400">Especial (Turno 2+)</div>
-              <div class="text-sm text-slate-200 mt-1">Bloqueado en turno 1; entra en cooldown estricto de 3 turnos propios.</div>
+              <div class="text-xs font-semibold text-amber-400">Especial (cada dos turnos)</div>
+              <div class="text-sm text-slate-200 mt-1">Bloqueado en turno 1; entra despues de 3 turnos propios.</div>
             </div>
-          </div>
-
-          <div class="mt-6 pt-4 border-t border-white/10 text-xs text-slate-400">
-            Atajos en arena: Teclas 1–4 Ataques · D Defensa · S Especial · M Silencio
           </div>
         </div>
 
@@ -201,9 +197,9 @@ export class PlayerRegister extends HTMLElement {
           </form>
 
           <div class="mt-6 pt-4 border-t border-white/10 flex flex-wrap items-center justify-between gap-2 text-xs text-slate-400">
-            <span>20 cartas listas en el pool</span>
+            <span>20 cartas listas para combatir</span>
             <button type="button" id="btn-go-leaderboard" class="text-amber-400 hover:underline font-medium cursor-pointer">
-              Ver Leaderboard
+              Ver ranking
             </button>
           </div>
         </div>

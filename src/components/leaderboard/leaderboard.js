@@ -1,5 +1,5 @@
-import { apiJugadores } from '../../api/playersApi.js';
-import { apiBatallas } from '../../api/battlesApi.js';
+import { apiJugadores } from '../../api/playersapi.js';
+import { apiBatallas } from '../../api/battlesapi.js';
 
 export class LeaderboardView extends HTMLElement {
   constructor() {

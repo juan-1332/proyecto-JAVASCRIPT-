@@ -1,4 +1,4 @@
-import { apiCartas } from '../../api/cardsApi.js';
+import { apiCartas } from '../../api/cardsapi.js';
 import { CATEGORIAS_CARTA, validarFormularioCarta } from '../../utils/validators.js';
 import { motorAudio } from '../../utils/soundEngine.js';
 
