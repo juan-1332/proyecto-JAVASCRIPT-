@@ -10,7 +10,7 @@ Simulador web de combate de cartas 1v1 (Jugador vs. Máquina) inspirado en el ec
   - `apiconfig.js`: Lectura segura de variables de entorno (`VITE_API_MODE`, `VITE_API_DEV_URL`, `VITE_API_PROD_URL`) mediante `switch`, con respaldo automático contra `src/data/db.json` + `localStorage` cuando se ejecuta en servidores estáticos como Live Server o Vercel sin backend externo.
   - `cardsapi.js`, `playersapi.js`, `adminsapi.js`, `battlesapi.js`: Consumo exclusivo con `fetch()` cubriendo `GET`, `POST`, `PUT`, `PATCH` y `DELETE`.
 - **20 Cartas Temáticas (`src/data/db.json`)**:
-  - Profesores (2), Estudiantes / Leyendas de Campus (10) y Personal de Apoyo Cajasan & Campus (8).
+  - Profesores (3), Estudiantes / Leyendas de Campus (10) y Personal de Apoyo Cajasan & Campus (7).
 
 ## Ejecución en Local
 

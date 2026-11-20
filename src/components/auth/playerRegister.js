@@ -150,8 +150,8 @@ export class PlayerRegister extends HTMLElement {
               <div class="text-sm text-slate-200 mt-1">Consume el turno y reduce a la mitad el próximo ataque recibido.</div>
             </div>
             <div class="auth-rule-item">
-              <div class="text-xs font-semibold text-amber-400">Especial (cada dos turnos)</div>
-              <div class="text-sm text-slate-200 mt-1">Bloqueado en turno 1; entra despues de 3 turnos propios.</div>
+              <div class="text-xs font-semibold text-amber-400">Poder Especial</div>
+              <div class="text-sm text-slate-200 mt-1">Cada carta define su turno de desbloqueo (unlockTurn) y su enfriamiento (cooldown) según sus estadísticas.</div>
             </div>
           </div>
         </div>

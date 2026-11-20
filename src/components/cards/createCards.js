@@ -31,7 +31,7 @@ export class CreateCardModal extends HTMLElement {
     const datosCarta = {
       name: String(datosFormulario.get('name') || '').trim(),
       type: String(datosFormulario.get('type') || CATEGORIAS_CARTA[0]),
-      image: String(datosFormulario.get('image') || '/public/images/cards/mr-fernando.svg').trim(),
+      image: String(datosFormulario.get('image') || '/public/images/cards/mr-fernando.webp').trim(),
       description: String(datosFormulario.get('description') || '').trim(),
       hp: Number(datosFormulario.get('hp') || 250),
       attacks: [
@@ -127,7 +127,7 @@ export class CreateCardModal extends HTMLElement {
               </div>
               <div>
                 <label class="block text-xs text-slate-300 mb-1">Ruta Imagen</label>
-                <input name="image" type="text" class="campus-input" value="/public/images/cards/senor-gemini.svg" />
+                <input name="image" type="text" class="campus-input" value="/public/images/cards/señor-gemini.webp" />
               </div>
             </div>
 
