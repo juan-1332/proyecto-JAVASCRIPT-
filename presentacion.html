@@ -1,0 +1,2191 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Presentación — Campuslands Battle Arena</title>
+  <link rel="icon" type="image/svg+xml" href="./public/favicon.svg" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Outfit:wght@500;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg-deep: #050b18;
+      --bg-navy: #081226;
+      --surface: #0f1d3a;
+      --surface-2: #162952;
+      --border: rgba(248, 250, 252, 0.11);
+      --border-strong: rgba(248, 250, 252, 0.22);
+      --gold: #f59e0b;
+      --gold-bright: #fbbf24;
+      --cyan: #38bdf8;
+      --emerald: #10b981;
+      --danger: #ef4444;
+      --purple: #a78bfa;
+      --text: #f8fafc;
+      --muted: #94a3b8;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html {
+      scroll-behavior: smooth;
+      background: var(--bg-deep);
+      color: var(--text);
+      font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+      overflow-x: hidden;
+    }
+
+    body {
+      background:
+        radial-gradient(ellipse 80% 50% at 50% -10%, rgba(30, 64, 175, 0.32), transparent 65%),
+        radial-gradient(ellipse 60% 40% at 90% 90%, rgba(245, 158, 11, 0.1), transparent 60%),
+        var(--bg-deep);
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+      line-height: 1.5;
+    }
+
+    /* Ambient particle canvas */
+    #ambient-canvas {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 0;
+      opacity: 0.65;
+    }
+
+    /* Top cinematic video progress bar */
+    .video-progress-wrap {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: rgba(255, 255, 255, 0.06);
+      z-index: 100;
+    }
+    .video-progress-bar {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, var(--cyan), var(--gold), var(--gold-bright));
+      box-shadow: 0 0 14px rgba(245, 158, 11, 0.75);
+      transition: width 80ms linear;
+    }
+
+    /* Top minimal HUD */
+    .top-hud {
+      position: fixed;
+      top: 14px;
+      left: 24px;
+      right: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      z-index: 90;
+      pointer-events: none;
+    }
+    .hud-brand {
+      pointer-events: auto;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 14px;
+      border-radius: 999px;
+      background: rgba(8, 18, 38, 0.72);
+      backdrop-filter: blur(14px);
+      border: 1px solid var(--border);
+      font-family: 'Outfit', sans-serif;
+      font-weight: 800;
+      font-size: 0.88rem;
+      letter-spacing: 0.02em;
+      color: var(--text);
+      text-decoration: none;
+    }
+    .hud-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--gold);
+      box-shadow: 0 0 10px var(--gold);
+      animation: pulse-dot 2s infinite;
+    }
+    @keyframes pulse-dot {
+      0%, 100% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.4); opacity: 0.6; }
+    }
+    .hud-controls {
+      pointer-events: auto;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .hud-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 13px;
+      border-radius: 999px;
+      background: rgba(8, 18, 38, 0.75);
+      backdrop-filter: blur(14px);
+      border: 1px solid var(--border);
+      color: var(--text);
+      font-size: 0.78rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 180ms ease;
+    }
+    .hud-btn:hover {
+      border-color: var(--gold);
+      color: var(--gold-bright);
+      transform: translateY(-1px);
+    }
+    .hud-btn.active {
+      background: rgba(245, 158, 11, 0.16);
+      border-color: var(--gold);
+      color: var(--gold-bright);
+    }
+
+    /* Bottom cinematic chapter dock */
+    .chapter-dock {
+      position: fixed;
+      bottom: 18px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 90;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 14px;
+      border-radius: 999px;
+      background: rgba(8, 18, 38, 0.82);
+      backdrop-filter: blur(16px);
+      border: 1px solid var(--border);
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.55);
+    }
+    .dock-arrow {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      border: 1px solid var(--border);
+      background: rgba(255, 255, 255, 0.04);
+      color: var(--text);
+      cursor: pointer;
+      display: grid;
+      place-items: center;
+      font-size: 0.8rem;
+      transition: all 160ms ease;
+    }
+    .dock-arrow:hover {
+      border-color: var(--gold);
+      color: var(--gold-bright);
+      background: rgba(245, 158, 11, 0.12);
+    }
+    .dock-dots {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 0 6px;
+    }
+    .dock-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      border: none;
+      background: rgba(148, 163, 184, 0.35);
+      cursor: pointer;
+      transition: all 280ms cubic-bezier(0.16, 1, 0.3, 1);
+      padding: 0;
+    }
+    .dock-dot:hover { background: rgba(248, 250, 252, 0.75); }
+    .dock-dot.active {
+      width: 28px;
+      background: linear-gradient(90deg, var(--gold), var(--gold-bright));
+      box-shadow: 0 0 12px rgba(245, 158, 11, 0.65);
+    }
+    .dock-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.72rem;
+      color: var(--muted);
+      padding-left: 6px;
+      border-left: 1px solid var(--border);
+      white-space: nowrap;
+      min-width: 112px;
+    }
+
+    /* Main scene sections */
+    main {
+      position: relative;
+      z-index: 1;
+    }
+
+    section.scene {
+      min-height: 100vh;
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 96px 24px 104px;
+      position: relative;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 1180px;
+      margin: 0 auto;
+    }
+
+    /* Scroll reveal animations */
+    .reveal {
+      opacity: 0;
+      transform: translateY(36px) scale(0.98);
+      transition: opacity 750ms cubic-bezier(0.16, 1, 0.3, 1), transform 750ms cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .reveal.delay-1 { transition-delay: 110ms; }
+    .reveal.delay-2 { transition-delay: 220ms; }
+    .reveal.delay-3 { transition-delay: 330ms; }
+    .reveal.delay-4 { transition-delay: 440ms; }
+    .scene.in-view .reveal {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+
+    /* Typography helpers */
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      color: var(--gold-bright);
+      padding: 6px 12px;
+      border-radius: 999px;
+      background: rgba(245, 158, 11, 0.12);
+      border: 1px solid rgba(245, 158, 11, 0.3);
+      margin-bottom: 18px;
+    }
+    .display-title {
+      font-family: 'Outfit', sans-serif;
+      font-weight: 900;
+      letter-spacing: -0.03em;
+      line-height: 1.04;
+      font-size: clamp(2.4rem, 5.8vw, 4.6rem);
+    }
+    .section-title {
+      font-family: 'Outfit', sans-serif;
+      font-weight: 800;
+      letter-spacing: -0.025em;
+      line-height: 1.1;
+      font-size: clamp(1.9rem, 3.8vw, 3.1rem);
+      margin-bottom: 14px;
+    }
+    .gradient-gold {
+      background: linear-gradient(135deg, #ffffff 10%, #fde68a 55%, #f59e0b 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .gradient-cyan {
+      background: linear-gradient(135deg, #ffffff 15%, #7dd3fc 60%, #38bdf8 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .lead {
+      font-size: clamp(1rem, 1.45vw, 1.18rem);
+      color: var(--muted);
+      max-width: 640px;
+    }
+
+    /* Glass panel */
+    .glass {
+      background: linear-gradient(160deg, rgba(18, 34, 68, 0.72), rgba(8, 18, 38, 0.86));
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      backdrop-filter: blur(14px);
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
+    }
+
+    /* ==================== ACTO 1: HERO ==================== */
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 48px;
+      align-items: center;
+    }
+    .pill-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 26px;
+    }
+    .tech-pill {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.78rem;
+      padding: 7px 13px;
+      border-radius: 10px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--border);
+      color: #cbd5e1;
+    }
+    .hero-cta-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+      margin-top: 32px;
+    }
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 13px 24px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, var(--gold), var(--gold-bright));
+      color: #081226;
+      font-weight: 800;
+      font-size: 0.95rem;
+      border: none;
+      cursor: pointer;
+      text-decoration: none;
+      box-shadow: 0 10px 30px rgba(245, 158, 11, 0.35);
+      transition: transform 180ms ease, box-shadow 180ms ease;
+    }
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 14px 36px rgba(245, 158, 11, 0.5);
+    }
+    .btn-ghost {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 13px 22px;
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--border-strong);
+      color: var(--text);
+      font-weight: 600;
+      font-size: 0.95rem;
+      cursor: pointer;
+      text-decoration: none;
+      transition: all 180ms ease;
+    }
+    .btn-ghost:hover {
+      border-color: var(--cyan);
+      color: var(--cyan);
+      background: rgba(56, 189, 248, 0.08);
+    }
+
+    /* 3D fanned hero cards */
+    .hero-fan {
+      position: relative;
+      height: 430px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      perspective: 1100px;
+    }
+    .fan-card {
+      position: absolute;
+      width: 215px;
+      height: 310px;
+      border-radius: 18px;
+      overflow: hidden;
+      border: 1px solid rgba(251, 191, 36, 0.45);
+      background: #0c1936;
+      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.65);
+      transition: transform 550ms cubic-bezier(0.16, 1, 0.3, 1), box-shadow 300ms ease;
+      cursor: pointer;
+    }
+    .fan-card img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    .fan-card::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, transparent 52%, rgba(5, 11, 24, 0.92) 100%);
+    }
+    .fan-card-meta {
+      position: absolute;
+      bottom: 12px;
+      left: 14px;
+      right: 14px;
+      z-index: 2;
+    }
+    .fan-card-name {
+      font-family: 'Outfit', sans-serif;
+      font-weight: 800;
+      font-size: 1.05rem;
+      color: #fff;
+    }
+    .fan-card-role {
+      font-size: 0.72rem;
+      color: var(--gold-bright);
+      font-weight: 600;
+    }
+    .fan-card:nth-child(1) { transform: translateX(-115px) translateY(18px) rotate(-14deg) scale(0.9); z-index: 1; }
+    .fan-card:nth-child(2) { transform: translateX(0px) translateY(-10px) rotate(0deg) scale(1.04); z-index: 3; border-color: var(--gold-bright); box-shadow: 0 28px 70px rgba(245, 158, 11, 0.28); }
+    .fan-card:nth-child(3) { transform: translateX(115px) translateY(18px) rotate(14deg) scale(0.9); z-index: 2; }
+    .hero-fan:hover .fan-card:nth-child(1) { transform: translateX(-145px) translateY(12px) rotate(-17deg) scale(0.93); }
+    .hero-fan:hover .fan-card:nth-child(3) { transform: translateX(145px) translateY(12px) rotate(17deg) scale(0.93); }
+    .fan-card:hover { z-index: 10 !important; transform: translateY(-22px) scale(1.09) rotate(0deg) !important; }
+
+    .scroll-cue {
+      position: absolute;
+      bottom: 76px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      color: var(--muted);
+      font-size: 0.74rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      animation: float-y 2.2s ease-in-out infinite;
+    }
+    @keyframes float-y {
+      0%, 100% { transform: translate(-50%, 0); }
+      50% { transform: translate(-50%, 7px); }
+    }
+
+    /* ==================== ACTO 2: METRICS / VISION ==================== */
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 20px;
+      margin-top: 38px;
+    }
+    .kpi-card {
+      padding: 28px 24px;
+      text-align: left;
+      position: relative;
+      overflow: hidden;
+      transition: transform 250ms ease, border-color 250ms ease;
+    }
+    .kpi-card:hover {
+      transform: translateY(-5px);
+      border-color: rgba(245, 158, 11, 0.45);
+    }
+    .kpi-num {
+      font-family: 'Outfit', sans-serif;
+      font-weight: 900;
+      font-size: clamp(2.5rem, 4vw, 3.6rem);
+      line-height: 1;
+      margin-bottom: 10px;
+    }
+    .kpi-label {
+      font-weight: 700;
+      font-size: 1rem;
+      color: var(--text);
+      margin-bottom: 6px;
+    }
+    .kpi-sub {
+      font-size: 0.84rem;
+      color: var(--muted);
+    }
+    .vision-pillars {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 18px;
+      margin-top: 22px;
+    }
+    .pillar {
+      padding: 22px;
+      border-radius: 16px;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--border);
+    }
+    .pillar-icon {
+      font-size: 1.4rem;
+      margin-bottom: 10px;
+    }
+    .pillar h3 {
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.08rem;
+      margin-bottom: 6px;
+    }
+    .pillar p {
+      font-size: 0.86rem;
+      color: var(--muted);
+    }
+
+    /* ==================== ACTO 3: CARD UNIVERSE ==================== */
+    .filter-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin: 24px 0 28px;
+    }
+    .filter-btn {
+      padding: 9px 16px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: rgba(255, 255, 255, 0.04);
+      color: var(--muted);
+      font-weight: 600;
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: all 180ms ease;
+    }
+    .filter-btn:hover { color: var(--text); border-color: var(--border-strong); }
+    .filter-btn.active {
+      background: var(--gold);
+      color: #081226;
+      border-color: var(--gold);
+      font-weight: 800;
+    }
+    .cards-showcase {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 18px;
+    }
+    .flip-card {
+      height: 310px;
+      perspective: 1000px;
+      cursor: pointer;
+    }
+    .flip-inner {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      transform-style: preserve-3d;
+      transition: transform 600ms cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .flip-card.flipped .flip-inner {
+      transform: rotateY(180deg);
+    }
+    .flip-face {
+      position: absolute;
+      inset: 0;
+      backface-visibility: hidden;
+      border-radius: 18px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      background: var(--surface);
+    }
+    .flip-front img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 400ms ease;
+    }
+    .flip-card:hover .flip-front img { transform: scale(1.06); }
+    .flip-front::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, rgba(5,11,24,0.05) 35%, rgba(5,11,24,0.95) 100%);
+    }
+    .flip-front-info {
+      position: absolute;
+      bottom: 14px;
+      left: 14px;
+      right: 14px;
+      z-index: 2;
+    }
+    .card-badge {
+      display: inline-block;
+      font-size: 0.68rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      padding: 3px 8px;
+      border-radius: 6px;
+      background: rgba(245, 158, 11, 0.2);
+      color: var(--gold-bright);
+      border: 1px solid rgba(245, 158, 11, 0.35);
+      margin-bottom: 6px;
+    }
+    .card-badge.cyan {
+      background: rgba(56, 189, 248, 0.16);
+      color: #7dd3fc;
+      border-color: rgba(56, 189, 248, 0.35);
+    }
+    .card-badge.emerald {
+      background: rgba(16, 185, 129, 0.16);
+      color: #6ee7b7;
+      border-color: rgba(16, 185, 129, 0.35);
+    }
+    .flip-front-info h3 {
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.15rem;
+      font-weight: 800;
+    }
+    .flip-hint {
+      font-size: 0.72rem;
+      color: var(--muted);
+      margin-top: 2px;
+    }
+    .flip-back {
+      transform: rotateY(180deg);
+      padding: 18px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      background: linear-gradient(160deg, #13254c, #081226);
+      border-color: var(--gold);
+    }
+    .flip-back h4 {
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.1rem;
+      color: var(--gold-bright);
+      margin-bottom: 6px;
+    }
+    .flip-back p.desc {
+      font-size: 0.8rem;
+      color: #cbd5e1;
+      margin-bottom: 10px;
+    }
+    .stat-chip-row {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      margin-bottom: 10px;
+    }
+    .stat-chip {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.7rem;
+      padding: 4px 8px;
+      border-radius: 6px;
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid var(--border);
+    }
+    .special-box {
+      padding: 10px;
+      border-radius: 10px;
+      background: rgba(245, 158, 11, 0.12);
+      border: 1px solid rgba(245, 158, 11, 0.32);
+      font-size: 0.76rem;
+    }
+    .special-box strong { color: var(--gold-bright); display: block; margin-bottom: 2px; }
+
+    /* ==================== CODE BLOCKS ==================== */
+    .code-window {
+      border-radius: 16px;
+      overflow: hidden;
+      background: #060d1c;
+      border: 1px solid rgba(148, 163, 184, 0.2);
+      box-shadow: 0 20px 45px rgba(0, 0, 0, 0.5);
+    }
+    .code-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 16px;
+      background: rgba(255, 255, 255, 0.03);
+      border-bottom: 1px solid var(--border);
+    }
+    .code-dots {
+      display: flex;
+      gap: 6px;
+    }
+    .code-dots span {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+    }
+    .code-dots span:nth-child(1) { background: #ef4444; }
+    .code-dots span:nth-child(2) { background: #f59e0b; }
+    .code-dots span:nth-child(3) { background: #10b981; }
+    .code-file {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.74rem;
+      color: var(--muted);
+    }
+    pre.code-body {
+      padding: 18px 20px;
+      overflow-x: auto;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.8rem;
+      line-height: 1.65;
+      color: #e2e8f0;
+    }
+    .kw { color: #c084fc; }
+    .fn { color: #38bdf8; }
+    .str { color: #34d399; }
+    .num { color: #fbbf24; }
+    .cm { color: #64748b; font-style: italic; }
+    .cls { color: #f59e0b; font-weight: 600; }
+
+    /* ==================== ACTO 4: ARCHITECTURE ==================== */
+    .split-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 32px;
+      align-items: center;
+      margin-top: 28px;
+    }
+    .arch-diagram {
+      padding: 26px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    .arch-root {
+      padding: 16px 18px;
+      border-radius: 14px;
+      background: linear-gradient(135deg, rgba(245, 158, 11, 0.2), rgba(245, 158, 11, 0.06));
+      border: 1px solid rgba(245, 158, 11, 0.55);
+      text-align: center;
+    }
+    .arch-root code {
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 700;
+      color: var(--gold-bright);
+      font-size: 0.95rem;
+    }
+    .arch-root p { font-size: 0.78rem; color: var(--muted); margin-top: 4px; }
+    .arch-connector {
+      text-align: center;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.72rem;
+      color: var(--cyan);
+    }
+    .arch-children {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+    }
+    .arch-node {
+      padding: 12px 14px;
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--border);
+      cursor: pointer;
+      transition: all 180ms ease;
+    }
+    .arch-node:hover, .arch-node.active {
+      border-color: var(--cyan);
+      background: rgba(56, 189, 248, 0.1);
+      transform: translateY(-2px);
+    }
+    .arch-node code {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.78rem;
+      color: #7dd3fc;
+      display: block;
+    }
+    .arch-node span {
+      font-size: 0.75rem;
+      color: var(--muted);
+    }
+    .arch-detail-box {
+      padding: 12px 14px;
+      border-radius: 12px;
+      background: rgba(16, 185, 129, 0.08);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+      font-size: 0.82rem;
+      color: #d1fae5;
+    }
+
+    /* ==================== ACTO 5: LIVE BATTLE DEMO ==================== */
+    .battle-demo-box {
+      padding: 24px;
+    }
+    .arena-stage {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      gap: 16px;
+      align-items: center;
+      margin-bottom: 18px;
+    }
+    .fighter-card {
+      padding: 14px;
+      border-radius: 16px;
+      background: rgba(5, 11, 24, 0.75);
+      border: 1px solid var(--border);
+      text-align: center;
+      position: relative;
+      transition: transform 220ms ease, border-color 220ms ease, box-shadow 220ms ease;
+    }
+    .fighter-card.hit {
+      animation: shake-hit 360ms ease;
+      border-color: var(--danger);
+      box-shadow: 0 0 24px rgba(239, 68, 68, 0.4);
+    }
+    .fighter-card.shielded {
+      border-color: var(--cyan);
+      box-shadow: 0 0 24px rgba(56, 189, 248, 0.35);
+    }
+    @keyframes shake-hit {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-8px); }
+      50% { transform: translateX(8px); }
+      75% { transform: translateX(-5px); }
+    }
+    .fighter-img {
+      width: 96px;
+      height: 96px;
+      border-radius: 14px;
+      object-fit: cover;
+      border: 2px solid var(--gold);
+      margin-bottom: 8px;
+    }
+    .fighter-name {
+      font-family: 'Outfit', sans-serif;
+      font-weight: 800;
+      font-size: 1rem;
+    }
+    .fighter-tag {
+      font-size: 0.7rem;
+      color: var(--muted);
+      margin-bottom: 8px;
+    }
+    .hp-bar-bg {
+      height: 10px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.08);
+      overflow: hidden;
+      margin-bottom: 5px;
+    }
+    .hp-bar-fill {
+      height: 100%;
+      width: 100%;
+      border-radius: 999px;
+      background: linear-gradient(90deg, #10b981, #34d399);
+      transition: width 350ms cubic-bezier(0.16, 1, 0.3, 1), background 300ms ease;
+    }
+    .hp-bar-fill.mid { background: linear-gradient(90deg, #f59e0b, #fbbf24); }
+    .hp-bar-fill.low { background: linear-gradient(90deg, #dc2626, #ef4444); }
+    .hp-text {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.76rem;
+      color: #e2e8f0;
+    }
+    .vs-badge {
+      font-family: 'Outfit', sans-serif;
+      font-weight: 900;
+      font-size: 1.35rem;
+      color: var(--gold-bright);
+      text-shadow: 0 0 18px rgba(245, 158, 11, 0.6);
+    }
+    .demo-actions {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+    .action-btn {
+      padding: 11px 10px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      background: rgba(255, 255, 255, 0.05);
+      color: var(--text);
+      font-weight: 700;
+      font-size: 0.82rem;
+      cursor: pointer;
+      transition: all 160ms ease;
+    }
+    .action-btn:hover:not(:disabled) {
+      transform: translateY(-2px);
+      border-color: var(--gold);
+      background: rgba(245, 158, 11, 0.14);
+    }
+    .action-btn.shield:hover:not(:disabled) {
+      border-color: var(--cyan);
+      background: rgba(56, 189, 248, 0.15);
+    }
+    .action-btn.special {
+      background: linear-gradient(135deg, rgba(245, 158, 11, 0.22), rgba(239, 68, 68, 0.18));
+      border-color: rgba(245, 158, 11, 0.55);
+      color: var(--gold-bright);
+    }
+    .action-btn:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+    .battle-log-mini {
+      padding: 12px 14px;
+      border-radius: 12px;
+      background: rgba(0, 0, 0, 0.35);
+      border: 1px solid var(--border);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.76rem;
+      color: #cbd5e1;
+      min-height: 56px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+    .reset-mini {
+      padding: 5px 10px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: rgba(255, 255, 255, 0.06);
+      color: var(--muted);
+      font-size: 0.72rem;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+    .reset-mini:hover { color: #fff; border-color: var(--gold); }
+
+    /* Rule pills */
+    .rule-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin: 20px 0 22px;
+    }
+    .rule-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 13px 16px;
+      border-radius: 14px;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--border);
+    }
+    .rule-tag {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.72rem;
+      font-weight: 700;
+      padding: 4px 8px;
+      border-radius: 6px;
+      background: rgba(56, 189, 248, 0.14);
+      color: var(--cyan);
+      white-space: nowrap;
+    }
+    .rule-item p { font-size: 0.86rem; color: #cbd5e1; }
+
+    /* ==================== ACTO 6: API & HYBRID PERSISTENCE ==================== */
+    .http-tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+    .http-tab {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.78rem;
+      font-weight: 700;
+      padding: 7px 13px;
+      border-radius: 9px;
+      border: 1px solid var(--border);
+      background: rgba(255, 255, 255, 0.04);
+      color: var(--muted);
+      cursor: pointer;
+      transition: all 160ms ease;
+    }
+    .http-tab.active {
+      color: #081226;
+      border-color: transparent;
+    }
+    .http-tab[data-method="GET"].active { background: #38bdf8; }
+    .http-tab[data-method="POST"].active { background: #10b981; }
+    .http-tab[data-method="PUT"].active { background: #f59e0b; }
+    .http-tab[data-method="PATCH"].active { background: #a78bfa; }
+    .http-tab[data-method="DELETE"].active { background: #ef4444; color: #fff; }
+
+    .flow-card {
+      padding: 22px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+    .flow-step {
+      padding: 15px 16px;
+      border-radius: 14px;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--border);
+    }
+    .flow-step strong {
+      display: block;
+      font-family: 'Outfit', sans-serif;
+      font-size: 0.98rem;
+      margin-bottom: 4px;
+    }
+    .flow-step span {
+      font-size: 0.82rem;
+      color: var(--muted);
+    }
+
+    /* ==================== ACTO 7: WEB AUDIO SOUNDBOARD ==================== */
+    .soundboard-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 14px;
+      margin: 26px 0 28px;
+    }
+    .sound-pad {
+      padding: 22px 14px;
+      border-radius: 16px;
+      border: 1px solid var(--border);
+      background: linear-gradient(160deg, rgba(18, 34, 68, 0.75), rgba(8, 18, 38, 0.9));
+      color: var(--text);
+      cursor: pointer;
+      text-align: center;
+      transition: all 180ms ease;
+    }
+    .sound-pad:hover {
+      transform: translateY(-4px);
+      border-color: var(--gold);
+      box-shadow: 0 12px 30px rgba(245, 158, 11, 0.22);
+    }
+    .sound-pad:active { transform: scale(0.96); }
+    .sound-pad .pad-icon { font-size: 1.7rem; margin-bottom: 8px; display: block; }
+    .sound-pad .pad-title { font-family: 'Outfit', sans-serif; font-weight: 700; font-size: 0.95rem; display: block; }
+    .sound-pad .pad-wave {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.7rem;
+      color: var(--cyan);
+      margin-top: 4px;
+      display: block;
+    }
+
+    /* ==================== ACTO 8: USER JOURNEY ==================== */
+    .journey-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 14px;
+      margin-top: 30px;
+    }
+    .journey-card {
+      padding: 22px 18px;
+      position: relative;
+      transition: transform 220ms ease, border-color 220ms ease;
+    }
+    .journey-card:hover {
+      transform: translateY(-6px);
+      border-color: var(--gold);
+    }
+    .step-num {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--gold-bright);
+      margin-bottom: 12px;
+      display: inline-block;
+      padding: 3px 9px;
+      border-radius: 999px;
+      background: rgba(245, 158, 11, 0.14);
+    }
+    .journey-card h3 {
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.05rem;
+      margin-bottom: 8px;
+    }
+    .journey-card p {
+      font-size: 0.82rem;
+      color: var(--muted);
+    }
+
+    /* ==================== ACTO 9: FINALE ==================== */
+    .finale-box {
+      text-align: center;
+      padding: 56px 32px;
+      max-width: 860px;
+      margin: 0 auto;
+      position: relative;
+      overflow: hidden;
+    }
+    .finale-avatars {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 24px;
+    }
+    .finale-avatars img {
+      width: 68px;
+      height: 68px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 3px solid var(--bg-navy);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+      margin-left: -14px;
+      transition: transform 220ms ease;
+    }
+    .finale-avatars img:first-child { margin-left: 0; }
+    .finale-avatars img:hover { transform: translateY(-6px) scale(1.1); z-index: 5; }
+
+    /* Responsive */
+    @media (max-width: 980px) {
+      .hero-grid, .split-2 { grid-template-columns: 1fr; }
+      .kpi-grid, .cards-showcase { grid-template-columns: repeat(2, 1fr); }
+      .vision-pillars { grid-template-columns: 1fr; }
+      .soundboard-grid, .journey-grid { grid-template-columns: repeat(2, 1fr); }
+      .hero-fan { height: 340px; }
+      .dock-label { display: none; }
+    }
+    @media (max-width: 580px) {
+      .kpi-grid, .cards-showcase, .soundboard-grid, .journey-grid { grid-template-columns: 1fr; }
+      .arena-stage { grid-template-columns: 1fr; }
+      .vs-badge { display: none; }
+    }
+  </style>
+</head>
+<body>
+  <canvas id="ambient-canvas"></canvas>
+
+  <!-- Video-style scroll progress bar -->
+  <div class="video-progress-wrap" aria-hidden="true">
+    <div class="video-progress-bar" id="progressBar"></div>
+  </div>
+
+  <!-- Minimal Top HUD -->
+  <header class="top-hud">
+    <a href="#acto-1" class="hud-brand">
+      <span class="hud-dot"></span>
+      CAMPUSLANDS BATTLE ARENA
+    </a>
+    <div class="hud-controls">
+      <button type="button" class="hud-btn" id="btnAutoPlay" title="Desplazamiento automático tipo video">
+        ▶ Modo Película
+      </button>
+      <button type="button" class="hud-btn active" id="btnSoundToggle" title="Activar/Desactivar efectos Web Audio">
+        🔊 Audio ON
+      </button>
+      <button type="button" class="hud-btn" id="btnFullscreen" title="Pantalla completa (F)">
+        ⛶ Fullscreen
+      </button>
+    </div>
+  </header>
+
+  <main id="presentationMain">
+    <!-- ==================== ACTO 1: PORTADA ==================== -->
+    <section class="scene in-view" id="acto-1" data-title="01 · Portada">
+      <div class="container">
+        <div class="hero-grid">
+          <div>
+            <span class="eyebrow reveal">Proyecto Final · JavaScript Vanilla</span>
+            <h1 class="display-title reveal delay-1">
+              Campuslands<br />
+              <span class="gradient-gold">Battle Arena</span>
+            </h1>
+            <p class="lead reveal delay-2" style="margin-top: 18px;">
+              Simulador táctico de combate de cartas 1v1 ambientado en Campuslands y Cajasan. Construido desde cero con estándares web nativos.
+            </p>
+            <div class="pill-row reveal delay-3">
+              <span class="tech-pill">ES Modules</span>
+              <span class="tech-pill">Web Components</span>
+              <span class="tech-pill">Fetch API REST</span>
+              <span class="tech-pill">Web Audio API</span>
+              <span class="tech-pill">0 Frameworks</span>
+            </div>
+            <div class="hero-cta-row reveal delay-4">
+              <a href="#acto-2" class="btn-primary">Iniciar Recorrido ↓</a>
+              <a href="./index.html" target="_blank" class="btn-ghost">Abrir Juego Real ↗</a>
+            </div>
+          </div>
+
+          <div class="hero-fan reveal delay-2" id="heroFan">
+            <div class="fan-card">
+              <img src="./public/images/cards/super-teacher.webp" alt="Super teacher" />
+              <div class="fan-card-meta">
+                <div class="fan-card-name">Super teacher</div>
+                <div class="fan-card-role">Profesores · 250 HP</div>
+              </div>
+            </div>
+            <div class="fan-card">
+              <img src="./public/images/cards/mr-fernando.webp" alt="Mr. Fernando" />
+              <div class="fan-card-meta">
+                <div class="fan-card-name">Mr. Fernando</div>
+                <div class="fan-card-role">Arquitecto Supremo · 250 HP</div>
+              </div>
+            </div>
+            <div class="fan-card">
+              <img src="./public/images/cards/sir-pau.webp" alt="Ma'am Pau" />
+              <div class="fan-card-meta">
+                <div class="fan-card-name">Ma'am Pau</div>
+                <div class="fan-card-role">Profesores · 250 HP</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="scroll-cue">
+        <span>Haz scroll o usa ↑ ↓</span>
+      </div>
+    </section>
+
+    <!-- ==================== ACTO 2: EL RETO Y NÚMEROS ==================== -->
+    <section class="scene" id="acto-2" data-title="02 · Visión">
+      <div class="container">
+        <span class="eyebrow reveal">02 · Visión & Alcance</span>
+        <h2 class="section-title reveal delay-1">
+          Ingeniería limpia, <span class="gradient-cyan">sin depender de frameworks</span>.
+        </h2>
+        <p class="lead reveal delay-2">
+          Convertimos el día a día de Campuslands en un videojuego web completo: arquitectura modular, persistencia real y experiencia inmersiva.
+        </p>
+
+        <div class="kpi-grid">
+          <div class="glass kpi-card reveal delay-1">
+            <div class="kpi-num gradient-gold" data-count="0">0</div>
+            <div class="kpi-label">Frameworks Frontend</div>
+            <div class="kpi-sub">Sin React, Vue ni Angular. Solo JS puro y estándares W3C.</div>
+          </div>
+          <div class="glass kpi-card reveal delay-2">
+            <div class="kpi-num gradient-cyan" data-count="20">20</div>
+            <div class="kpi-label">Cartas Temáticas</div>
+            <div class="kpi-sub">Profesores, estudiantes y personal de apoyo con arte propio.</div>
+          </div>
+          <div class="glass kpi-card reveal delay-3">
+            <div class="kpi-num gradient-gold" data-count="5">5</div>
+            <div class="kpi-label">Métodos HTTP REST</div>
+            <div class="kpi-sub">GET, POST, PUT, PATCH y DELETE con Fetch API nativo.</div>
+          </div>
+          <div class="glass kpi-card reveal delay-4">
+            <div class="kpi-num gradient-cyan" data-count="3">3</div>
+            <div class="kpi-label">Modos de Despliegue</div>
+            <div class="kpi-sub">Express + Vite local, Live Server estático y Vercel.</div>
+          </div>
+        </div>
+
+        <div class="vision-pillars reveal delay-3">
+          <div class="pillar">
+            <div class="pillar-icon">🧩</div>
+            <h3>Modularidad Real</h3>
+            <p>Cada pantalla es un Web Component autónomo encapsulado en su propia carpeta.</p>
+          </div>
+          <div class="pillar">
+            <div class="pillar-icon">⚡</div>
+            <h3>Motor Puro e Inmutable</h3>
+            <p>La lógica de combate vive aislada de la interfaz y clona estados con <code>structuredClone</code>.</p>
+          </div>
+          <div class="pillar">
+            <div class="pillar-icon">🛡️</div>
+            <h3>Resiliencia Total</h3>
+            <p>Si no hay servidor activo, la app cambia automáticamente a respaldo local sin romperse.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== ACTO 3: UNIVERSO DE CARTAS ==================== -->
+    <section class="scene" id="acto-3" data-title="03 · Cartas">
+      <div class="container">
+        <span class="eyebrow reveal">03 · Identidad Campuslands & Cajasan</span>
+        <h2 class="section-title reveal delay-1">
+          20 personajes reales. <span class="gradient-gold">Haz clic en cualquier carta.</span>
+        </h2>
+        <p class="lead reveal delay-2">
+          Cada carta tiene 4 ataques, defensa táctica al 50% y un poder especial único con cooldown.
+        </p>
+
+        <div class="filter-bar reveal delay-2" id="cardFilterBar">
+          <button type="button" class="filter-btn active" data-filter="all">Destacadas (8)</button>
+          <button type="button" class="filter-btn" data-filter="Profesores">Profesores (3)</button>
+          <button type="button" class="filter-btn" data-filter="Estudiantes">Leyendas de Campus</button>
+          <button type="button" class="filter-btn" data-filter="Apoyo">Personal Cajasan</button>
+        </div>
+
+        <div class="cards-showcase reveal delay-3" id="cardsShowcase"></div>
+      </div>
+    </section>
+
+    <!-- ==================== ACTO 4: ARQUITECTURA WEB COMPONENTS ==================== -->
+    <section class="scene" id="acto-4" data-title="04 · Arquitectura">
+      <div class="container">
+        <span class="eyebrow reveal">04 · Arquitectura Frontend</span>
+        <h2 class="section-title reveal delay-1">
+          Orquestación nativa con <span class="gradient-cyan">Web Components</span>.
+        </h2>
+        <p class="lead reveal delay-2">
+          Un solo componente raíz coordina el estado de sesión y las vistas mediante <code>CustomEvent</code>. Haz clic en los módulos para inspeccionar.
+        </p>
+
+        <div class="split-2">
+          <div class="glass arch-diagram reveal delay-2">
+            <div class="arch-root">
+              <code>&lt;card-game-app&gt;</code>
+              <p>Orquestador central · Estado de sesión en sessionStorage</p>
+            </div>
+            <div class="arch-connector">↓ CustomEvents: player-ready · start-battle · navigate ↓</div>
+            <div class="arch-children" id="archNodes">
+              <div class="arch-node active" data-info="Valida apodo del jugador, consulta/registra en /api/players y dispara el evento player-ready.">
+                <code>&lt;player-register&gt;</code>
+                <span>Ingreso & Sesión</span>
+              </div>
+              <div class="arch-node" data-info="Permite armar un mazo táctico de 5 cartas activas y genera automáticamente 5 cartas rivales para la Máquina.">
+                <code>&lt;deck-selector&gt;</code>
+                <span>Selector de Mazo</span>
+              </div>
+              <div class="arch-node" data-info="Conecta la UI con battleEngine.js y soundEngine.js. Anima golpes, escudos, cambios de carta y podio final.">
+                <code>&lt;battle-arena&gt;</code>
+                <span>Combate 1v1</span>
+              </div>
+              <div class="arch-node" data-info="Consulta /api/players y /api/battles ordenados por puntaje, victorias e historial con podio Top 3.">
+                <code>&lt;leaderboard-view&gt;</code>
+                <span>Ranking Global</span>
+              </div>
+              <div class="arch-node" style="grid-column: span 2;" data-info="Protegido por <admin-login>. Permite crear (POST), editar completo (PUT), activar/desactivar (PATCH) y eliminar (DELETE) cartas.">
+                <code>&lt;admin-login&gt; → &lt;cards-manager&gt;</code>
+                <span>Panel Administrativo CRUD Completo</span>
+              </div>
+            </div>
+            <div class="arch-detail-box" id="archDetailBox">
+              Valida apodo del jugador, consulta/registra en /api/players y dispara el evento player-ready.
+            </div>
+          </div>
+
+          <div class="code-window reveal delay-3">
+            <div class="code-header">
+              <div class="code-dots"><span></span><span></span><span></span></div>
+              <span class="code-file">src/components/app/gameApp.js</span>
+            </div>
+<pre class="code-body"><span class="kw">export class</span> <span class="cls">GameApp</span> <span class="kw">extends</span> <span class="cls">HTMLElement</span> {
+  <span class="fn">connectedCallback</span>() {
+    <span class="kw">this</span>.<span class="fn">render</span>();
+    <span class="kw">this</span>.<span class="fn">configurarEventos</span>();
+  }
+
+  <span class="fn">renderizarVistaActiva</span>() {
+    <span class="kw">switch</span> (<span class="kw">this</span>.vistaActual) {
+      <span class="kw">case</span> <span class="str">'deck'</span>:        <span class="kw">return</span> <span class="str">`&lt;deck-selector&gt;&lt;/deck-selector&gt;`</span>;
+      <span class="kw">case</span> <span class="str">'battle'</span>:      <span class="kw">return</span> <span class="str">`&lt;battle-arena&gt;&lt;/battle-arena&gt;`</span>;
+      <span class="kw">case</span> <span class="str">'leaderboard'</span>: <span class="kw">return</span> <span class="str">`&lt;leaderboard-view&gt;&lt;/leaderboard-view&gt;`</span>;
+      <span class="kw">case</span> <span class="str">'admin'</span>:       <span class="kw">return</span> <span class="kw">this</span>.administradorActual
+        ? <span class="str">`&lt;cards-manager&gt;&lt;/cards-manager&gt;`</span>
+        : <span class="str">`&lt;admin-login&gt;&lt;/admin-login&gt;`</span>;
+    }
+  }
+}
+customElements.<span class="fn">define</span>(<span class="str">'card-game-app'</span>, <span class="cls">GameApp</span>);</pre>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== ACTO 5: MOTOR DE COMBATE + DEMO EN VIVO ==================== -->
+    <section class="scene" id="acto-5" data-title="05 · Combate Vivo">
+      <div class="container">
+        <span class="eyebrow reveal">05 · Motor Puro & Demo Interactiva</span>
+        <h2 class="section-title reveal delay-1">
+          Lógica táctica <span class="gradient-gold">probada en vivo</span>.
+        </h2>
+
+        <div class="split-2">
+          <div class="reveal delay-2">
+            <div class="rule-list">
+              <div class="rule-item">
+                <span class="rule-tag">RNG ±15%</span>
+                <p>Cada golpe aplica una variación dinámica entre <strong>0.85x y 1.15x</strong> sobre el daño base.</p>
+              </div>
+              <div class="rule-item">
+                <span class="rule-tag">ESCUDO 50%</span>
+                <p>Defender activa mitigación del <strong>50%</strong> para el próximo impacto enemigo.</p>
+              </div>
+              <div class="rule-item">
+                <span class="rule-tag">ESPECIAL</span>
+                <p>Se desbloquea en el <strong>Turno 2</strong> propio y entra en <strong>Cooldown de 3 turnos</strong>.</p>
+              </div>
+              <div class="rule-item">
+                <span class="rule-tag">IA CPU</span>
+                <p><code>elegirAccionMaquina()</code> evalúa tu HP, su defensa y disponibilidad del especial.</p>
+              </div>
+            </div>
+
+            <div class="code-window">
+              <div class="code-header">
+                <div class="code-dots"><span></span><span></span><span></span></div>
+                <span class="code-file">src/utils/battleEngine.js</span>
+              </div>
+<pre class="code-body"><span class="kw">export function</span> <span class="fn">calcularDanoAccion</span>(danoBase, defensora) {
+  <span class="kw">const</span> factor = <span class="fn">factorAleatorio</span>(<span class="num">0.85</span>, <span class="num">1.15</span>);
+  <span class="kw">const</span> bruto = Math.<span class="fn">round</span>(danoBase * factor);
+  <span class="kw">const</span> reduccion = defensora.defending ? <span class="num">0.5</span> : <span class="num">0</span>;
+  <span class="kw">return</span> Math.<span class="fn">max</span>(<span class="num">1</span>, Math.<span class="fn">round</span>(bruto * (<span class="num">1</span> - reduccion)));
+}</pre>
+            </div>
+          </div>
+
+          <!-- MINI ARENA INTERACTIVA EN VIVO -->
+          <div class="glass battle-demo-box reveal delay-3">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">
+              <span style="font-family:'JetBrains Mono',monospace; font-size:0.74rem; color:var(--gold-bright);">● MINI-ARENA INTERACTIVA</span>
+              <span id="demoTurnBadge" style="font-family:'JetBrains Mono',monospace; font-size:0.74rem; color:var(--cyan);">Turno 1 · Tu turno</span>
+            </div>
+
+            <div class="arena-stage">
+              <div class="fighter-card" id="playerFighterCard">
+                <img class="fighter-img" src="./public/images/cards/mr-fernando.webp" alt="Mr. Fernando" />
+                <div class="fighter-name">Mr. Fernando</div>
+                <div class="fighter-tag" id="playerStatusTag">Jugador</div>
+                <div class="hp-bar-bg"><div class="hp-bar-fill" id="playerHpBar"></div></div>
+                <div class="hp-text" id="playerHpText">250 / 250 HP</div>
+              </div>
+
+              <div class="vs-badge">VS</div>
+
+              <div class="fighter-card" id="cpuFighterCard">
+                <img class="fighter-img" src="./public/images/cards/super-teacher.webp" alt="Super teacher" />
+                <div class="fighter-name">Super teacher</div>
+                <div class="fighter-tag" id="cpuStatusTag">Máquina (IA)</div>
+                <div class="hp-bar-bg"><div class="hp-bar-fill" id="cpuHpBar"></div></div>
+                <div class="hp-text" id="cpuHpText">250 / 250 HP</div>
+              </div>
+            </div>
+
+            <div class="demo-actions">
+              <button type="button" class="action-btn" id="btnDemoAttack">⚔️ Despliegue (50)</button>
+              <button type="button" class="action-btn shield" id="btnDemoDefense">🛡️ Escudo (-50%)</button>
+              <button type="button" class="action-btn special" id="btnDemoSpecial" disabled>⚡ Examen CS50 (T2)</button>
+            </div>
+
+            <div class="battle-log-mini">
+              <span id="demoLogText">Pulsa un botón para simular un turno real con reglas y audio del proyecto.</span>
+              <button type="button" class="reset-mini" id="btnDemoReset">↻ Reiniciar</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== ACTO 6: API HÍBRIDA & REST ==================== -->
+    <section class="scene" id="acto-6" data-title="06 · API REST">
+      <div class="container">
+        <span class="eyebrow reveal">06 · Capa de Datos & Resiliencia</span>
+        <h2 class="section-title reveal delay-1">
+          Cliente REST puro con <span class="gradient-cyan">respaldo automático</span>.
+        </h2>
+        <p class="lead reveal delay-2">
+          <code>apiconfig.js</code> consume <code>/api/*</code> con <code>fetch()</code> y, si el proyecto se abre sin backend (Live Server o Vercel estático), conmuta de forma transparente a <code>db.json + localStorage</code>.
+        </p>
+
+        <div class="split-2">
+          <div class="glass flow-card reveal delay-2">
+            <div class="flow-step" style="border-color: rgba(56, 189, 248, 0.35);">
+              <strong style="color:var(--cyan);">1. Detección de Entorno</strong>
+              <span>Lee <code>VITE_API_MODE</code>, <code>VITE_API_DEV_URL</code> y <code>VITE_API_PROD_URL</code> con <code>switch</code>.</span>
+            </div>
+            <div class="flow-step" style="border-color: rgba(16, 185, 129, 0.35);">
+              <strong style="color:var(--emerald);">2. Servidor Express + Vite (Local)</strong>
+              <span><code>server.js</code> expone <code>/api/cards</code>, <code>/players</code>, <code>/battles</code> y <code>/admins</code> persistiendo directo en <code>src/data/db.json</code>.</span>
+            </div>
+            <div class="flow-step" style="border-color: rgba(245, 158, 11, 0.35);">
+              <strong style="color:var(--gold-bright);">3. Fallback Inteligente</strong>
+              <span>Si <code>fetch()</code> recibe 404 HTML o error de red, <code>atenderRespaldoEstatico()</code> emula los 5 verbos HTTP en el navegador.</span>
+            </div>
+          </div>
+
+          <div class="reveal delay-3">
+            <div class="http-tabs" id="httpTabs">
+              <button type="button" class="http-tab active" data-method="GET">GET</button>
+              <button type="button" class="http-tab" data-method="POST">POST</button>
+              <button type="button" class="http-tab" data-method="PUT">PUT</button>
+              <button type="button" class="http-tab" data-method="PATCH">PATCH</button>
+              <button type="button" class="http-tab" data-method="DELETE">DELETE</button>
+            </div>
+            <div class="code-window">
+              <div class="code-header">
+                <div class="code-dots"><span></span><span></span><span></span></div>
+                <span class="code-file" id="httpFileLabel">src/api/cardsapi.js — GET /cards?active=true</span>
+              </div>
+              <pre class="code-body" id="httpCodeBlock"></pre>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== ACTO 7: WEB AUDIO API ==================== -->
+    <section class="scene" id="acto-7" data-title="07 · Audio">
+      <div class="container">
+        <span class="eyebrow reveal">07 · Detalle de Ingeniería</span>
+        <h2 class="section-title reveal delay-1">
+          Motor de sonido <span class="gradient-gold">100% procedural</span>.
+        </h2>
+        <p class="lead reveal delay-2">
+          Sin depender de archivos MP3 externos: <code>soundEngine.js</code> sintetiza cada golpe, escudo y fanfarria en tiempo real con osciladores de la <strong>Web Audio API</strong>. Pruébalo aquí:
+        </p>
+
+        <div class="soundboard-grid reveal delay-2">
+          <button type="button" class="sound-pad" data-sfx="attack">
+            <span class="pad-icon">⚔️</span>
+            <span class="pad-title">Ataque</span>
+            <span class="pad-wave">sawtooth + triangle</span>
+          </button>
+          <button type="button" class="sound-pad" data-sfx="hit">
+            <span class="pad-icon">💥</span>
+            <span class="pad-title">Impacto</span>
+            <span class="pad-wave">82Hz → 32Hz square</span>
+          </button>
+          <button type="button" class="sound-pad" data-sfx="defense">
+            <span class="pad-icon">🛡️</span>
+            <span class="pad-title">Escudo</span>
+            <span class="pad-wave">sine + triangle</span>
+          </button>
+          <button type="button" class="sound-pad" data-sfx="special">
+            <span class="pad-icon">⚡</span>
+            <span class="pad-title">Especial</span>
+            <span class="pad-wave">3 osciladores</span>
+          </button>
+          <button type="button" class="sound-pad" data-sfx="victory">
+            <span class="pad-icon">🏆</span>
+            <span class="pad-title">Victoria</span>
+            <span class="pad-wave">C5 · E5 · G5 · C6</span>
+          </button>
+        </div>
+
+        <div class="code-window reveal delay-3" style="max-width: 780px;">
+          <div class="code-header">
+            <div class="code-dots"><span></span><span></span><span></span></div>
+            <span class="code-file">src/utils/soundEngine.js</span>
+          </div>
+<pre class="code-body"><span class="fn">reproducirTono</span>({ freq, endFreq, duration, type, gain }) {
+  <span class="kw">const</span> osc = ctx.<span class="fn">createOscillator</span>();
+  <span class="kw">const</span> amp = ctx.<span class="fn">createGain</span>();
+  osc.type = type; <span class="cm">// 'sawtooth' | 'triangle' | 'square' | 'sine'</span>
+  osc.frequency.<span class="fn">setValueAtTime</span>(freq, now);
+  osc.frequency.<span class="fn">exponentialRampToValueAtTime</span>(endFreq, now + duration);
+  osc.<span class="fn">connect</span>(amp); amp.<span class="fn">connect</span>(ctx.destination);
+  osc.<span class="fn">start</span>(now); osc.<span class="fn">stop</span>(now + duration);
+}</pre>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== ACTO 8: FLUJO DE EXPERIENCIA ==================== -->
+    <section class="scene" id="acto-8" data-title="08 · Flujo App">
+      <div class="container">
+        <span class="eyebrow reveal">08 · Experiencia Completa</span>
+        <h2 class="section-title reveal delay-1">
+          Del registro al <span class="gradient-cyan">podio y panel Admin</span>.
+        </h2>
+        <p class="lead reveal delay-2">
+          Un ciclo de producto cerrado, pensado tanto para jugadores competitivos como para administradores del catálogo.
+        </p>
+
+        <div class="journey-grid">
+          <div class="glass journey-card reveal delay-1">
+            <span class="step-num">PASO 01</span>
+            <h3>Registro Rápido</h3>
+            <p>Ingreso por apodo, creación o recuperación de perfil y sesión persistente.</p>
+          </div>
+          <div class="glass journey-card reveal delay-2">
+            <span class="step-num">PASO 02</span>
+            <h3>Armado de Mazo</h3>
+            <p>Selección táctica de 5 cartas activas frente a un mazo enemigo sin repetidos.</p>
+          </div>
+          <div class="glass journey-card reveal delay-2">
+            <span class="step-num">PASO 03</span>
+            <h3>Arena 1v1</h3>
+            <p>Combate por turnos, bitácora en vivo, efectos de audio y podio Top 3 al finalizar.</p>
+          </div>
+          <div class="glass journey-card reveal delay-3">
+            <span class="step-num">PASO 04</span>
+            <h3>Ranking Global</h3>
+            <p>Tabla de posiciones por puntos (+50 victoria / +10 participación) e historial.</p>
+          </div>
+          <div class="glass journey-card reveal delay-4">
+            <span class="step-num">PASO 05</span>
+            <h3>Panel Admin</h3>
+            <p>Acceso seguro para crear, editar, pausar o eliminar cartas en tiempo real.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== ACTO 9: CIERRE & DEMO ==================== -->
+    <section class="scene" id="acto-9" data-title="09 · Cierre">
+      <div class="container">
+        <div class="glass finale-box reveal">
+          <div class="finale-avatars">
+            <img src="./public/images/cards/mr-fernando.webp" alt="Mr. Fernando" />
+            <img src="./public/images/cards/super-teacher.webp" alt="Super teacher" />
+            <img src="./public/images/cards/sir-pau.webp" alt="Ma'am Pau" />
+            <img src="./public/images/cards/juan-pablo.webp" alt="Juan Pablo" />
+            <img src="./public/images/cards/nikol-ortiz.webp" alt="Nikol Ortiz" />
+            <img src="./public/images/cards/señor-gemini.webp" alt="Señor Gemini" />
+          </div>
+          <span class="eyebrow">Demo en Vivo · Preguntas</span>
+          <h2 class="display-title" style="font-size: clamp(2.2rem, 5vw, 3.8rem); margin-bottom: 14px;">
+            ¿Listos para entrar a la <span class="gradient-gold">Arena</span>?
+          </h2>
+          <p class="lead" style="margin: 0 auto 30px;">
+            Campuslands Battle Arena — JavaScript Vanilla, Web Components, REST API y pasión por el código limpio.
+          </p>
+          <div style="display:flex; gap:14px; justify-content:center; flex-wrap:wrap;">
+            <a href="./index.html" target="_blank" class="btn-primary">🎮 Jugar Demo en Vivo ↗</a>
+            <a href="#acto-1" class="btn-ghost">↺ Volver al Inicio</a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Floating Cinematic Chapter Dock -->
+  <nav class="chapter-dock" aria-label="Capítulos de presentación">
+    <button type="button" class="dock-arrow" id="btnPrevScene" title="Escena anterior (↑)">↑</button>
+    <div class="dock-dots" id="dockDots"></div>
+    <button type="button" class="dock-arrow" id="btnNextScene" title="Siguiente escena (↓)">↓</button>
+    <span class="dock-label" id="dockLabel">01 · Portada</span>
+  </nav>
+
+  <script>
+    /* =========================================================================
+       1. MOTOR DE AUDIO PROCEDURAL (Inspirado directamente en src/utils/soundEngine.js)
+       ========================================================================= */
+    const sfx = {
+      ctx: null,
+      enabled: true,
+      ensure() {
+        if (!this.enabled) return null;
+        if (!this.ctx) {
+          const AC = window.AudioContext || window.webkitAudioContext;
+          if (!AC) return null;
+          this.ctx = new AC();
+        }
+        if (this.ctx.state === 'suspended') this.ctx.resume().catch(() => {});
+        return this.ctx;
+      },
+      tone({ freq = 600, endFreq = null, duration = 0.16, type = 'triangle', gain = 0.14, delay = 0 }) {
+        const ctx = this.ensure();
+        if (!ctx) return;
+        const t = ctx.currentTime + delay;
+        const osc = ctx.createOscillator();
+        const amp = ctx.createGain();
+        osc.type = type;
+        osc.frequency.setValueAtTime(freq, t);
+        if (endFreq !== null) {
+          osc.frequency.exponentialRampToValueAtTime(Math.max(30, endFreq), t + duration);
+        }
+        amp.gain.setValueAtTime(0.001, t);
+        amp.gain.exponentialRampToValueAtTime(gain, t + 0.02);
+        amp.gain.exponentialRampToValueAtTime(0.001, t + duration);
+        osc.connect(amp);
+        amp.connect(ctx.destination);
+        osc.start(t);
+        osc.stop(t + duration + 0.02);
+      },
+      play(kind) {
+        if (kind === 'click') {
+          this.tone({ freq: 620, endFreq: 480, duration: 0.06, type: 'sine', gain: 0.07 });
+        } else if (kind === 'attack') {
+          this.tone({ freq: 1500, endFreq: 240, duration: 0.13, type: 'sawtooth', gain: 0.22 });
+          this.tone({ freq: 2200, endFreq: 620, duration: 0.1, type: 'triangle', gain: 0.18, delay: 0.025 });
+        } else if (kind === 'hit') {
+          this.tone({ freq: 82, endFreq: 32, duration: 0.22, type: 'square', gain: 0.24 });
+          this.tone({ freq: 1850, endFreq: 420, duration: 0.07, type: 'sine', gain: 0.14 });
+        } else if (kind === 'defense') {
+          this.tone({ freq: 1650, endFreq: 920, duration: 0.16, type: 'sine', gain: 0.18 });
+          this.tone({ freq: 2800, endFreq: 1450, duration: 0.14, type: 'triangle', gain: 0.16, delay: 0.045 });
+        } else if (kind === 'special') {
+          this.tone({ freq: 130, endFreq: 1750, duration: 0.3, type: 'sawtooth', gain: 0.22 });
+          this.tone({ freq: 420, endFreq: 2600, duration: 0.28, type: 'triangle', gain: 0.2, delay: 0.06 });
+          this.tone({ freq: 95, endFreq: 34, duration: 0.34, type: 'square', gain: 0.22, delay: 0.16 });
+        } else if (kind === 'victory') {
+          [523.25, 659.25, 783.99, 1046.5].forEach((n, i) => {
+            this.tone({ freq: n, endFreq: n * 1.01, duration: 0.22, type: 'triangle', gain: 0.18, delay: i * 0.11 });
+          });
+        }
+      }
+    };
+
+    /* =========================================================================
+       2. PARTÍCULAS AMBIENTALES EN CANVAS
+       ========================================================================= */
+    const canvas = document.getElementById('ambient-canvas');
+    const c2d = canvas.getContext('2d');
+    let particles = [];
+    function resizeCanvas() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+      particles = Array.from({ length: 42 }, () => ({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        r: Math.random() * 1.8 + 0.6,
+        vx: (Math.random() - 0.5) * 0.28,
+        vy: (Math.random() - 0.5) * 0.28,
+        gold: Math.random() > 0.65
+      }));
+    }
+    resizeCanvas();
+    window.addEventListener('resize', resizeCanvas);
+    (function animateParticles() {
+      c2d.clearRect(0, 0, canvas.width, canvas.height);
+      for (const p of particles) {
+        p.x = (p.x + p.vx + canvas.width) % canvas.width;
+        p.y = (p.y + p.vy + canvas.height) % canvas.height;
+        c2d.beginPath();
+        c2d.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+        c2d.fillStyle = p.gold ? 'rgba(251, 191, 36, 0.45)' : 'rgba(56, 189, 248, 0.35)';
+        c2d.fill();
+      }
+      requestAnimationFrame(animateParticles);
+    })();
+
+    /* =========================================================================
+       3. NAVEGACIÓN SCROLL-VIDEO, CAPÍTULOS, TECLADO Y MODO PELÍCULA
+       ========================================================================= */
+    const scenes = Array.from(document.querySelectorAll('section.scene'));
+    const progressBar = document.getElementById('progressBar');
+    const dockDots = document.getElementById('dockDots');
+    const dockLabel = document.getElementById('dockLabel');
+    let currentSceneIdx = 0;
+
+    scenes.forEach((sc, idx) => {
+      const dot = document.createElement('button');
+      dot.type = 'button';
+      dot.className = 'dock-dot' + (idx === 0 ? ' active' : '');
+      dot.title = sc.dataset.title;
+      dot.addEventListener('click', () => goToScene(idx));
+      dockDots.appendChild(dot);
+    });
+    const dotEls = Array.from(dockDots.querySelectorAll('.dock-dot'));
+
+    function goToScene(idx) {
+      const clamped = Math.max(0, Math.min(scenes.length - 1, idx));
+      sfx.play('click');
+      scenes[clamped].scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    // Observer for reveal + active chapter + animated counters
+    let countersAnimated = false;
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('in-view');
+          const idx = scenes.indexOf(entry.target);
+          if (idx !== -1) {
+            currentSceneIdx = idx;
+            dotEls.forEach((d, i) => d.classList.toggle('active', i === idx));
+            dockLabel.textContent = entry.target.dataset.title;
+          }
+          if (entry.target.id === 'acto-2' && !countersAnimated) {
+            countersAnimated = true;
+            document.querySelectorAll('[data-count]').forEach((el) => {
+              const target = Number(el.dataset.count);
+              let current = 0;
+              const step = Math.max(1, Math.ceil(target / 24));
+              const timer = setInterval(() => {
+                current += step;
+                if (current >= target) {
+                  el.textContent = target;
+                  clearInterval(timer);
+                } else {
+                  el.textContent = current;
+                }
+              }, 35);
+            });
+          }
+        }
+      });
+    }, { threshold: 0.42 });
+    scenes.forEach((s) => observer.observe(s));
+
+    // Scroll progress bar & subtle parallax on hero cards
+    const heroFan = document.getElementById('heroFan');
+    window.addEventListener('scroll', () => {
+      const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
+      const pct = maxScroll > 0 ? (window.scrollY / maxScroll) * 100 : 0;
+      progressBar.style.width = `${Math.min(100, Math.max(0, pct))}%`;
+      if (heroFan && window.scrollY < window.innerHeight) {
+        heroFan.style.transform = `translateY(${window.scrollY * 0.12}px)`;
+      }
+    }, { passive: true });
+
+    document.getElementById('btnPrevScene').addEventListener('click', () => goToScene(currentSceneIdx - 1));
+    document.getElementById('btnNextScene').addEventListener('click', () => goToScene(currentSceneIdx + 1));
+
+    // Keyboard navigation
+    window.addEventListener('keydown', (e) => {
+      if (['ArrowDown', 'ArrowRight', 'PageDown'].includes(e.key)) {
+        e.preventDefault();
+        goToScene(currentSceneIdx + 1);
+      } else if (['ArrowUp', 'ArrowLeft', 'PageUp'].includes(e.key)) {
+        e.preventDefault();
+        goToScene(currentSceneIdx - 1);
+      } else if (e.key.toLowerCase() === 'f') {
+        toggleFullscreen();
+      }
+    });
+
+    // Fullscreen
+    function toggleFullscreen() {
+      if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen?.().catch(() => {});
+      } else {
+        document.exitFullscreen?.().catch(() => {});
+      }
+    }
+    document.getElementById('btnFullscreen').addEventListener('click', toggleFullscreen);
+
+    // Audio toggle
+    const btnSoundToggle = document.getElementById('btnSoundToggle');
+    btnSoundToggle.addEventListener('click', () => {
+      sfx.enabled = !sfx.enabled;
+      btnSoundToggle.classList.toggle('active', sfx.enabled);
+      btnSoundToggle.textContent = sfx.enabled ? '🔊 Audio ON' : '🔇 Audio OFF';
+      if (sfx.enabled) sfx.play('click');
+    });
+
+    // Auto-play cinematic scroll mode
+    let autoPlayTimer = null;
+    const btnAutoPlay = document.getElementById('btnAutoPlay');
+    btnAutoPlay.addEventListener('click', () => {
+      if (autoPlayTimer) {
+        clearInterval(autoPlayTimer);
+        autoPlayTimer = null;
+        btnAutoPlay.classList.remove('active');
+        btnAutoPlay.textContent = '▶ Modo Película';
+      } else {
+        btnAutoPlay.classList.add('active');
+        btnAutoPlay.textContent = '⏸ Pausar';
+        autoPlayTimer = setInterval(() => {
+          if (currentSceneIdx < scenes.length - 1) {
+            goToScene(currentSceneIdx + 1);
+          } else {
+            clearInterval(autoPlayTimer);
+            autoPlayTimer = null;
+            btnAutoPlay.classList.remove('active');
+            btnAutoPlay.textContent = '▶ Modo Película';
+          }
+        }, 6500);
+      }
+    });
+
+    /* =========================================================================
+       4. GALERÍA INTERACTIVA 3D DE CARTAS REALES
+       ========================================================================= */
+    const featuredCards = [
+      {
+        name: 'Mr. Fernando',
+        category: 'Profesores',
+        badgeClass: '',
+        img: './public/images/cards/mr-fernando.webp',
+        hp: 250,
+        desc: 'Arquitecto supremo de código limpio en Campuslands. Convierte errores críticos en lecciones inolvidables.',
+        special: 'Examen sorpresa de CS50 (100 DMG)',
+        defense: 'Escudo de Buenas Prácticas (-50%)'
+      },
+      {
+        name: 'Super teacher',
+        category: 'Profesores',
+        badgeClass: '',
+        img: './public/images/cards/super-teacher.webp',
+        hp: 250,
+        desc: 'Maestro del inglés con furia lingüística y toque de chef que te deja horneado.',
+        special: 'Modo Super teacher-chef (85 DMG)',
+        defense: 'Escudo anti-apple (-50%)'
+      },
+      {
+        name: "Ma'am Pau",
+        category: 'Profesores',
+        badgeClass: '',
+        img: './public/images/cards/sir-pau.webp',
+        hp: 250,
+        desc: 'Psicóloga amable, flexible y empática… pero cuidado con las sorpresas mentales.',
+        special: 'Tormenta de Gas y Psique (68 DMG)',
+        defense: 'Flexibilidad de Nota (-50%)'
+      },
+      {
+        name: 'Juan Pablo',
+        category: 'Estudiantes',
+        badgeClass: 'cyan',
+        img: './public/images/cards/juan-pablo.webp',
+        hp: 250,
+        desc: 'Carta estratégica que combina el juicio, commits tempraneros y entregas a tiempo.',
+        special: 'Furia Full-Stack (64 DMG)',
+        defense: 'Escudo anti-NKD (-50%)'
+      },
+      {
+        name: 'Nikol Ortiz',
+        category: 'Estudiantes',
+        badgeClass: 'cyan',
+        img: './public/images/cards/nikol-ortiz.webp',
+        hp: 250,
+        desc: 'Analiza la situación con precisión y ejecuta ataques de diseño en milisegundos.',
+        special: 'Precisión UI Letal (70 DMG)',
+        defense: 'Bloqueo de Layout (-50%)'
+      },
+      {
+        name: 'Señor Gemini',
+        category: 'Estudiantes',
+        badgeClass: 'cyan',
+        img: './public/images/cards/señor-gemini.webp',
+        hp: 250,
+        desc: 'Leyenda del prompt engineering capaz de depurar algoritmos complejos al instante.',
+        special: 'Contexto Infinito (75 DMG)',
+        defense: 'Firewall de Tokens (-50%)'
+      },
+      {
+        name: 'Doña Elena',
+        category: 'Apoyo',
+        badgeClass: 'emerald',
+        img: './public/images/cards/doña-elena.webp',
+        hp: 250,
+        desc: 'Pilar fundamental del ecosistema Cajasan & Campuslands con energía inagotable.',
+        special: 'Orden Total del Campus (72 DMG)',
+        defense: 'Respaldo Institucional (-50%)'
+      },
+      {
+        name: 'Don Tintero',
+        category: 'Apoyo',
+        badgeClass: 'emerald',
+        img: './public/images/cards/don-tintero.webp',
+        hp: 250,
+        desc: 'Proveedor oficial de cafeína táctica para sobrevivir maratones de JavaScript.',
+        special: 'Doble Tinto Recargado (70 DMG)',
+        defense: 'Pausa Activa (-50%)'
+      }
+    ];
+
+    const cardsShowcase = document.getElementById('cardsShowcase');
+    function renderCards(filter = 'all') {
+      const list = filter === 'all' ? featuredCards : featuredCards.filter((c) => c.category === filter);
+      cardsShowcase.innerHTML = list.map((c) => `
+        <div class="flip-card">
+          <div class="flip-inner">
+            <div class="flip-face flip-front">
+              <img src="${c.img}" alt="${c.name}" loading="lazy" />
+              <div class="flip-front-info">
+                <span class="card-badge ${c.badgeClass}">${c.category}</span>
+                <h3>${c.name}</h3>
+                <div class="flip-hint">Clic para ver habilidades ↻</div>
+              </div>
+            </div>
+            <div class="flip-face flip-back">
+              <div>
+                <h4>${c.name}</h4>
+                <p class="desc">${c.desc}</p>
+                <div class="stat-chip-row">
+                  <span class="stat-chip">❤️ ${c.hp} HP</span>
+                  <span class="stat-chip">🛡️ ${c.defense}</span>
+                </div>
+              </div>
+              <div class="special-box">
+                <strong>⚡ Poder Especial</strong>
+                ${c.special}
+              </div>
+            </div>
+          </div>
+        </div>
+      `).join('');
+
+      cardsShowcase.querySelectorAll('.flip-card').forEach((card) => {
+        card.addEventListener('click', () => {
+          sfx.play('click');
+          card.classList.toggle('flipped');
+        });
+      });
+    }
+    renderCards();
+
+    document.getElementById('cardFilterBar').addEventListener('click', (e) => {
+      const btn = e.target.closest('.filter-btn');
+      if (!btn) return;
+      sfx.play('click');
+      document.querySelectorAll('.filter-btn').forEach((b) => b.classList.remove('active'));
+      btn.classList.add('active');
+      renderCards(btn.dataset.filter);
+    });
+
+    /* =========================================================================
+       5. INTERACCIÓN DE ARQUITECTURA (ACTO 4)
+       ========================================================================= */
+    const archDetailBox = document.getElementById('archDetailBox');
+    document.getElementById('archNodes').addEventListener('click', (e) => {
+      const node = e.target.closest('.arch-node');
+      if (!node) return;
+      sfx.play('click');
+      document.querySelectorAll('.arch-node').forEach((n) => n.classList.remove('active'));
+      node.classList.add('active');
+      archDetailBox.textContent = node.dataset.info;
+    });
+
+    /* =========================================================================
+       6. MINI-ARENA DE COMBATE EN VIVO (ACTO 5)
+       ========================================================================= */
+    const demoState = {
+      pHp: 250,
+      cHp: 250,
+      turn: 1,
+      pDef: false,
+      cDef: false,
+      specialCd: 0,
+      busy: false,
+      over: false
+    };
+
+    const elPlayerBar = document.getElementById('playerHpBar');
+    const elCpuBar = document.getElementById('cpuHpBar');
+    const elPlayerTxt = document.getElementById('playerHpText');
+    const elCpuTxt = document.getElementById('cpuHpText');
+    const elPlayerCard = document.getElementById('playerFighterCard');
+    const elCpuCard = document.getElementById('cpuFighterCard');
+    const elLog = document.getElementById('demoLogText');
+    const elTurnBadge = document.getElementById('demoTurnBadge');
+    const btnAtk = document.getElementById('btnDemoAttack');
+    const btnDef = document.getElementById('btnDemoDefense');
+    const btnSpc = document.getElementById('btnDemoSpecial');
+
+    function updateDemoUI() {
+      const pPct = (demoState.pHp / 250) * 100;
+      const cPct = (demoState.cHp / 250) * 100;
+      elPlayerBar.style.width = `${pPct}%`;
+      elCpuBar.style.width = `${cPct}%`;
+      elPlayerBar.className = 'hp-bar-fill' + (pPct <= 30 ? ' low' : pPct <= 60 ? ' mid' : '');
+      elCpuBar.className = 'hp-bar-fill' + (cPct <= 30 ? ' low' : cPct <= 60 ? ' mid' : '');
+      elPlayerTxt.textContent = `${demoState.pHp} / 250 HP`;
+      elCpuTxt.textContent = `${demoState.cHp} / 250 HP`;
+      elPlayerCard.classList.toggle('shielded', demoState.pDef);
+      elCpuCard.classList.toggle('shielded', demoState.cDef);
+
+      const spcReady = demoState.turn >= 2 && demoState.specialCd === 0 && !demoState.over;
+      btnAtk.disabled = demoState.busy || demoState.over;
+      btnDef.disabled = demoState.busy || demoState.over;
+      btnSpc.disabled = demoState.busy || !spcReady;
+
+      if (demoState.turn < 2) btnSpc.textContent = '⚡ Examen CS50 (T2)';
+      else if (demoState.specialCd > 0) btnSpc.textContent = `⚡ Cooldown (${demoState.specialCd})`;
+      else btnSpc.textContent = '⚡ Examen CS50 (100)';
+
+      elTurnBadge.textContent = demoState.over
+        ? (demoState.cHp <= 0 ? '🏆 ¡Victoria!' : '🤖 Ganó la IA')
+        : `Turno ${demoState.turn} · ${demoState.busy ? 'Turno Máquina...' : 'Tu turno'}`;
+    }
+
+    function calcDmg(base, defended) {
+      const f = 0.85 + Math.random() * 0.3;
+      const raw = Math.round(base * f);
+      return defended ? Math.max(1, Math.round(raw * 0.5)) : raw;
+    }
+
+    function flashHit(el) {
+      el.classList.remove('hit');
+      void el.offsetWidth;
+      el.classList.add('hit');
+    }
+
+    function playerDemoAction(type) {
+      if (demoState.busy || demoState.over) return;
+      demoState.busy = true;
+
+      if (type === 'attack') {
+        const dmg = calcDmg(50, demoState.cDef);
+        demoState.cHp = Math.max(0, demoState.cHp - dmg);
+        const note = demoState.cDef ? ' (mitigado por escudo)' : '';
+        demoState.cDef = false;
+        if (demoState.specialCd > 0) demoState.specialCd--;
+        sfx.play('attack');
+        setTimeout(() => sfx.play('hit'), 110);
+        flashHit(elCpuCard);
+        elLog.textContent = `Mr. Fernando usó Despliegue en Vivo por ${dmg} DMG${note}.`;
+      } else if (type === 'defense') {
+        demoState.pDef = true;
+        if (demoState.specialCd > 0) demoState.specialCd--;
+        sfx.play('defense');
+        elLog.textContent = 'Mr. Fernando activó Escudo de Buenas Prácticas (-50% próximo golpe).';
+      } else if (type === 'special') {
+        const dmg = calcDmg(100, demoState.cDef);
+        demoState.cHp = Math.max(0, demoState.cHp - dmg);
+        demoState.cDef = false;
+        demoState.specialCd = 3;
+        sfx.play('special');
+        flashHit(elCpuCard);
+        elLog.textContent = `⚡ ¡Examen sorpresa de CS50! Brutal golpe de ${dmg} DMG.`;
+      }
+
+      if (demoState.cHp <= 0) {
+        demoState.over = true;
+        demoState.busy = false;
+        sfx.play('victory');
+        elLog.textContent = '🏆 ¡Victoria! Mr. Fernando dominó la arena (+50 puntos).';
+        updateDemoUI();
+        return;
+      }
+
+      updateDemoUI();
+
+      // CPU Turn
+      setTimeout(() => {
+        if (!demoState.cDef && demoState.cHp <= 115 && Math.random() < 0.35) {
+          demoState.cDef = true;
+          sfx.play('defense');
+          elLog.textContent = 'Super teacher activó Escudo anti-apple (-50%).';
+        } else {
+          const base = Math.random() > 0.5 ? 50 : 40;
+          const dmg = calcDmg(base, demoState.pDef);
+          demoState.pHp = Math.max(0, demoState.pHp - dmg);
+          const note = demoState.pDef ? ' (tu escudo redujo 50%)' : '';
+          demoState.pDef = false;
+          sfx.play('attack');
+          setTimeout(() => sfx.play('hit'), 110);
+          flashHit(elPlayerCard);
+          elLog.textContent = `Super teacher contraatacó por ${dmg} DMG${note}.`;
+        }
+
+        if (demoState.pHp <= 0) {
+          demoState.over = true;
+          elLog.textContent = '🤖 La Máquina ganó esta ronda. ¡Pulsa Reiniciar para la revancha!';
+        } else {
+          demoState.turn++;
+        }
+        demoState.busy = false;
+        updateDemoUI();
+      }, 850);
+    }
+
+    btnAtk.addEventListener('click', () => playerDemoAction('attack'));
+    btnDef.addEventListener('click', () => playerDemoAction('defense'));
+    btnSpc.addEventListener('click', () => playerDemoAction('special'));
+    document.getElementById('btnDemoReset').addEventListener('click', () => {
+      sfx.play('click');
+      Object.assign(demoState, { pHp: 250, cHp: 250, turn: 1, pDef: false, cDef: false, specialCd: 0, busy: false, over: false });
+      elLog.textContent = 'Arena reiniciada. ¡Tu turno!';
+      updateDemoUI();
+    });
+    updateDemoUI();
+
+    /* =========================================================================
+       7. EXPLORADOR HTTP REST (ACTO 6)
+       ========================================================================= */
+    const httpSnippets = {
+      GET: {
+        file: 'src/api/cardsapi.js — GET /cards?active=true',
+        code: `<span class="cm">// Obtiene cartas activas para armar el mazo</span>\n<span class="kw">async</span> <span class="fn">obtenerActivas</span>() {\n  <span class="kw">return</span> <span class="fn">solicitarApi</span>(<span class="str">'/cards?active=true'</span>);\n}`
+      },
+      POST: {
+        file: 'src/api/cardsapi.js — POST /cards',
+        code: `<span class="cm">// Crea una nueva carta desde el Panel Admin</span>\n<span class="kw">async</span> <span class="fn">crear</span>(datosCarta) {\n  <span class="kw">return</span> <span class="fn">solicitarApi</span>(<span class="str">'/cards'</span>, {\n    method: <span class="str">'POST'</span>,\n    body: JSON.<span class="fn">stringify</span>(datosCarta)\n  });\n}`
+      },
+      PUT: {
+        file: 'src/api/cardsapi.js — PUT /cards/:id',
+        code: `<span class="cm">// Reemplazo completo al editar todo el formulario</span>\n<span class="kw">async</span> <span class="fn">reemplazar</span>(id, datosCompletos) {\n  <span class="kw">return</span> <span class="fn">solicitarApi</span>(<span class="str">\`/cards/\${id}\`</span>, {\n    method: <span class="str">'PUT'</span>,\n    body: JSON.<span class="fn">stringify</span>(datosCompletos)\n  });\n}`
+      },
+      PATCH: {
+        file: 'src/api/cardsapi.js — PATCH /cards/:id',
+        code: `<span class="cm">// Actualización parcial (ej: activar/pausar carta)</span>\n<span class="kw">async</span> <span class="fn">actualizarParcial</span>(id, campos) {\n  <span class="kw">return</span> <span class="fn">solicitarApi</span>(<span class="str">\`/cards/\${id}\`</span>, {\n    method: <span class="str">'PATCH'</span>,\n    body: JSON.<span class="fn">stringify</span>(campos)\n  });\n}`
+      },
+      DELETE: {
+        file: 'src/api/cardsapi.js — DELETE /cards/:id',
+        code: `<span class="cm">// Elimina una carta del catálogo persistente</span>\n<span class="kw">async</span> <span class="fn">eliminar</span>(id) {\n  <span class="kw">return</span> <span class="fn">solicitarApi</span>(<span class="str">\`/cards/\${id}\`</span>, {\n    method: <span class="str">'DELETE'</span>\n  });\n}`
+      }
+    };
+    const httpFileLabel = document.getElementById('httpFileLabel');
+    const httpCodeBlock = document.getElementById('httpCodeBlock');
+    function setHttpMethod(m) {
+      httpFileLabel.textContent = httpSnippets[m].file;
+      httpCodeBlock.innerHTML = httpSnippets[m].code;
+    }
+    setHttpMethod('GET');
+    document.getElementById('httpTabs').addEventListener('click', (e) => {
+      const btn = e.target.closest('.http-tab');
+      if (!btn) return;
+      sfx.play('click');
+      document.querySelectorAll('.http-tab').forEach((b) => b.classList.remove('active'));
+      btn.classList.add('active');
+      setHttpMethod(btn.dataset.method);
+    });
+
+    /* =========================================================================
+       8. SOUNDBOARD EN VIVO (ACTO 7)
+       ========================================================================= */
+    document.querySelectorAll('.sound-pad').forEach((pad) => {
+      pad.addEventListener('click', () => {
+        sfx.play(pad.dataset.sfx);
+      });
+    });
+  </script>
+</body>
+</html>
