@@ -172,3 +172,14 @@ class MotorAudio {
 }
 
 export const motorAudio = new MotorAudio();
+
+MotorAudio.prototype.reproducirCritico = function () {
+  this.reproducirTono({ freq: 880, endFreq: 1760, duration: 0.14, type: 'sawtooth', gain: 0.28 });
+  this.reproducirTono({ freq: 1320, endFreq: 2400, duration: 0.16, type: 'triangle', gain: 0.24, delay: 0.05 });
+  this.reproducirTono({ freq: 110, endFreq: 35, duration: 0.24, type: 'square', gain: 0.3, delay: 0.08 });
+};
+
+MotorAudio.prototype.reproducirEsquive = function () {
+  this.reproducirTono({ freq: 420, endFreq: 1480, duration: 0.15, type: 'sine', gain: 0.18 });
+  this.reproducirTono({ freq: 980, endFreq: 2100, duration: 0.12, type: 'triangle', gain: 0.14, delay: 0.04 });
+};

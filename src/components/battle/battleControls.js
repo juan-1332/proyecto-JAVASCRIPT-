@@ -126,3 +126,29 @@ export class BattleControls extends HTMLElement {
 }
 
 customElements.define('battle-controls', BattleControls);
+
+const renderControlesOriginal = BattleControls.prototype.render;
+BattleControls.prototype.render = function () {
+  renderControlesOriginal.call(this);
+  if (!this._estadoControles || !this._estadoControles.unit) return;
+
+  const esAutomatico = this._estadoControles.battleMode === 'automatic';
+  const encabezado = this.querySelector('.flex.items-center.justify-between');
+  if (encabezado) {
+    const textos = encabezado.querySelectorAll('span');
+    if (textos[1]) textos[1].textContent = '±15% daño · 12% crítico · 8% esquive';
+    if (esAutomatico) {
+      if (textos[0]) textos[0].textContent = 'Modo automático activo: el sistema controla tus acciones';
+      encabezado.insertAdjacentHTML(
+        'beforebegin',
+        '<div class="arena-auto-banner">MODO AUTOMÁTICO ACTIVO · Acciones manuales deshabilitadas</div>'
+      );
+    }
+  }
+
+  if (esAutomatico) {
+    this.querySelectorAll('[data-action]').forEach((boton) => {
+      boton.disabled = true;
+    });
+  }
+};

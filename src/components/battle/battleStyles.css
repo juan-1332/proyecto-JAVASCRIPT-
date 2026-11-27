@@ -410,3 +410,95 @@
     max-height: 80px;
   }
 }
+
+.arena-mode-toggle {
+  display: inline-flex;
+  padding: 0.2rem;
+  border-radius: 0.65rem;
+  background-color: #091326;
+  border: 1px solid rgba(248, 250, 252, 0.14);
+  gap: 0.2rem;
+}
+
+.arena-mode-btn {
+  padding: 0.45rem 0.8rem;
+  border-radius: 0.5rem;
+  border: none;
+  background: transparent;
+  color: #94a3b8;
+  font-size: 0.8rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background-color 160ms ease, color 160ms ease;
+}
+
+.arena-mode-btn.is-active {
+  background-color: #f59e0b;
+  color: #081226;
+}
+
+.arena-mode-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.arena-auto-banner {
+  margin-bottom: 0.5rem;
+  padding: 0.5rem 0.8rem;
+  border-radius: 0.6rem;
+  background-color: rgba(245, 158, 11, 0.14);
+  border: 1px solid rgba(245, 158, 11, 0.45);
+  color: #fbbf24;
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-align: center;
+  letter-spacing: 0.03em;
+}
+
+.arena-event-callout {
+  display: inline-block;
+  padding: 0.2rem 0.65rem;
+  border-radius: 999px;
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  animation: animEnter 200ms ease-out;
+}
+
+.arena-event-callout.is-critical {
+  background-color: rgba(239, 68, 68, 0.22);
+  border: 1px solid #f59e0b;
+  color: #fde68a;
+}
+
+.arena-event-callout.is-dodge {
+  background-color: rgba(56, 189, 248, 0.2);
+  border: 1px solid #38bdf8;
+  color: #bae6fd;
+}
+
+.arena-log-critical {
+  border-color: rgba(245, 158, 11, 0.55);
+  background-color: rgba(245, 158, 11, 0.1);
+}
+
+.arena-log-dodge {
+  border-color: rgba(56, 189, 248, 0.5);
+  background-color: rgba(56, 189, 248, 0.1);
+}
+
+@keyframes animCrit {
+  0%, 100% { transform: translateX(0) scale(1); filter: brightness(1); }
+  20% { transform: translateX(-11px) scale(1.03); filter: brightness(1.75); }
+  45% { transform: translateX(11px) scale(0.98); filter: brightness(1.45); }
+  70% { transform: translateX(-6px); }
+}
+
+@keyframes animDodge {
+  0%, 100% { transform: translateX(0); opacity: 1; }
+  35% { transform: translateX(22px) skewX(-6deg); opacity: 0.55; }
+  70% { transform: translateX(-6px); opacity: 0.85; }
+}
+
+.anim-crit { animation: animCrit 400ms ease-out; border-color: #f59e0b; }
+.anim-dodge { animation: animDodge 380ms ease-out; border-color: #38bdf8; }

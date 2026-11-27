@@ -196,3 +196,23 @@ export class GameApp extends HTMLElement {
 }
 
 customElements.define('card-game-app', GameApp);
+
+const configurarEventosAppOriginal = GameApp.prototype.configurarEventos;
+GameApp.prototype.configurarEventos = function () {
+  if (!this._eventosModoVinculados) {
+    this._eventosModoVinculados = true;
+    this.addEventListener('start-battle', (evento) => {
+      this.modoBatallaPendiente = evento.detail?.mode === 'automatic' ? 'automatic' : 'manual';
+    });
+  }
+  configurarEventosAppOriginal.call(this);
+};
+
+const renderAppOriginal = GameApp.prototype.render;
+GameApp.prototype.render = function () {
+  renderAppOriginal.call(this);
+  const vistaBatalla = this.querySelector('#view-battle');
+  if (vistaBatalla && this.batallaPendiente && typeof vistaBatalla.aplicarModoInicial === 'function') {
+    vistaBatalla.aplicarModoInicial(this.modoBatallaPendiente || 'manual');
+  }
+};

@@ -122,3 +122,10 @@ export class BattleCard extends HTMLElement {
 }
 
 customElements.define('battle-card', BattleCard);
+
+const reproducirAnimacionOriginal = BattleCard.prototype.reproducirAnimacion;
+BattleCard.prototype.reproducirAnimacion = function (claseAnimacion) {
+  const contenedor = this.querySelector('.battle-card-box');
+  contenedor?.classList.remove('anim-crit', 'anim-dodge');
+  reproducirAnimacionOriginal.call(this, claseAnimacion);
+};

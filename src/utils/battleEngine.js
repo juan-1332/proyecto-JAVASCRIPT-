@@ -90,20 +90,40 @@ export function obtenerDisponibilidadEspecial(estadoLado, unidadActiva) {
 
 export function calcularDanoAccion(danoBase, unidadDefensora) {
   const variacionAleatoria = factorAleatorio(0.85, 1.15);
-  const danoOriginal = Math.round(danoBase * variacionAleatoria);
+  const danoConFactor = danoBase * variacionAleatoria;
+  const danoOriginal = Math.round(danoConFactor);
+  const esquivado = Math.random() < PROBABILIDAD_ESQUIVE;
+
+  if (esquivado) {
+    return {
+      rawDamage: danoOriginal,
+      finalDamage: 0,
+      factor: Number(variacionAleatoria.toFixed(2)),
+      wasDefended: false,
+      isCritical: false,
+      dodged: true,
+    };
+  }
+
+  const esCritico = Math.random() < PROBABILIDAD_CRITICO;
+  let danoCalculado = esCritico ? danoConFactor * MULTIPLICADOR_CRITICO : danoConFactor;
+
   const estabaDefendiendo = Boolean(unidadDefensora.defending);
   const reduccion = estabaDefendiendo
     ? Number(unidadDefensora.card?.defense?.damageReduction ?? 0.5)
     : 0;
-  const danoFinal = estabaDefendiendo
-    ? Math.max(1, Math.round(danoOriginal * (1 - reduccion)))
-    : danoOriginal;
+  if (estabaDefendiendo) {
+    danoCalculado = danoCalculado * (1 - reduccion);
+  }
+  const danoFinal = Math.max(1, Math.round(danoCalculado));
 
   return {
     rawDamage: danoOriginal,
     finalDamage: danoFinal,
     factor: Number(variacionAleatoria.toFixed(2)),
     wasDefended: estabaDefendiendo,
+    isCritical: esCritico,
+    dodged: false,
   };
 }
 
@@ -127,6 +147,8 @@ export function ejecutarAccionTurno(estado, claveActor, accion) {
     actionType: accion.type,
     damage: 0,
     wasDefended: false,
+    isCritical: false,
+    dodged: false,
     ko: false,
     swappedUnit: false,
     winner: null,
@@ -136,28 +158,42 @@ export function ejecutarAccionTurno(estado, claveActor, accion) {
     const ataque = unidadActor.card.attacks[accion.attackIndex] || unidadActor.card.attacks[0];
     const resultadoDano = calcularDanoAccion(ataque.baseDamage, unidadOponente);
 
-    unidadOponente.currentHp = Math.max(0, unidadOponente.currentHp - resultadoDano.finalDamage);
-    unidadOponente.defending = false;
-
+    ladoActor.consecutiveDefenses = 0;
     if (ladoActor.specialCooldown > 0) {
       ladoActor.specialCooldown -= 1;
     }
 
     evento.damage = resultadoDano.finalDamage;
     evento.wasDefended = resultadoDano.wasDefended;
+    evento.isCritical = resultadoDano.isCritical;
+    evento.dodged = resultadoDano.dodged;
     evento.actionName = ataque.name;
 
-    const notaEscudo = resultadoDano.wasDefended
-      ? ` (Escudo activo redujo de ${resultadoDano.rawDamage} a ${resultadoDano.finalDamage})`
-      : '';
-    siguienteEstado.logs.unshift({
-      turn: siguienteEstado.globalTurn,
-      actor: claveActor,
-      type: 'attack',
-      text: `${nombreActor} (${unidadActor.card.name}) usó ${ataque.name} causando ${resultadoDano.finalDamage} de daño a ${unidadOponente.card.name}${notaEscudo}.`,
-    });
+    if (resultadoDano.dodged) {
+      siguienteEstado.logs.unshift({
+        turn: siguienteEstado.globalTurn,
+        actor: claveActor,
+        type: 'dodge',
+        text: `¡ATAQUE ESQUIVADO! ${unidadOponente.card.name} evitó ${ataque.name} de ${nombreActor} (0 de daño).`,
+      });
+    } else {
+      unidadOponente.currentHp = Math.max(0, unidadOponente.currentHp - resultadoDano.finalDamage);
+      unidadOponente.defending = false;
+
+      const notaCritico = resultadoDano.isCritical ? ' ¡GOLPE CRÍTICO! (×1.5)' : '';
+      const notaEscudo = resultadoDano.wasDefended
+        ? ` (Escudo activo redujo el daño a ${resultadoDano.finalDamage})`
+        : '';
+      siguienteEstado.logs.unshift({
+        turn: siguienteEstado.globalTurn,
+        actor: claveActor,
+        type: resultadoDano.isCritical ? 'critical' : 'attack',
+        text: `${nombreActor} (${unidadActor.card.name}) usó ${ataque.name} causando ${resultadoDano.finalDamage} de daño a ${unidadOponente.card.name}.${notaCritico}${notaEscudo}`,
+      });
+    }
   } else if (accion.type === 'defense') {
     unidadActor.defending = true;
+    ladoActor.consecutiveDefenses = (ladoActor.consecutiveDefenses || 0) + 1;
     if (ladoActor.specialCooldown > 0) {
       ladoActor.specialCooldown -= 1;
     }
@@ -178,23 +214,37 @@ export function ejecutarAccionTurno(estado, claveActor, accion) {
     const especial = unidadActor.card.special;
     const resultadoDano = calcularDanoAccion(especial.baseDamage, unidadOponente);
 
-    unidadOponente.currentHp = Math.max(0, unidadOponente.currentHp - resultadoDano.finalDamage);
-    unidadOponente.defending = false;
+    ladoActor.consecutiveDefenses = 0;
     ladoActor.specialCooldown = Number(especial.cooldown ?? 3);
 
     evento.damage = resultadoDano.finalDamage;
     evento.wasDefended = resultadoDano.wasDefended;
+    evento.isCritical = resultadoDano.isCritical;
+    evento.dodged = resultadoDano.dodged;
     evento.actionName = especial.name;
 
-    const notaEscudo = resultadoDano.wasDefended
-      ? ` (Escudo redujo de ${resultadoDano.rawDamage} a ${resultadoDano.finalDamage})`
-      : '';
-    siguienteEstado.logs.unshift({
-      turn: siguienteEstado.globalTurn,
-      actor: claveActor,
-      type: 'special',
-      text: `${nombreActor} desató poder especial ${especial.name} por ${resultadoDano.finalDamage} de daño${notaEscudo}. Cooldown: ${ladoActor.specialCooldown} turnos.`,
-    });
+    if (resultadoDano.dodged) {
+      siguienteEstado.logs.unshift({
+        turn: siguienteEstado.globalTurn,
+        actor: claveActor,
+        type: 'dodge',
+        text: `¡ATAQUE ESQUIVADO! ${unidadOponente.card.name} evitó el poder especial ${especial.name} de ${nombreActor} (0 de daño). Cooldown: ${ladoActor.specialCooldown} turnos.`,
+      });
+    } else {
+      unidadOponente.currentHp = Math.max(0, unidadOponente.currentHp - resultadoDano.finalDamage);
+      unidadOponente.defending = false;
+
+      const notaCritico = resultadoDano.isCritical ? ' ¡GOLPE CRÍTICO! (×1.5)' : '';
+      const notaEscudo = resultadoDano.wasDefended
+        ? ` (Escudo redujo el daño a ${resultadoDano.finalDamage})`
+        : '';
+      siguienteEstado.logs.unshift({
+        turn: siguienteEstado.globalTurn,
+        actor: claveActor,
+        type: resultadoDano.isCritical ? 'critical' : 'special',
+        text: `${nombreActor} desató poder especial ${especial.name} por ${resultadoDano.finalDamage} de daño.${notaCritico}${notaEscudo} Cooldown: ${ladoActor.specialCooldown} turnos.`,
+      });
+    }
   }
 
   // Verificar derrota de carta oponente
@@ -247,26 +297,66 @@ export function ejecutarAccionTurno(estado, claveActor, accion) {
 }
 
 export function elegirAccionMaquina(estado) {
-  const ladoMaquina = estado.cpu;
-  const ladoJugador = estado.player;
-  const unidadMaquina = ladoMaquina.units[ladoMaquina.activeIndex];
-  const unidadJugador = ladoJugador.units[ladoJugador.activeIndex];
+  return elegirAccionAutomatica(estado, 'cpu');
+}
 
-  const revisionEspecial = obtenerDisponibilidadEspecial(ladoMaquina, unidadMaquina);
-  if (revisionEspecial.available && (unidadJugador.currentHp <= 75 || Math.random() < 0.6)) {
-    return { type: 'special' };
+export const PROBABILIDAD_CRITICO = 0.12;
+export const MULTIPLICADOR_CRITICO = 1.5;
+export const PROBABILIDAD_ESQUIVE = 0.08;
+
+export function obtenerAccionesValidas(estado, claveActor) {
+  const ladoActor = estado[claveActor];
+  const unidadActiva = ladoActor.units[ladoActor.activeIndex];
+  const ataques = (unidadActiva.card.attacks || []).map((_ataque, indice) => ({
+    type: 'attack',
+    attackIndex: indice,
+  }));
+
+  const accionesDisponibles = [...ataques, { type: 'defense' }];
+  const disponibilidadEspecial = obtenerDisponibilidadEspecial(ladoActor, unidadActiva);
+
+  if (disponibilidadEspecial.available) {
+    accionesDisponibles.push({ type: 'special' });
   }
 
-  if (!unidadMaquina.defending && unidadMaquina.currentHp <= 115 && Math.random() < 0.32) {
-    return { type: 'defense' };
+  return accionesDisponibles;
+}
+
+export function elegirAccionAutomatica(estado, claveActor) {
+  const claveOponente = claveActor === 'player' ? 'cpu' : 'player';
+  const ladoActor = estado[claveActor];
+  const ladoOponente = estado[claveOponente];
+  const unidadActor = ladoActor.units[ladoActor.activeIndex];
+  const unidadOponente = ladoOponente.units[ladoOponente.activeIndex];
+
+  const accionesDisponibles = obtenerAccionesValidas(estado, claveActor);
+  const accionEspecial = accionesDisponibles.find((accion) => accion.type === 'special');
+  const accionDefensa = accionesDisponibles.find((accion) => accion.type === 'defense');
+  const accionesAtaque = accionesDisponibles.filter((accion) => accion.type === 'attack');
+
+  if (accionEspecial && (unidadOponente.currentHp <= 85 || Math.random() < 0.6)) {
+    return accionEspecial;
   }
 
-  // Elegir entre los 4 ataques normales con ligera preferencia táctica
-  const resultadoAzar = Math.random();
-  let indiceAtaque = 0;
-  if (resultadoAzar > 0.72) indiceAtaque = 3;
-  else if (resultadoAzar > 0.44) indiceAtaque = 2;
-  else if (resultadoAzar > 0.18) indiceAtaque = 1;
+  const defensasSeguidas = ladoActor.consecutiveDefenses || 0;
+  if (
+    accionDefensa &&
+    !unidadActor.defending &&
+    defensasSeguidas < 2 &&
+    unidadActor.currentHp <= 115 &&
+    Math.random() < 0.35
+  ) {
+    return accionDefensa;
+  }
 
-  return { type: 'attack', attackIndex: indiceAtaque };
+  if (accionesAtaque.length > 0) {
+    const azar = Math.random();
+    let indiceElegido = 0;
+    if (azar > 0.72 && accionesAtaque.length >= 4) indiceElegido = 3;
+    else if (azar > 0.44 && accionesAtaque.length >= 3) indiceElegido = 2;
+    else if (azar > 0.18 && accionesAtaque.length >= 2) indiceElegido = 1;
+    return accionesAtaque[indiceElegido] || accionesAtaque[0];
+  }
+
+  return accionesDisponibles[0];
 }

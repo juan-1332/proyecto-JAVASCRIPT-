@@ -1,7 +1,7 @@
 import './battleCard.js';
 import './battleControls.js';
 import {
-  elegirAccionMaquina,
+  elegirAccionAutomatica,
   crearEstadoInicialBatalla,
   ejecutarAccionTurno,
   obtenerDisponibilidadEspecial,
@@ -64,6 +64,10 @@ export class BattleArena extends HTMLElement {
       clearTimeout(this.temporizadorMaquina);
       this.temporizadorMaquina = null;
     }
+    if (Array.isArray(this.temporizadoresEfectos)) {
+      this.temporizadoresEfectos.forEach((id) => clearTimeout(id));
+      this.temporizadoresEfectos = [];
+    }
   }
 
   manejarTecla(evento) {
@@ -78,6 +82,7 @@ export class BattleArena extends HTMLElement {
       return;
     }
 
+    if (this.modoBatalla === 'automatic') return;
     if (this.estadoBatalla.currentActor !== 'player' || this.animando) return;
 
     if (['1', '2', '3', '4'].includes(tecla)) {
@@ -90,14 +95,7 @@ export class BattleArena extends HTMLElement {
   }
 
   programarTurnoMaquina() {
-    if (!this.estadoBatalla || this.estadoBatalla.status !== 'playing') return;
-    if (this.estadoBatalla.currentActor !== 'cpu') return;
-
-    this.limpiarTemporizadores();
-    this.temporizadorMaquina = setTimeout(() => {
-      const accion = elegirAccionMaquina(this.estadoBatalla);
-      this.manejarAccion('cpu', accion);
-    }, 780);
+    this.programarSiguienteTurno();
   }
 
   obtenerTop3Fichas() {
@@ -209,41 +207,54 @@ export class BattleArena extends HTMLElement {
     if (!evento) return;
 
     this.animando = true;
+    this.eventoDestacado = evento.dodged
+      ? { tipo: 'dodge', texto: '¡ATAQUE ESQUIVADO!' }
+      : evento.isCritical
+      ? { tipo: 'critical', texto: '¡GOLPE CRÍTICO! ×1.5' }
+      : null;
+
     const elementoCartaJugador = this.querySelector('#player-battle-card');
     const elementoCartaMaquina = this.querySelector('#cpu-battle-card');
 
     const elementoAtacante = claveActor === 'player' ? elementoCartaJugador : elementoCartaMaquina;
     const elementoDefensor = claveActor === 'player' ? elementoCartaMaquina : elementoCartaJugador;
 
+    const reproducirRespuestaDefensor = () => {
+      if (evento.dodged) {
+        motorAudio.reproducirEsquive();
+        elementoDefensor?.reproducirAnimacion('anim-dodge');
+      } else if (evento.isCritical) {
+        motorAudio.reproducirCritico();
+        elementoDefensor?.reproducirAnimacion('anim-crit');
+      } else {
+        motorAudio.reproducirImpacto();
+        elementoDefensor?.reproducirAnimacion('anim-hit');
+      }
+    };
+
     if (evento.actionType === 'attack') {
       motorAudio.reproducirAtaque();
       elementoAtacante?.reproducirAnimacion(
         claveActor === 'player' ? 'anim-attack-up' : 'anim-attack-down'
       );
-      setTimeout(() => {
-        motorAudio.reproducirImpacto();
-        elementoDefensor?.reproducirAnimacion('anim-hit');
-      }, 130);
+      this.registrarTemporizadorEfecto(reproducirRespuestaDefensor, 130);
     } else if (evento.actionType === 'defense') {
       motorAudio.reproducirDefensa();
       elementoAtacante?.reproducirAnimacion('anim-defend');
     } else if (evento.actionType === 'special') {
       motorAudio.reproducirEspecial();
       elementoAtacante?.reproducirAnimacion('anim-special');
-      setTimeout(() => {
-        motorAudio.reproducirImpacto();
-        elementoDefensor?.reproducirAnimacion('anim-hit');
-      }, 170);
+      this.registrarTemporizadorEfecto(reproducirRespuestaDefensor, 170);
     }
 
     if (evento.ko) {
-      setTimeout(() => {
+      this.registrarTemporizadorEfecto(() => {
         motorAudio.reproducirDerrotaCarta();
         elementoDefensor?.reproducirAnimacion('anim-ko');
       }, 260);
     }
 
-    setTimeout(async () => {
+    this.registrarTemporizadorEfecto(async () => {
       this.estadoBatalla = siguienteEstado;
       this.animando = false;
       this.render();
@@ -258,6 +269,7 @@ export class BattleArena extends HTMLElement {
       }
 
       if (this.estadoBatalla.status === 'finished') {
+        this.limpiarTemporizadores();
         if (this.estadoBatalla.winner === 'player') {
           motorAudio.reproducirVictoria();
         } else {
@@ -265,7 +277,7 @@ export class BattleArena extends HTMLElement {
         }
         await this.guardarResultadoBatalla();
       } else {
-        this.programarTurnoMaquina();
+        this.programarSiguienteTurno();
       }
     }, evento.ko ? 560 : 380);
   }
@@ -306,6 +318,7 @@ export class BattleArena extends HTMLElement {
         winningCardImage: cartaGanadora?.image || '',
         podiumCards: top3Fichas,
         winner: this.estadoBatalla.winner,
+        mode: this.modoBatalla || 'manual',
         turnsPlayed: this.estadoBatalla.globalTurn,
         pointsAwarded: puntosOtorgados,
       });
@@ -583,6 +596,150 @@ export class BattleArena extends HTMLElement {
       .replace(/>/g, '&gt;')
       .replace(/"/g, '&quot;');
   }
+
+  registrarTemporizadorEfecto(funcion, retraso) {
+    if (!this.temporizadoresEfectos) this.temporizadoresEfectos = [];
+    const id = setTimeout(() => {
+      this.temporizadoresEfectos = this.temporizadoresEfectos.filter((item) => item !== id);
+      funcion();
+    }, retraso);
+    this.temporizadoresEfectos.push(id);
+    return id;
+  }
+
+  aplicarModoInicial(modo) {
+    this.modoBatalla = modo === 'automatic' ? 'automatic' : 'manual';
+    this.eventoDestacado = null;
+    if (this.estadoBatalla) this.estadoBatalla.mode = this.modoBatalla;
+    this.limpiarTemporizadores();
+    if (this.isConnected) {
+      this.render();
+      this.configurarEventos();
+      this.programarSiguienteTurno();
+    }
+  }
+
+  cambiarModoBatalla(nuevoModo) {
+    const modoNormalizado = nuevoModo === 'automatic' ? 'automatic' : 'manual';
+    if (!this.estadoBatalla || this.estadoBatalla.status !== 'playing') return;
+    if ((this.modoBatalla || 'manual') === modoNormalizado) return;
+
+    this.modoBatalla = modoNormalizado;
+    this.estadoBatalla.mode = modoNormalizado;
+    motorAudio.reproducirClic();
+
+    if (this.modoBatalla === 'manual' && this.estadoBatalla.currentActor === 'player' && this.temporizadorMaquina) {
+      clearTimeout(this.temporizadorMaquina);
+      this.temporizadorMaquina = null;
+    }
+
+    this.render();
+    this.configurarEventos();
+
+    if (!this.animando) {
+      this.programarSiguienteTurno();
+    }
+  }
+
+  programarSiguienteTurno() {
+    if (!this.estadoBatalla || this.estadoBatalla.status !== 'playing' || this.animando) return;
+
+    const actorActual = this.estadoBatalla.currentActor;
+    const esAutomatico =
+      actorActual === 'cpu' || (actorActual === 'player' && this.modoBatalla === 'automatic');
+    if (!esAutomatico) return;
+
+    if (this.temporizadorMaquina) {
+      clearTimeout(this.temporizadorMaquina);
+      this.temporizadorMaquina = null;
+    }
+
+    this.temporizadorMaquina = setTimeout(() => {
+      this.temporizadorMaquina = null;
+      if (!this.estadoBatalla || this.estadoBatalla.status !== 'playing' || this.animando) return;
+      if (this.estadoBatalla.currentActor !== actorActual) return;
+
+      const accion = elegirAccionAutomatica(this.estadoBatalla, actorActual);
+      this.manejarAccion(actorActual, accion);
+    }, 850);
+  }
 }
 
 customElements.define('battle-arena', BattleArena);
+
+const renderBatallaOriginal = BattleArena.prototype.render;
+BattleArena.prototype.render = function () {
+  if (!this.modoBatalla) this.modoBatalla = 'manual';
+  renderBatallaOriginal.call(this);
+  if (!this.estadoBatalla) return;
+
+  const estado = this.estadoBatalla;
+  const botonSilencio = this.querySelector('#btn-toggle-mute');
+  if (botonSilencio?.parentElement) {
+    botonSilencio.parentElement.classList.add('flex-wrap');
+    botonSilencio.insertAdjacentHTML(
+      'beforebegin',
+      `
+        <div class="arena-mode-toggle" role="group" aria-label="Modo de combate">
+          <button
+            type="button"
+            data-mode-switch="manual"
+            class="arena-mode-btn ${this.modoBatalla === 'manual' ? 'is-active' : ''}"
+            ${estado.status !== 'playing' ? 'disabled' : ''}
+          >
+            Manual
+          </button>
+          <button
+            type="button"
+            data-mode-switch="automatic"
+            class="arena-mode-btn ${this.modoBatalla === 'automatic' ? 'is-active' : ''}"
+            ${estado.status !== 'playing' ? 'disabled' : ''}
+          >
+            Automático
+          </button>
+        </div>
+      `
+    );
+  }
+
+  if (this.eventoDestacado) {
+    const tituloMesa = this.querySelector('.arena-clash-divider span');
+    if (tituloMesa) {
+      tituloMesa.innerHTML = `<span class="arena-event-callout is-${this.eventoDestacado.tipo}">${this.escaparHtml(this.eventoDestacado.texto)}</span>`;
+    }
+  }
+
+  const registrosVisibles = estado.logs.slice(0, 18);
+  this.querySelectorAll('.arena-log-item').forEach((elemento, indice) => {
+    const tipo = registrosVisibles[indice]?.type;
+    if (tipo === 'critical') elemento.classList.add('arena-log-critical');
+    if (tipo === 'dodge') elemento.classList.add('arena-log-dodge');
+  });
+
+  const controles = this.querySelector('#battle-controls-panel');
+  if (controles && controles._estadoControles) {
+    controles.estadoControles = {
+      ...controles._estadoControles,
+      disabled: controles._estadoControles.disabled || this.modoBatalla === 'automatic',
+      battleMode: this.modoBatalla,
+    };
+  }
+};
+
+const configurarEventosBatallaOriginal = BattleArena.prototype.configurarEventos;
+BattleArena.prototype.configurarEventos = function () {
+  const panelControles = this.querySelector('#battle-controls-panel');
+  panelControles?.addEventListener('player-action', (evento) => {
+    if (this.modoBatalla === 'automatic' || this.animando) {
+      evento.stopImmediatePropagation();
+    }
+  });
+
+  configurarEventosBatallaOriginal.call(this);
+
+  this.querySelectorAll('[data-mode-switch]').forEach((boton) => {
+    boton.addEventListener('click', () => {
+      this.cambiarModoBatalla(boton.getAttribute('data-mode-switch'));
+    });
+  });
+};

@@ -33,3 +33,10 @@ Abre `http://localhost:3000`. Todos los métodos `GET`, `POST`, `PUT`, `PATCH` y
 3. Sin una API externa, el respaldo usa `localStorage` y el ranking solo existe en el navegador de cada visitante. Para un ranking compartido, conecta una API respaldada por almacenamiento persistente y configura en Vercel:
    - `VITE_API_MODE=production`
    - `VITE_API_PROD_URL=https://tu-api-externa.com`
+
+nuevas mecanicas agregadas
+
+modo de batalla manual y automatico: seleccionable desde el selector de mazo antes de iniciar y alternable en vivo en la arena. en modod automatico, las acciones del jugador y de la maqiina se ejecutan por turnos con pausas visibles set time out botnes manuales desabilitados sin turnmos simultaneos y con limpieza automatica de temporizadores al finalizar o salir.
+Selección Automática de Acciones (obtenerAccionesValidas y elegirAccionAutomatica): Construye las acciones disponibles del turno respetando desbloqueo y cooldown del poder especial.
+Golpe Crítico (12% · ×1.5) y Esquivar Ataque (8% · 0 de daño): Integrados en ataques normales y poderes especiales siguiendo el orden estricto de resolución (selección → factor aleatorio → esquive → crítico → defensa 50% → redondeo → resta de HP ≥ 0), con animaciones, aviso visual y efectos sonoros diferenciados.
+Persistencia del Modo: Cada partida finalizada guarda mode (manual o automatic) en el historial de /api/battles.

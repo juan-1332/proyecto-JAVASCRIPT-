@@ -353,3 +353,67 @@ export class DeckSelector extends HTMLElement {
 }
 
 customElements.define('deck-selector', DeckSelector);
+
+const renderMazoOriginal = DeckSelector.prototype.render;
+DeckSelector.prototype.render = function () {
+  if (!this.modoBatalla) this.modoBatalla = 'manual';
+  renderMazoOriginal.call(this);
+
+  const botonIniciar = this.querySelector('#btn-start-battle');
+  const contenedorBotones = botonIniciar?.parentElement;
+  if (!contenedorBotones) return;
+
+  contenedorBotones.insertAdjacentHTML(
+    'beforebegin',
+    `
+      <div class="mt-4">
+        <div class="text-xs font-semibold text-slate-300 mb-2">Modo de batalla</div>
+        <div class="grid grid-cols-2 gap-2" role="group" aria-label="Modo de batalla">
+          <button
+            type="button"
+            data-battle-mode="manual"
+            class="campus-btn ${this.modoBatalla === 'manual' ? 'campus-btn-primary' : 'campus-btn-secondary'} w-full"
+          >
+            Manual
+          </button>
+          <button
+            type="button"
+            data-battle-mode="automatic"
+            class="campus-btn ${this.modoBatalla === 'automatic' ? 'campus-btn-primary' : 'campus-btn-secondary'} w-full"
+          >
+            Automático
+          </button>
+        </div>
+      </div>
+    `
+  );
+};
+
+const configurarEventosMazoOriginal = DeckSelector.prototype.configurarEventos;
+DeckSelector.prototype.configurarEventos = function () {
+  configurarEventosMazoOriginal.call(this);
+  this.querySelectorAll('[data-battle-mode]').forEach((boton) => {
+    boton.addEventListener('click', () => {
+      this.modoBatalla = boton.getAttribute('data-battle-mode');
+      motorAudio.reproducirClic();
+      this.render();
+      this.configurarEventos();
+    });
+  });
+};
+
+const iniciarPartidaOriginal = DeckSelector.prototype.iniciarPartida;
+DeckSelector.prototype.iniciarPartida = function () {
+  const emitirOriginal = this.dispatchEvent.bind(this);
+  this.dispatchEvent = (evento) => {
+    if (evento?.type === 'start-battle' && evento.detail) {
+      evento.detail.mode = this.modoBatalla || 'manual';
+    }
+    return emitirOriginal(evento);
+  };
+  try {
+    return iniciarPartidaOriginal.call(this);
+  } finally {
+    this.dispatchEvent = emitirOriginal;
+  }
+};
