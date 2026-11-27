@@ -26,6 +26,8 @@ export class BattleCard extends HTMLElement {
       'anim-hit',
       'anim-defend',
       'anim-special',
+      'anim-dodge',
+      'anim-critical-hit',
       'anim-ko',
       'anim-enter'
     );

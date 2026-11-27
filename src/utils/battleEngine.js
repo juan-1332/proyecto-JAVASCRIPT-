@@ -1,5 +1,11 @@
 import { elegirElementosAleatorios, factorAleatorio, lanzarMoneda } from './random.js';
 
+
+// incorpore las posibilidades de golpe crítico.
+export const PROBABILIDAD_GOLPE_CRITICO = 0.12;
+export const MULTIPLICADOR_GOLPE_CRITICO = 1.5;
+export const PROBABILIDAD_ESQUIVE = 0.08;
+
 /**
  * Motor puro de reglas de combate 1v1 para Campuslands Battle Arena.
  */
@@ -90,13 +96,28 @@ export function obtenerDisponibilidadEspecial(estadoLado, unidadActiva) {
 
 export function calcularDanoAccion(danoBase, unidadDefensora) {
   const variacionAleatoria = factorAleatorio(0.85, 1.15);
-  const danoOriginal = Math.round(danoBase * variacionAleatoria);
+  const esquivado = Math.random() < PROBABILIDAD_ESQUIVE;
+  if (esquivado) {
+    return {
+      rawDamage: 0,
+      finalDamage: 0,
+      factor: Number(variacionAleatoria.toFixed(2)),
+      wasDefended: false,
+      wasDodged: true,
+      isCritical: false,
+    };
+  }
+
+  const esCritico = Math.random() < PROBABILIDAD_GOLPE_CRITICO;
+  const danoConCritico =
+    danoBase * variacionAleatoria * (esCritico ? MULTIPLICADOR_GOLPE_CRITICO : 1);
+  const danoOriginal = Math.round(danoConCritico);
   const estabaDefendiendo = Boolean(unidadDefensora.defending);
   const reduccion = estabaDefendiendo
     ? Number(unidadDefensora.card?.defense?.damageReduction ?? 0.5)
     : 0;
   const danoFinal = estabaDefendiendo
-    ? Math.max(1, Math.round(danoOriginal * (1 - reduccion)))
+    ? Math.round(danoConCritico * (1 - reduccion))
     : danoOriginal;
 
   return {
@@ -104,6 +125,8 @@ export function calcularDanoAccion(danoBase, unidadDefensora) {
     finalDamage: danoFinal,
     factor: Number(variacionAleatoria.toFixed(2)),
     wasDefended: estabaDefendiendo,
+    wasDodged: false,
+    isCritical: esCritico,
   };
 }
 
@@ -127,6 +150,8 @@ export function ejecutarAccionTurno(estado, claveActor, accion) {
     actionType: accion.type,
     damage: 0,
     wasDefended: false,
+    wasDodged: false,
+    isCritical: false,
     ko: false,
     swappedUnit: false,
     winner: null,
@@ -137,7 +162,7 @@ export function ejecutarAccionTurno(estado, claveActor, accion) {
     const resultadoDano = calcularDanoAccion(ataque.baseDamage, unidadOponente);
 
     unidadOponente.currentHp = Math.max(0, unidadOponente.currentHp - resultadoDano.finalDamage);
-    unidadOponente.defending = false;
+    if (!resultadoDano.wasDodged) unidadOponente.defending = false;
 
     if (ladoActor.specialCooldown > 0) {
       ladoActor.specialCooldown -= 1;
@@ -145,7 +170,18 @@ export function ejecutarAccionTurno(estado, claveActor, accion) {
 
     evento.damage = resultadoDano.finalDamage;
     evento.wasDefended = resultadoDano.wasDefended;
+    evento.wasDodged = resultadoDano.wasDodged;
+    evento.isCritical = resultadoDano.isCritical;
     evento.actionName = ataque.name;
+
+    if (resultadoDano.wasDodged || resultadoDano.isCritical) {
+      siguienteEstado.logs.unshift({
+        turn: siguienteEstado.globalTurn,
+        actor: 'system',
+        type: resultadoDano.wasDodged ? 'dodge' : 'critical',
+        text: resultadoDano.wasDodged ? '¡ATAQUE ESQUIVADO!' : '¡GOLPE CRÍTICO!',
+      });
+    }
 
     const notaEscudo = resultadoDano.wasDefended
       ? ` (Escudo activo redujo de ${resultadoDano.rawDamage} a ${resultadoDano.finalDamage})`
@@ -153,8 +189,10 @@ export function ejecutarAccionTurno(estado, claveActor, accion) {
     siguienteEstado.logs.unshift({
       turn: siguienteEstado.globalTurn,
       actor: claveActor,
-      type: 'attack',
-      text: `${nombreActor} (${unidadActor.card.name}) usó ${ataque.name} causando ${resultadoDano.finalDamage} de daño a ${unidadOponente.card.name}${notaEscudo}.`,
+      type: resultadoDano.wasDodged ? 'dodge' : resultadoDano.isCritical ? 'critical' : 'attack',
+      text: resultadoDano.wasDodged
+        ? `${nombreActor} (${unidadActor.card.name}) usó ${ataque.name}, pero ${unidadOponente.card.name} esquivó el ataque.`
+        : `${nombreActor} (${unidadActor.card.name}) usó ${ataque.name}${resultadoDano.isCritical ? ' con golpe crítico' : ''} causando ${resultadoDano.finalDamage} de daño a ${unidadOponente.card.name}${notaEscudo}.`,
     });
   } else if (accion.type === 'defense') {
     unidadActor.defending = true;
@@ -179,12 +217,23 @@ export function ejecutarAccionTurno(estado, claveActor, accion) {
     const resultadoDano = calcularDanoAccion(especial.baseDamage, unidadOponente);
 
     unidadOponente.currentHp = Math.max(0, unidadOponente.currentHp - resultadoDano.finalDamage);
-    unidadOponente.defending = false;
+    if (!resultadoDano.wasDodged) unidadOponente.defending = false;
     ladoActor.specialCooldown = Number(especial.cooldown ?? 3);
 
     evento.damage = resultadoDano.finalDamage;
     evento.wasDefended = resultadoDano.wasDefended;
+    evento.wasDodged = resultadoDano.wasDodged;
+    evento.isCritical = resultadoDano.isCritical;
     evento.actionName = especial.name;
+
+    if (resultadoDano.wasDodged || resultadoDano.isCritical) {
+      siguienteEstado.logs.unshift({
+        turn: siguienteEstado.globalTurn,
+        actor: 'system',
+        type: resultadoDano.wasDodged ? 'dodge' : 'critical',
+        text: resultadoDano.wasDodged ? '¡ATAQUE ESQUIVADO!' : '¡GOLPE CRÍTICO!',
+      });
+    }
 
     const notaEscudo = resultadoDano.wasDefended
       ? ` (Escudo redujo de ${resultadoDano.rawDamage} a ${resultadoDano.finalDamage})`
@@ -192,8 +241,10 @@ export function ejecutarAccionTurno(estado, claveActor, accion) {
     siguienteEstado.logs.unshift({
       turn: siguienteEstado.globalTurn,
       actor: claveActor,
-      type: 'special',
-      text: `${nombreActor} desató poder especial ${especial.name} por ${resultadoDano.finalDamage} de daño${notaEscudo}. Cooldown: ${ladoActor.specialCooldown} turnos.`,
+      type: resultadoDano.wasDodged ? 'dodge' : resultadoDano.isCritical ? 'critical' : 'special',
+      text: resultadoDano.wasDodged
+        ? `${nombreActor} desató ${especial.name}, pero ${unidadOponente.card.name} esquivó el ataque. Cooldown: ${ladoActor.specialCooldown} turnos.`
+        : `${nombreActor} desató poder especial ${especial.name}${resultadoDano.isCritical ? ' con golpe crítico' : ''} por ${resultadoDano.finalDamage} de daño${notaEscudo}. Cooldown: ${ladoActor.specialCooldown} turnos.`,
     });
   }
 
@@ -261,7 +312,7 @@ export function elegirAccionMaquina(estado) {
     return { type: 'defense' };
   }
 
-  // Elegir entre los 4 ataques normales con ligera preferencia táctica
+  // Elegir entre los 4 ataques normales
   const resultadoAzar = Math.random();
   let indiceAtaque = 0;
   if (resultadoAzar > 0.72) indiceAtaque = 3;
@@ -269,4 +320,32 @@ export function elegirAccionMaquina(estado) {
   else if (resultadoAzar > 0.18) indiceAtaque = 1;
 
   return { type: 'attack', attackIndex: indiceAtaque };
+}
+
+export function elegirAccionAutomatica(estado, claveLado) {
+  const lado = estado[claveLado];
+  const ladoOponente = estado[claveLado === 'player' ? 'cpu' : 'player'];
+  const unidad = lado.units[lado.activeIndex];
+  const unidadOponente = ladoOponente.units[ladoOponente.activeIndex];
+  const accionesDisponibles = unidad.card.attacks.map((_, attackIndex) => ({
+    type: 'attack',
+    attackIndex,
+  }));
+  accionesDisponibles.push({ type: 'defense' });
+
+  if (obtenerDisponibilidadEspecial(lado, unidad).available) {
+    accionesDisponibles.push({ type: 'special' });
+  }
+
+  const especial = accionesDisponibles.find((accion) => accion.type === 'special');
+  if (especial && (unidadOponente.currentHp <= 75 || Math.random() < 0.6)) {
+    return especial;
+  }
+
+  if (unidad.currentHp <= 115 && Math.random() < 0.32) {
+    return accionesDisponibles.find((accion) => accion.type === 'defense');
+  }
+
+  const ataquesDisponibles = accionesDisponibles.filter((accion) => accion.type === 'attack');
+  return ataquesDisponibles[Math.floor(Math.random() * ataquesDisponibles.length)];
 }

@@ -36,3 +36,10 @@ Abre `http://localhost:3000`. Todos los métodos `GET`, `POST`, `PUT`, `PATCH` y
 
 
 nikol
+
+## Mecánicas de batalla
+
+- **Modo automático**: activa el control programado para jugador y máquina desde el botón de la arena. Las acciones conservan pausas visibles, animaciones, turnos y enfriamiento; salir o finalizar cancela los temporizadores pendientes.
+- **Golpe crítico**: cada ataque y poder especial tiene 12 % de probabilidad de multiplicar el daño por 1.5.
+- **Esquive**: cada ataque y poder especial tiene 8 % de probabilidad de causar cero daño. Los críticos y esquives se destacan en la bitácora y con animación.
+- El modo utilizado se guarda en el registro del historial como `modo: "automático"` o `modo: "manual"`.

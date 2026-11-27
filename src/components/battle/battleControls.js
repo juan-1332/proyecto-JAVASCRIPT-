@@ -28,8 +28,9 @@ export class BattleControls extends HTMLElement {
       disabled: deshabilitado,
       specialStatus: estadoEspecial,
       isPlayerTurn: esTurnoJugador,
+      automaticMode: modoAutomatico, // resiviendo el valor. 
     } = this._estadoControles;
-    const carta = unidad.card;
+    const carta =unidad.card;
 
     const botonesAtaque = carta.attacks
       .map(
@@ -61,7 +62,13 @@ export class BattleControls extends HTMLElement {
     this.innerHTML = `
       <div>
         <div class="flex items-center justify-between text-xs text-slate-300 mt-1">
-          <span>${esTurnoJugador ? 'Tu turno: elige una acción de combate' : 'Turno de la Máquina en progreso...'}</span>
+          <span>${
+            modoAutomatico     // esto es lo que nos permite mostrar el mensaje de modo automatico.
+              ? 'Modo automático: ambos participantes eligen sus acciones'
+              : esTurnoJugador
+              ? 'Tu turno: elige una acción de combate'
+              : 'Turno de la Máquina en progreso...'
+          }</span>
           <span class="font-mono-num text-slate-400">±15% daño aleatorio</span>
         </div>
 

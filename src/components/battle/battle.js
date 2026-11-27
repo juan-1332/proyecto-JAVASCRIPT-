@@ -2,6 +2,7 @@ import './battleCard.js';
 import './battleControls.js';
 import {
   elegirAccionMaquina,
+  elegirAccionAutomatica,
   crearEstadoInicialBatalla,
   ejecutarAccionTurno,
   obtenerDisponibilidadEspecial,
@@ -19,6 +20,8 @@ export class BattleArena extends HTMLElement {
     this.mazoMaquina = [];
     this.animando = false;
     this.temporizadorMaquina = null;
+    this.temporizadores = new Set();
+    this.modoAutomatico = false;   // implemente el modo automatico.
     this.guardandoResultado = false;
     this.resultadoGuardado = false;
     this.errorGuardado = '';
@@ -31,6 +34,7 @@ export class BattleArena extends HTMLElement {
     this.mazoJugador = playerDeck;
     this.mazoMaquina = cpuDeck;
     this.animando = false;
+    this.modoAutomatico = false;
     this.guardandoResultado = false;
     this.resultadoGuardado = false;
     this.errorGuardado = '';
@@ -60,10 +64,27 @@ export class BattleArena extends HTMLElement {
   }
 
   limpiarTemporizadores() {
-    if (this.temporizadorMaquina) {
-      clearTimeout(this.temporizadorMaquina);
-      this.temporizadorMaquina = null;
-    }
+    this.temporizadores.forEach((temporizador) => clearTimeout(temporizador));
+    this.temporizadores.clear();
+    this.temporizadorMaquina = null;
+  }
+
+  programarTemporizador(callback, retraso) {
+    let temporizador;
+    temporizador = setTimeout(() => {
+      this.temporizadores.delete(temporizador);
+      if (this.temporizadorMaquina === temporizador) this.temporizadorMaquina = null;
+      callback();
+    }, retraso);
+    this.temporizadores.add(temporizador);
+    return temporizador;
+  }
+
+  cancelarTurnoProgramado() {
+    if (!this.temporizadorMaquina) return;
+    clearTimeout(this.temporizadorMaquina);
+    this.temporizadores.delete(this.temporizadorMaquina);
+    this.temporizadorMaquina = null;
   }
 
   manejarTecla(evento) {
@@ -77,8 +98,8 @@ export class BattleArena extends HTMLElement {
       this.configurarEventos();
       return;
     }
-
-    if (this.estadoBatalla.currentActor !== 'player' || this.animando) return;
+     // bloquear teclado en modo automático.
+    if (this.estadoBatalla.currentActor !== 'player' || this.animando || this.modoAutomatico) return;
 
     if (['1', '2', '3', '4'].includes(tecla)) {
       this.manejarAccion('player', { type: 'attack', attackIndex: Number(tecla) - 1 });
@@ -91,12 +112,28 @@ export class BattleArena extends HTMLElement {
 
   programarTurnoMaquina() {
     if (!this.estadoBatalla || this.estadoBatalla.status !== 'playing') return;
-    if (this.estadoBatalla.currentActor !== 'cpu') return;
+    const actorActual = this.estadoBatalla.currentActor;
+    if (actorActual !== 'cpu' && !(actorActual === 'player' && this.modoAutomatico)) {
+      this.cancelarTurnoProgramado();
+      return;
+    }
 
-    this.limpiarTemporizadores();
-    this.temporizadorMaquina = setTimeout(() => {
-      const accion = elegirAccionMaquina(this.estadoBatalla);
-      this.manejarAccion('cpu', accion);
+    this.cancelarTurnoProgramado();
+    this.temporizadorMaquina = this.programarTemporizador(() => {
+      if (
+        !this.estadoBatalla ||
+        this.estadoBatalla.status !== 'playing' ||
+        this.estadoBatalla.currentActor !== actorActual ||
+        (actorActual === 'player' && !this.modoAutomatico)
+      ) {
+        return;
+      }
+
+      const accion =
+        this.modoAutomatico
+          ? elegirAccionAutomatica(this.estadoBatalla, actorActual)
+          : elegirAccionMaquina(this.estadoBatalla);
+      this.manejarAccion(actorActual, accion);
     }, 780);
   }
 
@@ -220,9 +257,11 @@ export class BattleArena extends HTMLElement {
       elementoAtacante?.reproducirAnimacion(
         claveActor === 'player' ? 'anim-attack-up' : 'anim-attack-down'
       );
-      setTimeout(() => {
-        motorAudio.reproducirImpacto();
-        elementoDefensor?.reproducirAnimacion('anim-hit');
+      this.programarTemporizador(() => {
+        if (!evento.wasDodged) motorAudio.reproducirImpacto();
+        elementoDefensor?.reproducirAnimacion(
+          evento.wasDodged ? 'anim-dodge' : evento.isCritical ? 'anim-critical-hit' : 'anim-hit'
+        );
       }, 130);
     } else if (evento.actionType === 'defense') {
       motorAudio.reproducirDefensa();
@@ -230,20 +269,22 @@ export class BattleArena extends HTMLElement {
     } else if (evento.actionType === 'special') {
       motorAudio.reproducirEspecial();
       elementoAtacante?.reproducirAnimacion('anim-special');
-      setTimeout(() => {
-        motorAudio.reproducirImpacto();
-        elementoDefensor?.reproducirAnimacion('anim-hit');
+      this.programarTemporizador(() => {
+        if (!evento.wasDodged) motorAudio.reproducirImpacto();
+        elementoDefensor?.reproducirAnimacion(
+          evento.wasDodged ? 'anim-dodge' : evento.isCritical ? 'anim-critical-hit' : 'anim-hit'
+        );
       }, 170);
     }
 
     if (evento.ko) {
-      setTimeout(() => {
+      this.programarTemporizador(() => {
         motorAudio.reproducirDerrotaCarta();
         elementoDefensor?.reproducirAnimacion('anim-ko');
       }, 260);
     }
 
-    setTimeout(async () => {
+    this.programarTemporizador(async () => {
       this.estadoBatalla = siguienteEstado;
       this.animando = false;
       this.render();
@@ -258,6 +299,7 @@ export class BattleArena extends HTMLElement {
       }
 
       if (this.estadoBatalla.status === 'finished') {
+        this.limpiarTemporizadores();
         if (this.estadoBatalla.winner === 'player') {
           motorAudio.reproducirVictoria();
         } else {
@@ -308,6 +350,7 @@ export class BattleArena extends HTMLElement {
         winner: this.estadoBatalla.winner,
         turnsPlayed: this.estadoBatalla.globalTurn,
         pointsAwarded: puntosOtorgados,
+        modo: this.modoAutomatico ? 'automático' : 'manual',
       });
 
       this.jugador = jugadorActualizado;
@@ -351,7 +394,7 @@ export class BattleArena extends HTMLElement {
       .slice(0, 18)
       .map(
         (registro) => `
-      <div class="arena-log-item">
+      <div class="arena-log-item ${registro.type === 'critical' ? 'is-critical' : registro.type === 'dodge' ? 'is-dodge' : ''}">
         <span class="font-mono-num text-amber-400 mr-1.5">T${registro.turn}</span>
         <span class="text-slate-200">${this.escaparHtml(registro.text)}</span>
       </div>
@@ -460,7 +503,18 @@ export class BattleArena extends HTMLElement {
             </div>
           </div>
 
-          <div class="flex items-center gap-2">
+          <div class="flex flex-wrap items-center justify-end gap-2">
+            <span class="arena-mode-indicator ${this.modoAutomatico ? 'is-automatic' : ''}">
+              ${this.modoAutomatico ? 'Control automático activo' : 'Modo manual'}
+            </span>
+            <button
+              type="button"
+              id="btn-toggle-mode"
+              class="campus-btn campus-btn-secondary"
+              ${estado.status !== 'playing' || this.animando ? 'disabled' : ''}
+            >
+              ${this.modoAutomatico ? 'Cambiar a modo manual' : 'Activar modo automático'}
+            </button>
             <button type="button" id="btn-toggle-mute" class="campus-btn campus-btn-secondary">
               ${audioSilenciado ? 'Audio Silenciado' : 'Audio Activo'}
             </button>
@@ -526,9 +580,14 @@ export class BattleArena extends HTMLElement {
     if (controles) {
       controles.estadoControles = {
         unit: unidadJugador,
-        disabled: !esTurnoJugador || this.animando || estado.status !== 'playing',
+        disabled:
+          this.modoAutomatico ||
+          !esTurnoJugador ||
+          this.animando ||
+          estado.status !== 'playing',
         specialStatus: especialJugador,
         isPlayerTurn: esTurnoJugador,
+        automaticMode: this.modoAutomatico,
       };
     }
   }
@@ -550,6 +609,15 @@ export class BattleArena extends HTMLElement {
 
     this.querySelector('#battle-controls-panel')?.addEventListener('player-action', (evento) => {
       this.manejarAccion('player', evento.detail);
+    });
+
+    this.querySelector('#btn-toggle-mode')?.addEventListener('click', () => {
+      if (!this.estadoBatalla || this.estadoBatalla.status !== 'playing' || this.animando) return;
+      this.modoAutomatico = !this.modoAutomatico;
+      this.cancelarTurnoProgramado();
+      this.render();
+      this.configurarEventos();
+      this.programarTurnoMaquina();
     });
 
     this.querySelector('#btn-toggle-mute')?.addEventListener('click', () => {

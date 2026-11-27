@@ -16,6 +16,20 @@
   border-radius: 0.85rem;
 }
 
+.arena-mode-indicator {
+  padding: 0.4rem 0.65rem;
+  border: 1px solid rgba(248, 250, 252, 0.18);
+  border-radius: 0.55rem;
+  color: #cbd5e1;
+  font-size: 0.75rem;
+}
+
+.arena-mode-indicator.is-automatic {
+  color: #6ee7b7;
+  border-color: rgba(52, 211, 153, 0.55);
+  background-color: rgba(16, 185, 129, 0.12);
+}
+
 .arena-board {
   display: grid;
   grid-template-columns: minmax(0, 1.35fr) minmax(260px, 0.65fr);
@@ -201,6 +215,20 @@
   line-height: 1.4;
 }
 
+.arena-log-item.is-critical {
+  color: #fde68a;
+  border-color: rgba(245, 158, 11, 0.6);
+  background-color: rgba(120, 53, 15, 0.38);
+  font-weight: 700;
+}
+
+.arena-log-item.is-dodge {
+  color: #a7f3d0;
+  border-color: rgba(52, 211, 153, 0.55);
+  background-color: rgba(6, 78, 59, 0.38);
+  font-weight: 700;
+}
+
 /* Animaciones compositor-only activadas por eventos JS */
 @keyframes animAttackUp {
   0% { transform: translateY(0) scale(1); }
@@ -233,6 +261,17 @@
   100% { transform: scale(1); filter: brightness(1); }
 }
 
+@keyframes animDodge {
+  0%, 100% { transform: translateX(0); filter: brightness(1); }
+  35% { transform: translateX(14px); filter: brightness(1.35); }
+  70% { transform: translateX(-8px); }
+}
+
+@keyframes animCriticalHit {
+  0%, 100% { transform: scale(1); filter: brightness(1); }
+  35% { transform: scale(1.04); filter: brightness(1.8) saturate(1.5); }
+}
+
 @keyframes animKo {
   0% { transform: scale(1); opacity: 1; }
   100% { transform: scale(0.92) translateY(10px); opacity: 0.25; }
@@ -248,6 +287,8 @@
 .anim-hit { animation: animHit 340ms ease-out; }
 .anim-defend { animation: animDefend 360ms ease-out; }
 .anim-special { animation: animSpecial 420ms cubic-bezier(0.16, 1, 0.3, 1); }
+.anim-dodge { animation: animDodge 360ms ease-out; }
+.anim-critical-hit { animation: animCriticalHit 420ms ease-out; }
 .anim-ko { animation: animKo 320ms ease-in forwards; }
 .anim-enter { animation: animEnter 280ms cubic-bezier(0.16, 1, 0.3, 1); }
 
