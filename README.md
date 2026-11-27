@@ -33,3 +33,6 @@ Abre `http://localhost:3000`. Todos los métodos `GET`, `POST`, `PUT`, `PATCH` y
 3. Sin una API externa, el respaldo usa `localStorage` y el ranking solo existe en el navegador de cada visitante. Para un ranking compartido, conecta una API respaldada por almacenamiento persistente y configura en Vercel:
    - `VITE_API_MODE=production`
    - `VITE_API_PROD_URL=https://tu-api-externa.com`
+
+
+nikol
