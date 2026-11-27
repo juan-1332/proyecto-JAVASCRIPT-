@@ -350,9 +350,9 @@ export class BattleArena extends HTMLElement {
         winner: this.estadoBatalla.winner,
         turnsPlayed: this.estadoBatalla.globalTurn,
         pointsAwarded: puntosOtorgados,
-        modo: this.modoAutomatico ? 'automático' : 'manual',
+        
       });
-
+      modo:this.modoAutomatico ? 'automatic' : 'manual', // persistencia con el modo de juego.
       this.jugador = jugadorActualizado;
       this.resultadoGuardado = true;
       this.dispatchEvent(
@@ -614,9 +614,9 @@ export class BattleArena extends HTMLElement {
     this.querySelector('#btn-toggle-mode')?.addEventListener('click', () => {
       if (!this.estadoBatalla || this.estadoBatalla.status !== 'playing' || this.animando) return;
       this.modoAutomatico = !this.modoAutomatico;
-      this.cancelarTurnoProgramado();
+      this.calcularTurnoProgramado();  
       this.render();
-      this.configurarEventos();
+      this.configurarEventos();  // reprograma segun el turno nuevo.
       this.programarTurnoMaquina();
     });
 
