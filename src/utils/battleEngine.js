@@ -316,7 +316,7 @@ export function elegirAccionMaquina(estado) {
   const resultadoAzar = Math.random();
   let indiceAtaque = 0;
   if (resultadoAzar > 0.72) indiceAtaque = 3;
-  else if (resultadoAzar > 0.44) indiceAtaque = 2;
+  else if (resul > 0.44) indiceAtaque = 2;
   else if (resultadoAzar > 0.18) indiceAtaque = 1;
 
   return { type: 'attack', attackIndex: indiceAtaque };
