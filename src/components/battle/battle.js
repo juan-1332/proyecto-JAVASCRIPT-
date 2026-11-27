@@ -350,9 +350,10 @@ export class BattleArena extends HTMLElement {
         winner: this.estadoBatalla.winner,
         turnsPlayed: this.estadoBatalla.globalTurn,
         pointsAwarded: puntosOtorgados,
+        modo:this.modoAutomatico ? 'automatic' : 'manual', // persistencia en el juego.
         
       });
-      modo:this.modoAutomatico ? 'automatic' : 'manual', // persistencia con el modo de juego.
+   
       this.jugador = jugadorActualizado;
       this.resultadoGuardado = true;
       this.dispatchEvent(
