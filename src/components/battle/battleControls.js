@@ -67,7 +67,7 @@ export class BattleControls extends HTMLElement {
               ? 'Modo automático: ambos participantes eligen sus acciones'
               : esTurnoJugador
               ? 'Tu turno: elige una acción de combate'
-              : 'Turno de la Máquina en progreso...'
+              : 'Turno de Máquina en proceso...'
           }</span>
           <span class="font-mono-num text-slate-400">±15% daño aleatorio</span>
         </div>
